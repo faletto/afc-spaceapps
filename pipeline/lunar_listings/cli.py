@@ -9,7 +9,7 @@ OUT = REPO / "app" / "public" / "data"
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="lunar_listings")
-    p.add_argument("stage", choices=["stub", "config", "fetch", "polar", "data", "validate"])
+    p.add_argument("stage", choices=["stub", "config", "fetch", "terrain", "polar", "data", "validate"])
     p.add_argument("--out", type=Path, default=OUT)
     p.add_argument("--force", action="store_true")
     a = p.parse_args(argv)
@@ -41,6 +41,15 @@ def main(argv=None) -> int:
         m = export.export_global(g, cfg, a.out, work / "dem_global_32.npy", hot_cut=hot, cutoff=cutoff)
         m = export.export_polar(pt, cfg, a.out, raw, hot_cut=hot, cutoff=cutoff)
         print("exported:", m["counts"], m["tiers"], "files:", len(m["files"]), "cutoff", round(cutoff, 1))
+    elif a.stage == "terrain":
+        from . import config, terrain
+        cfg = config.load()
+        work = REPO / "data" / "work"
+        work.mkdir(parents=True, exist_ok=True)
+        raw = REPO / "data" / "raw"
+        terrain.resample_global(raw / "Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif", work / "dem_global_32.npy")
+        terrain.build_global_stats(work / "dem_global_32.npy", work / "terrain_global.npz", cfg["safety"]["max_slope_deg"])
+        print("polar terrain from", terrain.build_polar_stats(raw, work, cfg))
     elif a.stage == "polar":
         from . import config, polar_build
         cfg = config.load()

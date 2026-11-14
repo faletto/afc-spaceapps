@@ -1,10 +1,10 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` · Contract: **v2** (+H4, H6 notes) · P0–P5 ✅ (H0, H3, H4 merged; H6 merging now)
-- Done in P5: blurbs + why lines (config/blurbs.yaml, blurbs.py), featured plots (flag bit 4), `pricing.rent_for_stay` + `golden_rent_v1.json`, RENT-5 tests, demo number found (see Contract/handoffs).
-- Next: P6 — payload/perf pass (data ≈ 129 MB raw; check gzip sizes vs NFR-4), data-release decision (committed, human-approved), README pipeline section, `make data` reproducibility (document `make polar` → `make data` and the work-dir prerequisites; maybe add `make terrain`), bug fixes requested by App. Open: TEMP-4 Diviner cross-check (needs the Diviner south-polar GDR from PDS: ODE/`lro_diviner_derived1`, POLS 240 m bins; exact file not confirmed), HOR-2 external profile, Q-P6.
-- Env: `.venv` py3.11; `make test` = 70+ tests. NEVER `make stub` over real data.
+- Branch: `pipeline` · Contract v2 (+H4, H6 notes) · P0–P5 ✅ merged (H6 = main c5a4fc0); P6 in progress.
+- P6 done: `make terrain` / `make all-data` targets, `pipeline/README.md`, payload check (gzip core ≈ 9 MB, polar detail+horizon ≈ 11 MB; raw ≈ 129 MB).
+- IN PROGRESS (may have finished): from-scratch rebuild started with `make terrain polar data` after moving old intermediates to `data/work_old/` (git-ignore it or delete before `git add -A`). Check scratchpad rebuild.log; then compare `find app/public/data -type f ! -name manifest.json -exec shasum -a 256 {} +` with before.sha (scratchpad) — expect identical. If identical, `rm -rf data/work_old`, commit regenerated data only if changed, push, merge to main (H7/final).
+- Open: TEMP-4 Diviner (needs exact PDS file), HOR-2 external profile, Q-P6, App requests (read app-log.md `## Requests to Pipeline Claude`).
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
