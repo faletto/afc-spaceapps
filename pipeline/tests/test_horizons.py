@@ -80,7 +80,7 @@ def test_ridge_to_the_east_bearing_orientation():
 
 
 def test_quantize_roundtrip_range():
-    m = np.array([-3.0, 0.0, 1.234, 37.8, 50.0, -10.0])
+    m = np.array([-6.0, 0.0, 1.234, 34.8, 50.0, -10.0])
     q = horizons.quantize(m)
     back = horizons.dequantize(q)
     assert np.all(np.abs(back[:4] - m[:4]) <= 0.081) and q[4] == 255 and q[5] == 0

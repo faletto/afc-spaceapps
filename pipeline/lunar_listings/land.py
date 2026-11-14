@@ -41,7 +41,7 @@ def landmark_score_and_nearby(lat, lon, lm: dict, cfg: dict, chunk: int = 2000):
         score[i : i + chunk] = (fw[None] * np.exp(-d / c["d0_km"])).max(1)
         order = np.argsort(d, axis=1)[:, :k]
         dsel = np.take_along_axis(d, order, 1)
-        near[i : i + chunk] = np.where(dsel <= c["radius_km"], order, -1)
+        near[i : i + chunk, : order.shape[1]] = np.where(dsel <= c["radius_km"], order, -1)  # fewer landmarks than slots -> -1
     return score, near
 
 

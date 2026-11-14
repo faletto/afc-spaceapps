@@ -9,33 +9,13 @@ import numpy as np
 from PIL import Image
 
 from . import CONTRACT_VERSION, config
+from .contract import FLAGS, HORIZON_AZ, N_STEPS, N_TILES_AXIS, tile_index, write_cols
 
-N_STEPS = 8784  # 2028 is a leap year: 366 * 24
-N_TILES_AXIS = 16
-HORIZON_AZ = 180  # 2-degree az steps; uint8 = elevation in HORIZON_UNIT_DEG
 HORIZON_UNIT_DEG = 0.25
 HORIZON_OFFSET_DEG = -10.0  # elevation = v * unit + offset (allows negative horizons)
 R = 1_737_400.0
 
-# (name, dtype, scale) in file order. real value = stored * scale.
-COLUMNS = [
-    ("x", "float32", 1), ("y", "float32", 1), ("lat", "float32", 1), ("lon", "float32", 1),
-    ("area_km2", "float32", 1), ("price", "float32", 1), ("rent_avg", "float32", 1),
-    ("viability", "uint8", 1),
-    ("s_safety", "uint8", 1), ("s_power", "uint8", 1), ("s_comms", "uint8", 1),
-    ("s_thermal", "uint8", 1), ("s_landmark", "uint8", 1), ("s_ice", "uint8", 1),
-    ("sunlit_pct", "uint8", 1), ("earth_pct", "uint8", 1),
-    ("slope_mean_ddeg", "uint16", 0.1),
-    ("longest_dark_h", "uint16", 1), ("longest_blackout_h", "uint16", 1),
-    ("temp_min_k", "uint16", 1), ("temp_max_k", "uint16", 1),
-    ("ice_km10", "uint16", 0.1),  # 65535 = n/a
-    ("land_type", "uint8", 1), ("flags", "uint16", 1),
-    ("bw_lander_h", "uint16", 1), ("bw_habitat_h", "uint16", 1),
-    ("bw_lander_start", "uint16", 1), ("bw_habitat_start", "uint16", 1),
-    ("tile", "uint16", 1), ("row_in_tile", "uint16", 1),
-]
 LAND_TYPES = ["mare", "highland", "crater_floor", "rim", "ridge", "psr_edge"]
-FLAGS = {"off_market": 0, "hot_property": 1, "price_cut": 2, "earth_view": 3, "featured": 4, "tier_polar": 15}
 OVERLAYS = ["viability", "sunlit", "earth", "temperature", "safety", "ice"]
 LANDMARKS = [
     ("Apollo 11", "apollo", 0.67, 23.47, 100), ("Apollo 12", "apollo", -3.01, -23.42, 80),
@@ -51,12 +31,6 @@ def _rng():
     return np.random.default_rng(20281114)
 
 
-def _tile_index(x, y, lo, hi):
-    f = (np.asarray([x, y]) - lo) / (hi - lo)
-    t = np.clip((f * N_TILES_AXIS).astype(int), 0, N_TILES_AXIS - 1)
-    return t[1] * N_TILES_AXIS + t[0]
-
-
 def _plots(tier: str):
     """Return dict of x, y, lat, lon, area, tile (rows sorted by tile)."""
     if tier == "global":
@@ -64,7 +38,7 @@ def _plots(tier: str):
         lon = np.tile(np.arange(-179.5, 180, 1.0), 180)
         x, y = lon.copy(), lat.copy()
         area = R**2 * np.radians(1.0) * (np.sin(np.radians(lat + 0.5)) - np.sin(np.radians(lat - 0.5))) / 1e6
-        tile = _tile_index(x, y, np.array([[-180], [-90]]), np.array([[180], [90]]))
+        tile = tile_index(x, y, np.array([[-180], [-90]]), np.array([[180], [90]]))
     else:
         rmax = R * np.radians(5.0)  # 85 degS, azimuthal-equidistant stand-in
         step = 960.0
@@ -77,7 +51,7 @@ def _plots(tier: str):
         lat = -90 + np.degrees(r / R)
         lon = np.degrees(np.arctan2(x, y))
         area = np.full(x.size, 0.960**2)
-        tile = _tile_index(x, y, np.array([[-rmax], [-rmax]]), np.array([[rmax], [rmax]]))
+        tile = tile_index(x, y, np.array([[-rmax], [-rmax]]), np.array([[rmax], [rmax]]))
     order = np.argsort(tile, kind="stable")
     d = {k: np.asarray(v)[order] for k, v in {"x": x, "y": y, "lat": lat, "lon": lon, "area": area, "tile": tile}.items()}
     t = d["tile"]
@@ -129,24 +103,6 @@ def _tier_geo(tier: str) -> dict:
     rmax = R * np.radians(5.0)
     return {"projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
             "bounds": [-rmax, -rmax, rmax, rmax]}
-
-
-def _write_cols(d: Path, cols: dict, tier: str) -> int:
-    d.mkdir(parents=True, exist_ok=True)
-    meta, buf, off = [], bytearray(), 0
-    n = cols["x"].size
-    for name, dtype, scale in COLUMNS:
-        raw = np.ascontiguousarray(cols[name]).astype(np.dtype(dtype).newbyteorder("<")).tobytes()
-        meta.append({"name": name, "dtype": dtype, "offset": off, "scale": scale})
-        buf += raw
-        pad = (-len(buf)) % 4
-        buf += b"\0" * pad
-        off = len(buf)
-    (d / "cols.bin").write_bytes(bytes(buf))
-    (d / "cols.json").write_text(json.dumps(
-        {"rows": n, "columns": meta, "land_types": LAND_TYPES, "flags": FLAGS,
-         "tiles_per_axis": N_TILES_AXIS, **_tier_geo(tier)}, indent=1))
-    return n
 
 
 def _write_tiles(d: Path, tier: str, cols: dict, rng):
@@ -227,7 +183,7 @@ def write_stub(out: Path) -> dict:
         d = out / tier
         d.mkdir(exist_ok=True)
         cols = _columns(tier, _plots(tier), rng)
-        counts[tier] = _write_cols(d, cols, tier)
+        counts[tier] = write_cols(d, cols, tier, LAND_TYPES, _tier_geo(tier))
         _write_tiles(d, tier, cols, rng)
         _write_overlays(d, tier, osize)
         _write_basemap(d, bsize)
@@ -245,3 +201,11 @@ def write_stub(out: Path) -> dict:
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
     return manifest
+
+
+def _tier_geo(tier: str) -> dict:
+    if tier == "global":
+        return {"projection": {"type": "lonlat"}, "bounds": [-180, -90, 180, 90]}
+    rmax = R * np.radians(5.0)
+    return {"projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
+            "bounds": [-rmax, -rmax, rmax, rmax]}

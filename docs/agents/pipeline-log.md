@@ -47,9 +47,12 @@
 <!-- R-P#: what I need from App · why · by when -->
 
 ## Replies to App Claude
+- R-A6 (RESOLVED, 14 Nov): `ephemeris.bin` is now the real data from `pipeline/data/ephemeris_2028.csv` (the export never replaced the v1 stub file; found and fixed in the full audit). `test_edge_data.py::test_ephemeris_bin_matches_parsed_horizons_csv` guards it. Regenerate your copy by merging `main`.
+- R-A7 (RESOLVED, 14 Nov): `horizons.quantize/dequantize` defaults are now unit 0.16, offset −6.0 (they were −3.0); `golden_v1.json` `horizon_quantisation` cases regenerated with offset −6 and include NaN/clamp cases; un-skip your test.
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · Full audit (human request): found/fixed real ephemeris.bin (was still the v1 stub, R-A6), quantisation default/golden mismatch (R-A7), stale cached landmark scores in polar cells, Artemis III landmark positions now IAU feature centres (Faustini, Haworth, Nobile, de Gerlache, Shackleton, Mons Malapert, Mons Mouton, Cabeus) instead of approximate ones, best_window with stay > window, landmark_score_and_nearby with < max_nearby landmarks, quantize NaN, silent integer wrap-around in column casts (now saturating), shared contract.py (export no longer imports stub). +104 edge-case/integrity tests (179 total). Auditor follow-ups: horizon quantisation constants live once in contract.py; polar disc latitude from config; golden rent cutoff read from the exported config.json (and tested); golden generation fails loudly without polar data; no silent 'stub' tier fallback (now 'missing'); viability raises on zero weights; dead config key removed.
 - 14 Nov · Q-P6 · net-energy power score (scoring.power_score), config power.*, goldens regenerated, data regenerated (cutoff 62.3), new demo number
 - 14 Nov · P6 · NASA cross-checks: LOLA illumination (HOR-2) + Diviner (TEMP-4) in docs/validation.md; sources.yaml extended
 - 14 Nov · P6 · make terrain/all-data, README, rebuild byte-identical, glossary.json, nearest_feature, basemap_small · final handoff

@@ -26,7 +26,7 @@ Our `sunlit_frac`/`earth_frac` at each plot's best cell vs the LOLA 60 m maps av
 
 | Quantity | Pearson r | bias (ours − LOLA) | RMSE | within ±0.10 |
 |---|---|---|---|---|
-| Sun visible fraction | 0.988 | -0.005 | 0.024 | 99% |
+| Sun visible fraction | 0.987 | -0.004 | 0.025 | 99% |
 | Earth visible fraction | 0.957 | -0.066 | 0.092 | 75% |
 
 PSR (< 1% sunlit): ours 13.8% of plots, LOLA 12.1%, classification agrees on 98.2%.
@@ -37,9 +37,9 @@ Diviner average bolometric brightness temperature in 240 m bins by local time (P
 
 | Comparison | n | Result |
 |---|---|---|
-| Max temperature (ours annual max vs Diviner max of local-noon bins) | 74,796 | r = 0.11, bias +122 K, RMSE 136 K |
-| Night floor at lit sites (>30% sunlit) | 24,004 | ours 95 K vs Diviner median 65 K (10th pct 53 K) |
-| PSR plots, max temperature | 10,024 | ours 40 K vs Diviner median 43 K (90th pct 62 K) |
+| Max temperature (ours annual max vs Diviner max of local-noon bins) | 74,823 | r = 0.11, bias +122 K, RMSE 136 K |
+| Night floor at lit sites (>30% sunlit) | 25,341 | ours 95 K vs Diviner median 65 K (10th pct 53 K) |
+| PSR plots, max temperature | 9,988 | ours 40 K vs Diviner median 43 K (90th pct 62 K) |
 
 **Reading:** permanently shadowed plots agree (40 K floor vs Diviner ≈ 43 K). For sunlit sites our modelled annual maximum (flat surface at peak Sun elevation) is far above Diviner's local-time-binned averages (bias +122 K, r = 0.11), because the binned maps average over season, sun angle and sub-bin shadowing and so do not capture annual extremes, while T1 ignores terrain-scattered light and subsurface conduction. TEMP-4 is therefore a coarse check: shadowed terrain validates, lit-site maxima and the 95 K night floor (Diviner nights ≈ 65 K) are conservative/modelled values and the app labels temperatures as modelled. The thermal sub-score uses the swing (max − min), so it likely overstates polar swings (Q-P8).
 

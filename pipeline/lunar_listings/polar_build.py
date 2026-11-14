@@ -12,18 +12,23 @@ import numpy as np
 from scipy import ndimage
 
 from . import ephemeris, horizons, land, polar, scoring, terrain, visibility
+from .contract import HZ_OFFSET_DEG, HZ_UNIT_DEG
 
 HALF_M = terrain.POLAR_HALF_M
 CELL_M, PLOT_M = 240.0, 960.0
 NC, NP = 1280, 320
 K = round(PLOT_M / CELL_M)  # cells per plot side
-HZ_UNIT, HZ_OFFSET = 0.16, -6.0  # quantisation (spec: -3; real skylines reach -5.8 deg)
+HZ_UNIT, HZ_OFFSET = HZ_UNIT_DEG, HZ_OFFSET_DEG
 
 
-def plot_in_disc():
-    """(NP, NP) bool: plot centre at lat <= lat_min (85 deg S)."""
+def plot_in_disc(lat_min=None):
+    """(NP, NP) bool: plot centre at lat <= grid.polar.lat_min (default from the config, 85 deg S)."""
+    if lat_min is None:
+        from . import config
+
+        lat_min = config.load()["grid"]["polar"]["lat_min"]
     px, py = polar.cell_centers(NP, PLOT_M, HALF_M)
-    return polar.xy_to_lonlat(px, py)[0] <= -85.0
+    return polar.xy_to_lonlat(px, py)[0] <= lat_min
 
 
 def cell_index_of_plots():
@@ -83,6 +88,8 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     """Best cell per plot -> plot table (arrays over the n plots inside the disc, plot order = row-major)."""
     work = Path(work_dir)
     c = dict(np.load(work / "polar_cells.npz"))
+    lm = land.load_landmarks()  # recomputed here (not cached in stage 1) so landmark edits never leave stale scores
+    c["landmark_score"] = land.landmark_score_and_nearby(c["lat"], c["lon"], lm, cfg, chunk=1000)[0]
     n_cells = len(c["idx"])
     n = n_cells // (K * K)
     _, safe, viab = _cell_scores(c, cfg)
@@ -120,7 +127,6 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     hazard = terrain.hazard_score(area["slope_p90_deg"], area["roughness_m"], area["relief_m"], cfg)
     cs = {k: c[k][sel] for k in ("energy_wh_m2_day", "longest_dark_h", "earth_frac", "longest_blackout_h",
                                   "temp_min_k", "temp_max_k", "landmark_score", "sunlit_frac")}
-    lm = land.load_landmarks()
     plot_lscore, nearby = land.landmark_score_and_nearby(plat, plon, lm, cfg)
     cs["landmark_score"] = np.maximum(plot_lscore, cs["landmark_score"])
     tab = {**cs, "hazard_score": hazard, "ice_km": ice_km}

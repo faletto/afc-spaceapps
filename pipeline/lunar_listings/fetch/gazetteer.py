@@ -30,18 +30,14 @@ CURATED = [
     ("Luna 24", "robotic", 12.75, 62.2, "other"), ("Surveyor 1", "robotic", -2.47, -43.34, "other"),
     ("Surveyor 3", "robotic", -3.02, -23.42, "other"), ("Surveyor 5", "robotic", 1.46, 23.20, "other"),
     ("Surveyor 6", "robotic", 0.47, -1.37, "other"), ("Surveyor 7", "robotic", -40.88, -11.51, "other"),
-    # Artemis III candidate regions (approximate)
-    ("Artemis III: Peak Near Shackleton", "artemis", -89.5, 125.0, "apollo_artemis"),
-    ("Artemis III: Connecting Ridge", "artemis", -89.45, -129.0, "apollo_artemis"),
-    ("Artemis III: Connecting Ridge Extension", "artemis", -88.8, -122.0, "apollo_artemis"),
-    ("Artemis III: de Gerlache Rim 2", "artemis", -88.5, -87.0, "apollo_artemis"),
-    ("Artemis III: Leibnitz Beta Plateau", "artemis", -85.4, 36.0, "apollo_artemis"),
-    ("Artemis III: Malapert Massif", "artemis", -86.0, 0.1, "apollo_artemis"),
-    ("Artemis III: Faustini Rim A", "artemis", -87.3, 77.0, "apollo_artemis"),
-    ("Artemis III: Haworth", "artemis", -87.5, -5.0, "apollo_artemis"),
-    ("Artemis III: Nobile Rim 1", "artemis", -85.4, 37.0, "apollo_artemis"),
-    ("Shackleton (crater)", "crater", -89.9, 129.8, "major_crater"),
+    # Informal ridge: position checked against the 80 m LOLA DEM (high ground); approximate (+/-0.5 deg)
+    ("Connecting Ridge (informal; Artemis III candidate)", "artemis", -89.45, -129.0, "apollo_artemis"),
 ]
+
+
+# IAU feature centres used for Artemis III candidate regions (names from NASA's 2022/2024 announcements)
+ARTEMIS_FEATURES = {"Shackleton": "crater", "Faustini": "crater", "Haworth": "crater", "Nobile": "crater",
+                    "de Gerlache": "crater", "Cabeus": "crater", "Mons Malapert": "mons", "Mons Mouton": "mons"}
 
 
 def build() -> int:
@@ -65,6 +61,9 @@ def build() -> int:
                          "major_crater" if d >= MAJOR_CRATER_KM else "other"))
         elif t in KEEP:
             rows.append((rec["clean_name"], KEEP[t], rec["center_lat"], lon, d, "other"))
+    for n, t, la, lo, d, _ in list(rows):  # IAU centres of the Artemis III candidate-region features
+        if ARTEMIS_FEATURES.get(n) == t:
+            rows.append((f"Artemis III region: {n}", "artemis", la, lo, d, "apollo_artemis"))
     rows += [(n, t, la, lo, 0.0, f) for n, t, la, lo, f in CURATED]
     OUT.parent.mkdir(parents=True, exist_ok=True)
     with open(OUT, "w", newline="") as f:
