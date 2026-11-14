@@ -27,6 +27,7 @@ v2.2 keeps everything in v2.1 and fixes the problems found when reviewing it. Ch
 | **F7** | **Terrain horizons ship for every South Pole District plot**, lazy-loaded by map tile, so any plot's 3D Tour works. Size budgeted in NFR-4. | §10, NFR-4 | v2.1 shipped horizons only for featured and selected plots, but "selected" can be any plot. |
 | **F8** | Small consistency fixes: the price-range example now matches ±10% ($3.8M–$4.6M); "360° Tour" is the fallback name if "3D Tour" is challenged; doc locations resolved (former open question 12). | §5.1, glossary, §13 | — |
 | **F9** | **Price scale fixed:** BASE ≈ $5,000, k ≈ 6.9. | §6.8 | With BASE ≈ $50,000 the formula's minimum is $50K, so the worst plots could never cost "in the low thousands" as intended. |
+| **F10** | **Earth-contact rule:** Earth counts as visible when it is ≥ 1° above the local terrain horizon, not above an absolute 5°. | COMM-1 | Near the pole Earth sits only a few degrees up, so an absolute 5° cutoff made polar Earth contact rare regardless of terrain. Team decision, 14 Nov. |
 
 ---
 
@@ -506,7 +507,7 @@ For reference, the 1D heat equation `∂/∂z(k ∂T/∂z) = ρc ∂T/∂t` uses
 
 | ID | Requirement | Pri | Ver |
 |---|---|---|---|
-| COMM-1 | Elevation cutoff configurable; default 5°. | P0 | I |
+| COMM-1 **[v2.2]** | Earth contact = Earth's center at least **1° above the local terrain horizon** (`terrain_margin`, team decision). The absolute cutoff (5°) stays as a config option for comparison. | P0 | I |
 | COMM-2 | Per plot: `earth_visible_frac`, `longest_blackout_hours`, `mean_earth_elevation_deg`, `comms_score`. | P0 | T |
 | COMM-3 | Per-timestep visibility for the comm-window overlay and Rent windows, at reduced resolution. | P1 | T |
 | COMM-4 | Polar comms are terrain-aware (via HOR). | P0 (polar) | T |
@@ -778,7 +779,7 @@ Judges see a video of up to 30 seconds or a deck of up to 7 slides including the
 | 2 | Analysis year | 2028 (Artemis era) |
 | 3 | Grid sizes | 1° global; ~1 km polar; ~240 m polar analysis cells |
 | 4 | Polar core area | 85–90°S, extend if time allows |
-| 5 | Comms cutoff | 5° |
+| 5 | ~~Comms cutoff~~ **Resolved (F10):** 1° above local terrain | — |
 | 6 | Price per plot or per km²? | Per plot (simpler to read; area shown on the facts line) |
 | 7 | Home-type gate values; off-market cap; tie tolerance | Set in config at M0 |
 | 8 | Frontend framework and map library | Team choice |

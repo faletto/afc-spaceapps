@@ -2,7 +2,7 @@
 
 *NASA Space Apps Challenge 2026 · Team afc-spaceapps*
 
-*Version 0.1 (draft for team review) · 14 Nov 2026*
+*Version 0.2 · 14 Nov 2026 · Decisions confirmed: React + deck.gl stack (D2), Earth contact = `terrain_margin` (T3). Task-level plan: `docs/build-plan.md`.*
 
 *Implements `docs/requirements.md` **v2.2 (final)**. Requirement IDs (e.g. `HOR-1`, `RENT-2`) refer to that document. Build order: `docs/milestones.md`.*
 
@@ -38,7 +38,7 @@ This document says **how** to build what the requirements say. It fixes the arch
 | ID | Decision | Rationale | Alternative considered |
 |---|---|---|---|
 | **D1** | **All science precomputed offline in Python**; the app only reads static files. | Offline demo (NFR-5), static hosting (NFR-9), no Horizons calls on stage. | A backend API: not needed and adds a failure point. |
-| **D2** | **Frontend: Vite + React + TypeScript, map rendered with deck.gl `OrthographicView` over pre-rendered basemap images**, one per projection (equirectangular Moon-wide; polar stereographic South Pole). | Works offline with no tile server. The same code path handles both projections, because we draw in projected meters. WebGL handles ~65k + ~90k markers (MAP-2). | Leaflet + Proj4Leaflet: simpler, but slower with tens of thousands of markers and awkward for two CRSs. MapLibre: needs vector/raster tiles in a web projection. |
+| **D2** ✅ confirmed | **Frontend: Vite + React + TypeScript, map rendered with deck.gl `OrthographicView` over pre-rendered basemap images**, one per projection (equirectangular Moon-wide; polar stereographic South Pole). | Works offline with no tile server. The same code path handles both projections, because we draw in projected meters. WebGL handles ~65k + ~90k markers (MAP-2). | Leaflet + Proj4Leaflet: simpler, but slower with tens of thousands of markers and awkward for two CRSs. MapLibre: needs vector/raster tiles in a web projection. Flutter (web + native): considered and rejected for this event. Flutter web has a heavier first load, no true background threads, and needs hand-batched drawing for ~150k markers; it's better if native mobile apps become a goal. |
 | **D3** | **Columnar binary files for map-wide attributes, plus lazily loaded per-tile JSON details.** The logical per-plot record is still the one in requirements §10. | Per-plot JSON for ~155k plots would be ~90 MB. Columnar typed arrays keep the core under the 25 MB budget (NFR-4). | One big JSON: too large and slow to parse. |
 | **D4** | **The browser recomputes time-dependent values** (instantaneous visibility, 3D Tour paths, Rent stats) from the shipped **ephemeris table + per-plot horizons**, in a Web Worker. | Avoids shipping per-plot hourly time series and bitsets (100+ MB). One plot × 8,784 hours is microseconds of work. | Shipping bitsets/time series: far too large. |
 | **D5** | **One scoring/visibility implementation per language, held in parity by golden test vectors** (Python is the reference; TypeScript must match). | D4 means two implementations of the same formulas; golden files catch drift. | Compiling Python to WASM: too slow to set up in a hackathon. |
@@ -225,7 +225,7 @@ earth_ok = (e_e ≥ cutoff) and (e_e ≥ m_e)               # COMM-1, terrain-aw
 - `absolute`: `e_e ≥ cutoff_deg`;
 - `terrain_margin`: `e_e ≥ m_e + margin_deg` (margin default 1°).
 
-**Recommendation:** `terrain_margin`. Calibrate in M2 against the sanity checks.
+**Decided:** `terrain_margin` with a 1° margin (team decision, 14 Nov). The absolute mode stays in config for comparison. Calibrate the margin in M2 against the sanity checks.
 
 **Accumulated per cell over the window** (whole year for Buy; stay window for Rent):
 
@@ -551,6 +551,8 @@ Picking uses deck.gl's GPU picking. Hovering a marker highlights its card (MAP-3
 | **M7** | — | Diviner cross-check doc | Demo/presentation modes; accessibility; perf | Novice test |
 | **M8** | Freeze | Freeze | Freeze, deploy | Video, deck, project page |
 
+**Task-level breakdown with hours, owners and "done when" checks: `docs/build-plan.md`.**
+
 **Interface freezes:** data formats (§5) and `config.json` keys at **M0**; golden-vector schema at **M3**. Any change after a freeze needs a note in `docs/progress.md`, plus a stub/golden update in the same commit.
 
 ---
@@ -561,7 +563,7 @@ Picking uses deck.gl's GPU picking. Hovering a marker highlights its card (MAP-3
 |---|---|---|
 | T1 | **Frame consistency:** Horizons sub-points use its Moon rotation model, LOLA uses MOON_ME (DE421). Differences are small (sub-km), so angular errors are far below 0.1°. | Document in DAT-2; EPH-3 validation would catch a sign or convention error. |
 | T2 | **Horizons longitude sign convention:** stated at the end of each output. | Parser reads it and asserts it; validation catches a mistake. |
-| T3 | **Comms cutoff semantics** (§3.6). | `terrain_margin` recommended; decide at M0, calibrate in M2. |
+| T3 | **Comms cutoff semantics** (§3.6). | **Decided:** `terrain_margin` (1°). Calibrate in M2. |
 | T4 | **Horizon compute budget.** | Plot-resolution first, refine optional; Numba parallel; precompute once and cache. |
 | T5 | **Pole azimuth convention.** | Grid-north on the polar map; validate elevations only at the pole. |
 | T6 | **Python/TypeScript drift** (D4/D5). | Golden vectors in CI. |
