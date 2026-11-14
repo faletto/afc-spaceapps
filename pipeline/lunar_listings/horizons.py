@@ -9,6 +9,8 @@ from dataclasses import dataclass
 import numpy as np
 from numba import njit, prange
 
+from .contract import HZ_OFFSET_DEG, HZ_UNIT_DEG
+
 R_M = 1_737_400.0
 
 
@@ -115,12 +117,13 @@ def compute_ref(x, y, lon, dems: Dems, cfg: dict, R=R_M, ray_step_m=None) -> np.
     return out
 
 
-def quantize(m_deg: np.ndarray, unit=0.16, offset=-3.0) -> np.ndarray:
-    """uint8 = round((m - offset)/unit); clamps to the range -3..+37.8 deg (spec §3.5)."""
-    return np.clip(np.rint((m_deg - offset) / unit), 0, 255).astype(np.uint8)
+def quantize(m_deg: np.ndarray, unit=HZ_UNIT_DEG, offset=HZ_OFFSET_DEG) -> np.ndarray:
+    """uint8 = round((m - offset)/unit); contract: unit 0.16, offset -6 -> -6..+34.8 deg (spec said -3; real skylines reach -5.8)."""
+    m = np.nan_to_num(np.asarray(m_deg, float), nan=offset, posinf=1e9, neginf=-1e9)  # NaN -> minimum code
+    return np.clip(np.rint((m - offset) / unit), 0, 255).astype(np.uint8)
 
 
-def dequantize(q: np.ndarray, unit=0.16, offset=-3.0) -> np.ndarray:
+def dequantize(q: np.ndarray, unit=HZ_UNIT_DEG, offset=HZ_OFFSET_DEG) -> np.ndarray:
     return q.astype(np.float32) * unit + offset
 
 

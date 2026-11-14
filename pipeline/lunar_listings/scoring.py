@@ -56,7 +56,10 @@ def viability(s: dict, landing_safe, cfg: dict, cap: float = 10.0, weights: dict
     """0..100. Unsafe plots are capped (Off market)."""
     w = weights or cfg["weights"]
     num = sum(w.get(k, 0.0) * s[k] for k in s)
-    v = 100.0 * num / sum(w.get(k, 0.0) for k in s)
+    den = sum(w.get(k, 0.0) for k in s)
+    if den <= 0:
+        raise ValueError("viability weights sum to zero over the available sub-scores")
+    v = 100.0 * num / den
     return np.where(landing_safe, v, np.minimum(v, cap))
 
 

@@ -1,6 +1,6 @@
 """Real-data export in the contract formats (spec §3.11, §5). Global tier now; polar added in P4.
 
-Only writes `<out>/global/**` and refreshes manifest.json; other tiers stay as they are (stub until P4).
+Only writes `<out>/global/**` and refreshes manifest.json; other tiers stay as they are.
 """
 import hashlib
 import json
@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from . import CONTRACT_VERSION, blurbs, land, stub
+from . import CONTRACT_VERSION, blurbs, contract, land
 
 OVERLAY_FIELDS = {  # name -> (table field, lo, hi, unit)
     "viability": ("viability", 0, 100, "score"), "sunlit": ("sunlit_pct", 0, 100, "%"),
@@ -29,23 +29,23 @@ def _ramp(n=256):
 
 def _flags(tab, cfg, hot_cut, polar=False):
     f = np.zeros(tab["lat"].size, np.uint16)
-    f |= (~tab["landing_safe"]).astype(np.uint16) << stub.FLAGS["off_market"]
-    f |= (tab["viability"] >= hot_cut).astype(np.uint16) << stub.FLAGS["hot_property"]
+    f |= (~tab["landing_safe"]).astype(np.uint16) << contract.FLAGS["off_market"]
+    f |= (tab["viability"] >= hot_cut).astype(np.uint16) << contract.FLAGS["hot_property"]
     limb = np.ones(tab["lat"].size, bool) if polar else (np.abs(tab["lon"]) >= 80) & (np.abs(tab["lon"]) <= 100)
-    f |= (limb & (tab["earth_frac"] >= cfg["badges"]["earth_view_frac"])).astype(np.uint16) << stub.FLAGS["earth_view"]
+    f |= (limb & (tab["earth_frac"] >= cfg["badges"]["earth_view_frac"])).astype(np.uint16) << contract.FLAGS["earth_view"]
     if "featured" in tab:
-        f |= tab["featured"].astype(np.uint16) << stub.FLAGS["featured"]
+        f |= tab["featured"].astype(np.uint16) << contract.FLAGS["featured"]
     if polar:
-        f |= np.uint16(1 << stub.FLAGS["tier_polar"])
+        f |= np.uint16(1 << contract.FLAGS["tier_polar"])
     return f
 
 
 def _columns(tab, cfg, hot_cut, polar=False):
     if polar:
         h = polar_build_half()
-        tile = stub._tile_index(tab["x"], tab["y"], np.array([[-h], [-h]]), np.array([[h], [h]]))
+        tile = contract.tile_index(tab["x"], tab["y"], np.array([[-h], [-h]]), np.array([[h], [h]]))
     else:
-        tile = stub._tile_index(tab["lon"], tab["lat"], np.array([[-180], [-90]]), np.array([[180], [90]]))
+        tile = contract.tile_index(tab["lon"], tab["lat"], np.array([[-180], [-90]]), np.array([[180], [90]]))
     order = np.argsort(tile, kind="stable")
     t = tile[order]
     start = np.r_[0, np.flatnonzero(np.diff(t)) + 1]
@@ -61,7 +61,7 @@ def _columns(tab, cfg, hot_cut, polar=False):
         "longest_blackout_h": tab["longest_blackout_h"].astype(np.uint16),
         "temp_min_k": np.rint(tab["temp_min_k"]).astype(np.uint16),
         "temp_max_k": np.rint(tab["temp_max_k"]).astype(np.uint16),
-        "ice_km10": np.rint(10 * tab["ice_km"]).astype(np.uint16) if polar else np.full(tab["lat"].size, 65535, np.uint16),
+        "ice_km10": np.minimum(np.rint(10 * tab["ice_km"]), 65534) if polar else np.full(tab["lat"].size, 65535, np.uint16),
         "land_type": tab["land_type"].astype(np.uint8), "flags": _flags(tab, cfg, hot_cut, polar),
         "bw_lander_h": tab["bw_lander_h"].astype(np.uint16), "bw_habitat_h": tab["bw_habitat_h"].astype(np.uint16),
         "bw_lander_start": tab["bw_lander_start"].astype(np.uint16),
@@ -97,7 +97,7 @@ def _write_detail(d: Path, tab, cols, order, lm):
             })
             recs[-1].update(nearest_feature=str(lm["name"][nn_i[j]]), nearest_km=round(float(nn_km[j]), 1))
             recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], False, recs[-1]["nearby"]))
-        tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
+        tx, ty = int(t) % contract.N_TILES_AXIS, int(t) // contract.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
 
 
@@ -141,11 +141,11 @@ def write_manifest(out: Path, tiers: dict, cfg, counts: dict | None = None):
     except (OSError, subprocess.CalledProcessError):
         sha = "unknown"
     m = {
-        "contract_version": CONTRACT_VERSION, "stub": any(v == "stub" for v in tiers.values()), "tiers": tiers,
+        "contract_version": CONTRACT_VERSION, "stub": any(v != "real" for v in tiers.values()), "tiers": tiers,
         "pipeline_sha": sha, "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "analysis_year": cfg["analysis"]["year"], "steps": stub.N_STEPS, "counts": counts,
+        "analysis_year": cfg["analysis"]["year"], "steps": contract.N_STEPS, "counts": counts,
         "config_sha256": hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16],
-        "horizon": old.get("horizon", {}), "tiles_per_axis": stub.N_TILES_AXIS,
+        "horizon": old.get("horizon", {}), "tiles_per_axis": contract.N_TILES_AXIS,
         "files": [{"path": p.relative_to(out).as_posix(), "bytes": p.stat().st_size,
                    "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in files],
     }
@@ -153,17 +153,25 @@ def write_manifest(out: Path, tiers: dict, cfg, counts: dict | None = None):
     return m
 
 
+def write_ephemeris(out: Path) -> None:
+    """ephemeris.bin (contract §5): float32 LE sun_xyz[N*3], earth_xyz[N*3], earth_dist_m[N], tsi[N] from the real CSV."""
+    from . import ephemeris
+
+    e = ephemeris.load()
+    arr = np.concatenate([e["sun_xyz"].ravel(), e["earth_xyz"].ravel(), e["earth_dist_m"], e["tsi"]]).astype("<f4")
+    assert arr.size == len(e["tsi"]) * 8
+    (Path(out) / "ephemeris.bin").write_bytes(arr.tobytes())
+
+
 def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None) -> dict:
     hot_cut = float(np.percentile(tab["viability"], cfg["badges"]["hot_property_pct"])) if hot_cut is None else hot_cut
     out = Path(out)
     d = out / "global"
     d.mkdir(parents=True, exist_ok=True)
+    write_ephemeris(out)
     tab = {**tab, "featured": featured_mask(tab, land.load_landmarks(), False)}
     cols, order = _columns(tab, cfg, hot_cut)
-    n = stub._write_cols(d, cols, "global")
-    meta = json.loads((d / "cols.json").read_text())
-    meta["land_types"] = land.LAND_TYPES
-    (d / "cols.json").write_text(json.dumps(meta, indent=1))
+    n = contract.write_cols(d, cols, "global", land.LAND_TYPES, {"projection": {"type": "lonlat"}, "bounds": [-180, -90, 180, 90]})
     lm = land.load_landmarks()
     _write_detail(d, tab, cols, order, lm)
     _write_overlays(d, tab)
@@ -180,7 +188,7 @@ def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None)
             gl = gl.replace("{" + k + ":g}", f"{v:g}")
     (out / "glossary.json").write_text(gl)
     config.export(cfg, out / "config.json", {"scarcity_viability_cutoff": float(tab["scarcity_cutoff"] if cutoff is None else cutoff)})
-    return write_manifest(out, {"global": "real", "polar": json.loads((out / "manifest.json").read_text())["tiers"]["polar"] if (out / "manifest.json").exists() else "stub"}, cfg, {"global": n})
+    return write_manifest(out, {"global": "real", "polar": json.loads((out / "manifest.json").read_text())["tiers"].get("polar", "missing") if (out / "manifest.json").exists() else "missing"}, cfg, {"global": n})
 
 
 def polar_build_half():
@@ -218,7 +226,7 @@ def _write_polar_detail(d: Path, tab, cols, order, lm):
             })
             recs[-1].update(nearest_feature=str(lm["name"][nn_i[j]]), nearest_km=round(float(nn_km[j]), 1))
             recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], True, recs[-1]["nearby"]))
-        tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
+        tx, ty = int(t) % contract.N_TILES_AXIS, int(t) // contract.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
 
 
@@ -226,7 +234,7 @@ def _write_horizon_tiles(d: Path, tab, cols, order):
     (d / "horizon").mkdir(exist_ok=True)
     for t in np.unique(cols["tile"]):
         idx = np.flatnonzero(cols["tile"] == t)  # already row_in_tile order
-        tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
+        tx, ty = int(t) % contract.N_TILES_AXIS, int(t) // contract.N_TILES_AXIS
         (d / "horizon" / f"{tx}_{ty}.bin").write_bytes(np.ascontiguousarray(tab["hzq"][order][idx]).tobytes())
 
 
@@ -281,20 +289,17 @@ def export_polar(tab: dict, cfg: dict, out, raw_dir, hot_cut: float, cutoff: flo
     d.mkdir(parents=True)
     tab = {**tab, "featured": featured_mask(tab, land.load_landmarks(), True)}
     cols, order = _columns(tab, cfg, hot_cut, polar=True)
-    n = stub._write_cols(d, cols, "polar")
-    meta = json.loads((d / "cols.json").read_text())
     h = polar_build_half()
-    meta.update(land_types=land.LAND_TYPES, projection=PROJECTION_POLAR, bounds=[-h, -h, h, h])
-    (d / "cols.json").write_text(json.dumps(meta, indent=1))
+    n = contract.write_cols(d, cols, "polar", land.LAND_TYPES, {"projection": PROJECTION_POLAR, "bounds": [-h, -h, h, h]})
     lm = land.load_landmarks()
     _write_polar_detail(d, tab, cols, order, lm)
     _write_horizon_tiles(d, tab, cols, order)
     _write_polar_overlays(d, tab)
     _write_polar_basemap(d, raw_dir)
     m = json.loads((out / "manifest.json").read_text()) if (out / "manifest.json").exists() else {}
-    tiers = {**m.get("tiers", {"global": "stub"}), "polar": "real"}
+    tiers = {**m.get("tiers", {"global": "missing"}), "polar": "real"}
     mm = write_manifest(out, tiers, cfg, {"polar": n})
-    mm["horizon"] = {"az_count": 180, "az_step_deg": 2, "unit_deg": 0.16, "offset_deg": -6.0, "dtype": "uint8"}
+    mm["horizon"] = {"az_count": contract.HORIZON_AZ, "az_step_deg": 2, "unit_deg": contract.HZ_UNIT_DEG, "offset_deg": contract.HZ_OFFSET_DEG, "dtype": "uint8"}
     (out / "manifest.json").write_text(json.dumps(mm, indent=1))
     return mm
 

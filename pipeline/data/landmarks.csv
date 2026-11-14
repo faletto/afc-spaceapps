@@ -1423,6 +1423,14 @@ Mons Hua,mons,45.7100,-52.2600,65.0,other
 Timaeus,crater,62.9100,-0.5500,32.8,other
 Murchison,crater,5.0700,-0.2100,57.8,major_crater
 Oppolzer,crater,-1.5200,-0.4500,40.9,other
+Artemis III region: Cabeus,artemis,-85.3303,-42.1327,100.6,apollo_artemis
+Artemis III region: de Gerlache,artemis,-88.4849,-88.3447,32.7,apollo_artemis
+Artemis III region: Faustini,artemis,-87.1832,84.3099,42.5,apollo_artemis
+Artemis III region: Nobile,artemis,-85.2752,53.2725,79.3,apollo_artemis
+Artemis III region: Mons Malapert,artemis,-85.9800,-1.6700,67.0,apollo_artemis
+Artemis III region: Shackleton,artemis,-89.6700,129.7800,20.9,apollo_artemis
+Artemis III region: Mons Mouton,artemis,-84.6000,31.0000,130.0,apollo_artemis
+Artemis III region: Haworth,artemis,-87.4500,-5.1700,51.4,apollo_artemis
 Apollo 11,apollo,0.6740,23.4730,0.0,apollo_artemis
 Apollo 12,apollo,-3.0120,-23.4220,0.0,apollo_artemis
 Apollo 14,apollo,-3.6450,-17.4710,0.0,apollo_artemis
@@ -1443,13 +1451,4 @@ Surveyor 3,robotic,-3.0200,-23.4200,0.0,other
 Surveyor 5,robotic,1.4600,23.2000,0.0,other
 Surveyor 6,robotic,0.4700,-1.3700,0.0,other
 Surveyor 7,robotic,-40.8800,-11.5100,0.0,other
-Artemis III: Peak Near Shackleton,artemis,-89.5000,125.0000,0.0,apollo_artemis
-Artemis III: Connecting Ridge,artemis,-89.4500,-129.0000,0.0,apollo_artemis
-Artemis III: Connecting Ridge Extension,artemis,-88.8000,-122.0000,0.0,apollo_artemis
-Artemis III: de Gerlache Rim 2,artemis,-88.5000,-87.0000,0.0,apollo_artemis
-Artemis III: Leibnitz Beta Plateau,artemis,-85.4000,36.0000,0.0,apollo_artemis
-Artemis III: Malapert Massif,artemis,-86.0000,0.1000,0.0,apollo_artemis
-Artemis III: Faustini Rim A,artemis,-87.3000,77.0000,0.0,apollo_artemis
-Artemis III: Haworth,artemis,-87.5000,-5.0000,0.0,apollo_artemis
-Artemis III: Nobile Rim 1,artemis,-85.4000,37.0000,0.0,apollo_artemis
-Shackleton (crater),crater,-89.9000,129.8000,0.0,major_crater
+Connecting Ridge (informal; Artemis III candidate),artemis,-89.4500,-129.0000,0.0,apollo_artemis

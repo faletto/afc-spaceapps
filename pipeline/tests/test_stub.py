@@ -4,7 +4,7 @@ import json
 import numpy as np
 import pytest
 
-from lunar_listings import stub
+from lunar_listings import contract, stub
 
 
 @pytest.fixture(scope="module")
@@ -30,7 +30,7 @@ def test_cols_roundtrip(out, tier):
     n = meta["rows"]
     got = {c["name"]: np.frombuffer(buf, dtype=np.dtype(c["dtype"]).newbyteorder("<"), count=n, offset=c["offset"])
            for c in meta["columns"]}
-    assert [c["name"] for c in meta["columns"]] == [c[0] for c in stub.COLUMNS]
+    assert [c["name"] for c in meta["columns"]] == [c[0] for c in contract.COLUMNS]
     assert got["viability"].max() <= 100 and got["price"].min() >= 5000
     # tile/row_in_tile consistent with detail files and horizon sizes
     for t in np.unique(got["tile"]):

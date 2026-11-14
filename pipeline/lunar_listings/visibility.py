@@ -67,7 +67,7 @@ def site_stats_ref(lat, lon, horizon_deg, sun, earth, dist_m, tsi, r_sun_km, cfg
         earth_ok = (ee >= cm["cutoff_deg"]) & (ee >= me)
     panel = np.cos(np.radians(es)) if pw["panel"] == "vertical_tracking" else np.maximum(0, np.sin(np.radians(es)))
     days = len(es) / 24.0
-    energy = (tsi * f_sun * panel * pw.get("area_m2_norm", 1.0)).sum() / days  # Wh/m2/day (1 h steps)
+    energy = (tsi * f_sun * panel).sum() / days  # Wh/m2/day (1 h steps)
     fh = tsi * f_sun * np.maximum(0, np.sin(np.radians(es)))
     teq = (np.maximum(0, (1 - th["albedo"]) * fh / (th["emissivity"] * SIGMA))) ** 0.25
     floor = th["psr_floor_k"] if sunlit.mean() == 0 else th["floor_k"]
@@ -298,14 +298,18 @@ def _best_window(mask, L, step, out_h, out_start):
 
 def best_window(mask, stay_days: int):
     """Minimum over daily starts of the longest 'False' run (hours) within a stay; returns (hours, start_day_of_year)."""
-    ns = mask.shape[0]
+    ns, nt = mask.shape
+    if stay_days < 1 or nt < 1:
+        raise ValueError("stay_days must be >= 1 and the mask non-empty")
+    L = min(stay_days * 24, nt)  # a stay longer than the analysis window is the whole window
     h, s = np.zeros(ns, np.int64), np.zeros(ns, np.int64)
-    _best_window(np.ascontiguousarray(mask), stay_days * 24, 24, h, s)
+    _best_window(np.ascontiguousarray(mask), L, 24, h, s)
     return h, s // 24 + 1
 
 
 def best_window_ref(mask_1d, stay_days: int):
-    L, nt = stay_days * 24, len(mask_1d)
+    nt = len(mask_1d)
+    L = min(stay_days * 24, nt)
     runs = runs_of_false(mask_1d)
     best = None
     for s in range(0, nt - L + 1, 24):
