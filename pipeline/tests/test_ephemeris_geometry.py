@@ -54,9 +54,9 @@ def test_earth_parallax_and_frame():
     assert geometry.az_el(e, u, e, n) == (pytest.approx(0), pytest.approx(90))
     assert geometry.az_el(n, u, e, n)[1] == pytest.approx(0)
     # Parallax: Earth at sub-Earth point is 90 deg for any site on the axis; 90deg away from it,
-    # elevation is ~ +0.26 deg-ish (R/delta rad = 0.2455 deg)
+    # Earth sits ~0.26 deg BELOW the horizon (site displaced toward it) (R/delta rad = 0.2455 deg)
     el, _ = geometry.earth_az_el(np.array([1.0, 0, 0]), 384.4e6, 0, 90)
-    assert el == pytest.approx(np.degrees(geometry.R_MOON_M / 384.4e6), abs=0.01)
+    assert el == pytest.approx(-np.degrees(geometry.R_MOON_M / 384.4e6), abs=0.01)
 
 
 def test_pole_defined():
