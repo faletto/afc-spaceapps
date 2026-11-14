@@ -1,0 +1,211 @@
+{
+ "rows": 64800,
+ "columns": [
+  {
+   "name": "x",
+   "dtype": "float32",
+   "offset": 0,
+   "scale": 1
+  },
+  {
+   "name": "y",
+   "dtype": "float32",
+   "offset": 259200,
+   "scale": 1
+  },
+  {
+   "name": "lat",
+   "dtype": "float32",
+   "offset": 518400,
+   "scale": 1
+  },
+  {
+   "name": "lon",
+   "dtype": "float32",
+   "offset": 777600,
+   "scale": 1
+  },
+  {
+   "name": "area_km2",
+   "dtype": "float32",
+   "offset": 1036800,
+   "scale": 1
+  },
+  {
+   "name": "price",
+   "dtype": "float32",
+   "offset": 1296000,
+   "scale": 1
+  },
+  {
+   "name": "rent_avg",
+   "dtype": "float32",
+   "offset": 1555200,
+   "scale": 1
+  },
+  {
+   "name": "viability",
+   "dtype": "uint8",
+   "offset": 1814400,
+   "scale": 1
+  },
+  {
+   "name": "s_safety",
+   "dtype": "uint8",
+   "offset": 1879200,
+   "scale": 1
+  },
+  {
+   "name": "s_power",
+   "dtype": "uint8",
+   "offset": 1944000,
+   "scale": 1
+  },
+  {
+   "name": "s_comms",
+   "dtype": "uint8",
+   "offset": 2008800,
+   "scale": 1
+  },
+  {
+   "name": "s_thermal",
+   "dtype": "uint8",
+   "offset": 2073600,
+   "scale": 1
+  },
+  {
+   "name": "s_landmark",
+   "dtype": "uint8",
+   "offset": 2138400,
+   "scale": 1
+  },
+  {
+   "name": "s_ice",
+   "dtype": "uint8",
+   "offset": 2203200,
+   "scale": 1
+  },
+  {
+   "name": "sunlit_pct",
+   "dtype": "uint8",
+   "offset": 2268000,
+   "scale": 1
+  },
+  {
+   "name": "earth_pct",
+   "dtype": "uint8",
+   "offset": 2332800,
+   "scale": 1
+  },
+  {
+   "name": "slope_mean_ddeg",
+   "dtype": "uint16",
+   "offset": 2397600,
+   "scale": 0.1
+  },
+  {
+   "name": "longest_dark_h",
+   "dtype": "uint16",
+   "offset": 2527200,
+   "scale": 1
+  },
+  {
+   "name": "longest_blackout_h",
+   "dtype": "uint16",
+   "offset": 2656800,
+   "scale": 1
+  },
+  {
+   "name": "temp_min_k",
+   "dtype": "uint16",
+   "offset": 2786400,
+   "scale": 1
+  },
+  {
+   "name": "temp_max_k",
+   "dtype": "uint16",
+   "offset": 2916000,
+   "scale": 1
+  },
+  {
+   "name": "ice_km10",
+   "dtype": "uint16",
+   "offset": 3045600,
+   "scale": 0.1
+  },
+  {
+   "name": "land_type",
+   "dtype": "uint8",
+   "offset": 3175200,
+   "scale": 1
+  },
+  {
+   "name": "flags",
+   "dtype": "uint16",
+   "offset": 3240000,
+   "scale": 1
+  },
+  {
+   "name": "bw_lander_h",
+   "dtype": "uint16",
+   "offset": 3369600,
+   "scale": 1
+  },
+  {
+   "name": "bw_habitat_h",
+   "dtype": "uint16",
+   "offset": 3499200,
+   "scale": 1
+  },
+  {
+   "name": "bw_lander_start",
+   "dtype": "uint16",
+   "offset": 3628800,
+   "scale": 1
+  },
+  {
+   "name": "bw_habitat_start",
+   "dtype": "uint16",
+   "offset": 3758400,
+   "scale": 1
+  },
+  {
+   "name": "tile",
+   "dtype": "uint16",
+   "offset": 3888000,
+   "scale": 1
+  },
+  {
+   "name": "row_in_tile",
+   "dtype": "uint16",
+   "offset": 4017600,
+   "scale": 1
+  }
+ ],
+ "land_types": [
+  "mare",
+  "highland",
+  "crater_floor",
+  "rim",
+  "ridge",
+  "psr_edge"
+ ],
+ "flags": {
+  "off_market": 0,
+  "hot_property": 1,
+  "price_cut": 2,
+  "earth_view": 3,
+  "featured": 4,
+  "tier_polar": 15
+ },
+ "tiles_per_axis": 16,
+ "projection": {
+  "type": "lonlat"
+ },
+ "bounds": [
+  -180,
+  -90,
+  180,
+  90
+ ]
+}
