@@ -7,7 +7,7 @@ import { bestWindow, decodeHorizon, horizonAt, hoursToChange, runsOfFalse, siteS
 const data = (p: string) => new URL(`../../public/data/${p}`, import.meta.url);
 const golden = JSON.parse(readFileSync(new URL('../../../pipeline/tests/golden/golden_v1.json', import.meta.url), 'utf8'));
 const cfg = JSON.parse(readFileSync(data('config.json'), 'utf8')) as SciConfig;
-// NOTE: public/data/ephemeris.bin is still the v1 stub (R-A6), so parity builds the real float64 ephemeris from the pipeline CSV.
+// Parity uses the float64 ephemeris from the pipeline CSV; a separate test checks the shipped float32 ephemeris.bin matches it.
 const rows = readFileSync(new URL('../../../pipeline/data/ephemeris_2028.csv', import.meta.url), 'utf8').trim().split('\n').slice(1).map((l) => l.split(',').slice(1).map(Number) as number[]);
 const unit = (lonD: number, latD: number) => { const lo = (lonD * Math.PI) / 180, la = (latD * Math.PI) / 180; return [Math.cos(la) * Math.cos(lo), Math.cos(la) * Math.sin(lo), Math.sin(la)]; };
 const eph = {
@@ -17,6 +17,21 @@ const eph = {
   tsi: Float64Array.from(rows, (r) => 3.828e26 / (4 * Math.PI * (r[4]! * 1e3) ** 2)),
 };
 const dAz = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180);
+
+describe('shipped ephemeris.bin', () => {
+  it('is the real ephemeris (matches the CSV to float32 precision)', () => {
+    const buf = readFileSync(data('ephemeris.bin'));
+    const n = rows.length, f = new Float32Array(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
+    expect(f.length).toBe(8 * n);
+    for (const t of [0, 1000, 5000, n - 1]) {
+      for (let c = 0; c < 3; c++) {
+        expect(f[3 * t + c]).toBeCloseTo(eph.sun[3 * t + c]!, 6);
+        expect(f[3 * n + 3 * t + c]).toBeCloseTo(eph.earth[3 * t + c]!, 6);
+      }
+      expect(Math.abs(f[6 * n + t]! / eph.earthDistM[t]! - 1)).toBeLessThan(1e-6);
+    }
+  });
+});
 
 describe('geometry parity', () => {
   it('matches golden az/el', () => {
@@ -60,8 +75,7 @@ describe('visibility parity', () => {
       expect(Math.abs(bestWindow(s.earthOk, 90)[0] - (g.best_window_habitat as number[])[0]!)).toBe(0);
     });
   });
-  // Golden quantisation cases were generated with horizons.quantize's default offset (-3) while the manifest/data use -6 (R-A7).
-  it.skip('horizon quantisation golden cases (pending R-A7)', () => {
+  it('horizon quantisation golden cases', () => {
     const q = golden.horizon_quantisation;
     for (const c of q.cases) {
       const d = decodeHorizon([c.q], q.unit_deg, q.offset_deg)[0]!;

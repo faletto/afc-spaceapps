@@ -3,7 +3,7 @@
 *Single writer: **App Claude**. Others read only. Keep `## Resume here
 - Branch: `app` (A4 work on `app-a4` worktree, pushed to `app`) · contract **v2**, main @ 8bc695e merged.
 - Done (A4, mostly): `geo/geometry.ts`, `geo/projections.ts` (polar inverse), `science/visibility.ts` (series, stats, runs, best_window, countdown helpers) with **exact golden parity** (`science/visibility.test.ts`: angles 1e-6, stats 1e-9, runs/windows exact); **3D Tour** (`tour/*`, listing `Gallery` Photos | 3D Tour tab, polar only; canvas panorama, Sun/Earth 30-day paths, hollow = behind terrain, countdowns, own time slider until A6). e2e `tour.spec.ts`.
-- BLOCKERS for correct tour visuals (Pipeline): **R-A6** shipped `app/public/data/ephemeris.bin` is still the v1 STUB (fake Sun/Earth); parity test builds the real one from `pipeline/data/ephemeris_2028.csv`. **R-A7** golden `horizon_quantisation.cases` were generated with `quantize` default offset −3, manifest/data use −6 → that test is `it.skip`.
+- R-A6 and R-A7 RESOLVED by Pipeline 8070ebc (real ephemeris.bin; quantisation golden fixed). Merged origin/main (6a7e75f); parity still exact; golden quantisation test un-skipped; new test checks ephemeris.bin vs CSV. vitest 34, e2e 14.
 - Reviewer pass on A4 done (no blocking; fixed: tour waits for detail.best_cell_xy, primitive effect deps, hollow dots use series flags, wrap-around tests). DEFERRED: TIME-2 — Tour uses its own time slider; A6 must wire it to the global slider (owner: App, A6). Not done: memoising the series per plot, axis clip above 15°.
 - Next: South Pole tier polish (not started); countdown golden (none exists; countdown is derived from masks that ARE golden-tested); then merge app→main at M4; A5 (home type, More filters, badges, real ids on cards).
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
@@ -16,7 +16,7 @@
 | A1 | ✅ | see git log | no | stub data; worker + filters in A2/A3 |
 | A2 | ✅ (OV-7 comm window deferred) | see git log | no | worker + overlays + tooltips |
 | A3 | ✅ | see Done log | M3 | real data, filters, D-6 e2e, reviewer pass |
-| A4 | 🟡 parity ✅, tour ✅, polar polish + review pending | see git log | no | blocked on R-A6 for real Sun/Earth |
+| A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | ready for M4 merge on human OK |
 | A5 | ⬜ | | | |
 | A6 | ⬜ | | | |
 | A7 | ⬜ | | | |
@@ -33,8 +33,8 @@ Q-A1: human granted App Claude permission to write the app CI workflow → `.git
 <!-- Q-A#: answer · source · date -->
 
 ## Requests to Pipeline Claude
-R-A6 (14 Nov, blocks real 3D Tour): `app/public/data/ephemeris.bin` is still the v1 stub from `stub.py _ephemeris` (sun at t=0 = (0.9996,0,0.0269)). Please write the real one (float32 LE: sun_xyz[8784×3], earth_xyz[8784×3], earth_dist_m[8784], tsi[8784] from `ephemeris.load()`) in the real export and update manifest sha.
-R-A7 (14 Nov): `golden.py` `horizon_quantisation.cases` call `horizons.quantize(m)` with its default offset −3.0, but the file declares offset_deg −6 (and data uses −6). Pass `0.16, -6.0` so the cases match; I have the test skipped until then.
+R-A6 (RESOLVED 8070ebc; was: blocks real 3D Tour): `app/public/data/ephemeris.bin` is still the v1 stub from `stub.py _ephemeris` (sun at t=0 = (0.9996,0,0.0269)). Please write the real one (float32 LE: sun_xyz[8784×3], earth_xyz[8784×3], earth_dist_m[8784], tsi[8784] from `ephemeris.load()`) in the real export and update manifest sha.
+R-A7 (RESOLVED 8070ebc): `golden.py` `horizon_quantisation.cases` call `horizons.quantize(m)` with its default offset −3.0, but the file declares offset_deg −6 (and data uses −6). Pass `0.16, -6.0` so the cases match; I have the test skipped until then.
 R-A4 (14 Nov, after H3): `app/public/data/manifest.json` still says `contract_version: 1` + `stub: true` (tiers: global real, polar stub) while CONTRACT.md says v2. Please bump the manifest field with the data (I built against v2; loader warns on mismatch; my loader test only asserts ≥ 1 until fixed).
 R-A5 (14 Nov): first-load weight. `global/basemap.jpg` is now 9.0 MB (hillshade 8192×4096) + 4.1 MB cols.bin ≈ 13 MB at startup. Please consider (a) a smaller JPEG quality/size for the main basemap and/or (b) a `basemap_small.jpg` (~2048×1024) I can show first and for card thumbnails. Not blocking: with a real GPU the list is interactive in ~0.3 s locally; the basemap loads after the list.
 R-A3: export `config/glossary.json` (D-1: tooltip text per term with optional `formula`/`source`) and copy it to `app/public/data/glossary.json` (or tell me where). Ids I use: sunlight, longest_night, earth_contact, longest_blackout, temperature, slope, land_type, ice, viability, landing, sun_score, signal, comfort, views, ice_score. Until then I use an app-side fallback (`src/ui/glossary.ts`).
