@@ -15,9 +15,40 @@ test('zooming shows pills and clicking one selects a plot', async ({ page }) => 
   await page.setViewportSize({ width: 1200, height: 700 });
   await page.goto('/');
   await page.waitForTimeout(2500);
-  await page.mouse.move(600, 350);
+  await page.mouse.move(384, 350);
   for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(200); }
   await page.waitForTimeout(1000);
-  await page.mouse.click(558, 308);
+  await page.mouse.click(465, 323);
   await expect(page.getByTestId('selected')).toBeVisible();
+});
+
+test('results list is capped, hover highlights, click selects', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  const count = page.getByTestId('count');
+  await expect(count).toContainText('results');
+  await expect(count).toContainText('showing 200');
+  const n = await page.getByTestId('card').count();
+  expect(n).toBeGreaterThan(0);
+  expect(n).toBeLessThanOrEqual(200);
+  await page.screenshot({ path: '/private/tmp/claude-501/-Users-colinfaletto-ws-afc-spaceapps/96a95f50-a8b0-4ec3-a5e2-4a1b7fb64b8e/scratchpad/list.png' });
+  const card = page.getByTestId('card').first();
+  const plot = await card.getAttribute('data-plot');
+  await card.click();
+  await expect(page.getByTestId('selected')).toHaveText('Selected plot #' + plot);
+});
+
+test('list follows the map view and sort', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.waitForTimeout(1500);
+  const text = async () => (await page.getByTestId('count').textContent())!;
+  const before = await text();
+  await page.mouse.move(400, 400);
+  for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(150); }
+  await page.waitForTimeout(800);
+  expect(await text()).not.toBe(before);
+  await page.getByRole('combobox').selectOption('price_asc');
+  const first = await page.getByTestId('card').first().textContent();
+  expect(first).toContain('$');
 });

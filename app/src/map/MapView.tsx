@@ -14,7 +14,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [vs, setVs] = useState<VS>({ target: [0, 0, 0], zoom: 0 });
-  const { selection, hover, select, setHover } = useStore();
+  const { selection, hover, select, setHover, setViewRect } = useStore();
 
   useEffect(() => {
     const el = box.current!;
@@ -31,6 +31,16 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   useEffect(() => {
     if (size.w) setVs({ target: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2, 0], zoom: fit });
   }, [tier, cols, size.w, size.h]);
+
+  // Publish the visible rect for the results list (debounced, RES-3).
+  useEffect(() => {
+    if (!size.w) return;
+    const t = setTimeout(() => {
+      const sc = 2 ** vs.zoom, hw = size.w / 2 / sc, hh = size.h / 2 / sc;
+      setViewRect([vs.target[0] - hw, vs.target[1] - hh, vs.target[0] + hw, vs.target[1] + hh]);
+    }, 120);
+    return () => clearTimeout(t);
+  }, [vs, size, setViewRect]);
 
   const pills = vs.zoom - fit >= PILL_ZOOM_ABOVE_FIT;
   const shown = useMemo(() => {
