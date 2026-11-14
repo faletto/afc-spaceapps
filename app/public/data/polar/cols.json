@@ -198,5 +198,17 @@
   "featured": 4,
   "tier_polar": 15
  },
- "tiles_per_axis": 16
+ "tiles_per_axis": 16,
+ "projection": {
+  "type": "azimuthal_equidistant_south",
+  "lat0": -90,
+  "R": 1737400.0,
+  "stub": true
+ },
+ "bounds": [
+  -151616.7521207474,
+  -151616.7521207474,
+  151616.7521207474,
+  151616.7521207474
+ ]
 }

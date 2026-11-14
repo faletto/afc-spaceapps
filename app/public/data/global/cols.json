@@ -198,5 +198,14 @@
   "featured": 4,
   "tier_polar": 15
  },
- "tiles_per_axis": 16
+ "tiles_per_axis": 16,
+ "projection": {
+  "type": "lonlat"
+ },
+ "bounds": [
+  -180,
+  -90,
+  180,
+  90
+ ]
 }

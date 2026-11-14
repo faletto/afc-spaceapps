@@ -14,6 +14,7 @@ N_STEPS = 8784  # 2028 is a leap year: 366 * 24
 N_TILES_AXIS = 16
 HORIZON_AZ = 180  # 2-degree az steps; uint8 = elevation in HORIZON_UNIT_DEG
 HORIZON_UNIT_DEG = 0.25
+HORIZON_OFFSET_DEG = -10.0  # elevation = v * unit + offset (allows negative horizons)
 R = 1_737_400.0
 
 # (name, dtype, scale) in file order. real value = stored * scale.
@@ -122,7 +123,15 @@ def _columns(tier: str, p: dict, rng) -> dict:
     return c
 
 
-def _write_cols(d: Path, cols: dict) -> int:
+def _tier_geo(tier: str) -> dict:
+    if tier == "global":
+        return {"projection": {"type": "lonlat"}, "bounds": [-180, -90, 180, 90]}
+    rmax = R * np.radians(5.0)
+    return {"projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
+            "bounds": [-rmax, -rmax, rmax, rmax]}
+
+
+def _write_cols(d: Path, cols: dict, tier: str) -> int:
     d.mkdir(parents=True, exist_ok=True)
     meta, buf, off = [], bytearray(), 0
     n = cols["x"].size
@@ -136,7 +145,7 @@ def _write_cols(d: Path, cols: dict) -> int:
     (d / "cols.bin").write_bytes(bytes(buf))
     (d / "cols.json").write_text(json.dumps(
         {"rows": n, "columns": meta, "land_types": LAND_TYPES, "flags": FLAGS,
-         "tiles_per_axis": N_TILES_AXIS}, indent=1))
+         "tiles_per_axis": N_TILES_AXIS, **_tier_geo(tier)}, indent=1))
     return n
 
 
@@ -153,8 +162,8 @@ def _write_tiles(d: Path, tier: str, cols: dict, rng):
         if tier == "polar":
             (d / "horizon").mkdir(exist_ok=True)
             az = np.arange(HORIZON_AZ)
-            base = (cols["slope_mean_ddeg"][idx] / 10.0 / HORIZON_UNIT_DEG)[:, None]
-            h = base * (1 + 0.5 * np.sin(np.radians(az * 2 * 3 + idx[:, None] % 360))) 
+            elev = (cols["slope_mean_ddeg"][idx] / 10.0)[:, None] * (1 + 0.5 * np.sin(np.radians(az * 6 + idx[:, None] % 360)))
+            h = (elev - HORIZON_OFFSET_DEG) / HORIZON_UNIT_DEG
             (d / "horizon" / f"{tx}_{ty}.bin").write_bytes(h.clip(0, 255).astype(np.uint8).tobytes())
 
 
@@ -218,7 +227,7 @@ def write_stub(out: Path) -> dict:
         d = out / tier
         d.mkdir(exist_ok=True)
         cols = _columns(tier, _plots(tier), rng)
-        counts[tier] = _write_cols(d, cols)
+        counts[tier] = _write_cols(d, cols, tier)
         _write_tiles(d, tier, cols, rng)
         _write_overlays(d, tier, osize)
         _write_basemap(d, bsize)
@@ -229,7 +238,7 @@ def write_stub(out: Path) -> dict:
         "contract_version": CONTRACT_VERSION, "stub": True, "pipeline_sha": _git_sha(),
         "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "analysis_year": cfg["analysis"]["year"], "steps": N_STEPS, "counts": counts,
-        "horizon": {"az_count": HORIZON_AZ, "az_step_deg": 2, "unit_deg": HORIZON_UNIT_DEG, "dtype": "uint8"},
+        "horizon": {"az_count": HORIZON_AZ, "az_step_deg": 2, "unit_deg": HORIZON_UNIT_DEG, "offset_deg": HORIZON_OFFSET_DEG, "dtype": "uint8"},
         "tiles_per_axis": N_TILES_AXIS,
         "files": [{"path": p.relative_to(out).as_posix(), "bytes": p.stat().st_size,
                    "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in files],

@@ -16,6 +16,7 @@ def out(tmp_path_factory):
 
 def test_manifest(out):
     m = json.loads((out / "manifest.json").read_text())
+    assert m["horizon"]["offset_deg"] < 0
     assert m["contract_version"] == 1 and m["counts"]["global"] == 64800 and m["counts"]["polar"] > 50_000
     for f in m["files"][:20]:
         assert hashlib.sha256((out / f["path"]).read_bytes()).hexdigest() == f["sha256"]
@@ -25,6 +26,7 @@ def test_manifest(out):
 def test_cols_roundtrip(out, tier):
     meta = json.loads((out / tier / "cols.json").read_text())
     buf = (out / tier / "cols.bin").read_bytes()
+    assert len(meta["bounds"]) == 4 and "type" in meta["projection"]
     n = meta["rows"]
     got = {c["name"]: np.frombuffer(buf, dtype=np.dtype(c["dtype"]).newbyteorder("<"), count=n, offset=c["offset"])
            for c in meta["columns"]}

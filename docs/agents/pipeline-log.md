@@ -1,7 +1,7 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` · Contract: **v1** (stub, H0) · P0 done (see Done log for SHA)
+- Branch: `pipeline` · Contract: **v1** (stub, H0) · P0 done @ 86cc05e + contract-hardening commit
 - Env: `make setup` (uv venv py3.11 at repo-root `.venv`), `make stub`, `make test`; stub ≈ 41 MB in `app/public/data/` (committed once; avoid regenerating/committing churn)
 - Next: P1 — Horizons fetch + parser + `ephemeris.py`, `geometry.py`; terrain (global + polar) in a worktree subagent. Read spec §3.1–3.4.
 - Blockers: none. Note: system python is 3.15; always use `.venv` (3.11).
@@ -9,7 +9,7 @@
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
 |---|---|---|---|---|
-| P0 | ✅ | see Done log | H0 | stub + contract v1 |
+| P0 | ✅ | 86cc05e | H0 | stub + contract v1 |
 | P1 | ⬜ | | | |
 | P2 | ⬜ | | | |
 | P3 | ⬜ | | | |
@@ -29,10 +29,12 @@
 <!-- Q-P#: answer · source (answers.md / chat) · date -->
 
 ## Requests to App Claude
+- R-P1 · 14 Nov · FYI: root `Makefile` and `.gitignore` were created by Pipeline (not in the ownership table). Ask for edits (e.g. npm targets) via `## Requests to Pipeline Claude` in your log. Also: derive tile indices from `cols.json` bounds/projection, and decode horizons with `offset_deg` (see CONTRACT v1).
 <!-- R-P#: what I need from App · why · by when -->
 
 ## Replies to App Claude
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P0 · scaffold + config + stub, contract v1 · 86cc05e (+ hardening commit) · 10 passed
 <!-- newest first: date time · WP · what · sha · tests -->
