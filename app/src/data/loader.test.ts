@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { loadManifest, loadTier, loadEphemeris, loadDetailTile, tileName, value, type Source } from './loader';
+import { EXPECTED_CONTRACT, loadManifest, loadTier, loadEphemeris, loadDetailTile, tileName, value, type Source } from './loader';
 
 const root = new URL('../../public/data/', import.meta.url).pathname;
 const src: Source = {
@@ -10,8 +10,7 @@ const src: Source = {
 const have = existsSync(root + 'manifest.json');
 
 describe.skipIf(!have)('loader on public/data', () => {
-  // TODO(R-A4): Pipeline's manifest still says 1 while CONTRACT.md says v2; tighten to EXPECTED_CONTRACT once fixed.
-  it('manifest has a contract version', async () => { expect((await loadManifest(src)).contract_version).toBeGreaterThanOrEqual(1); });
+  it('manifest matches the contract version the app is built for', async () => { expect((await loadManifest(src)).contract_version).toBe(EXPECTED_CONTRACT); });
   it('decodes both tiers with manifest row counts', async () => {
     const m = await loadManifest(src);
     for (const t of ['global', 'polar'] as const) {

@@ -82,9 +82,12 @@ export interface DetailRecord {
   monthly_sunlit_pct?: number[];
   monthly_earth_pct?: number[];
   nearby?: string[];
+  /** H6: one-line price rationale (DET-2) and short blurb (DET-6). */
+  why?: string;
+  blurb?: string;
+  best_cell_xy?: [number, number];
   /** stub-only (v1) */
   name?: string;
-  blurb?: string;
   sunlit_monthly?: number[];
 }
 export const tileName = (tile: number, tilesPerAxis: number) => `${tile % tilesPerAxis}_${Math.floor(tile / tilesPerAxis)}`;

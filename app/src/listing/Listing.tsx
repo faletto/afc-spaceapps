@@ -47,8 +47,8 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         </div>
         <div style={{ fontSize: 14 }}>{factsLine(cols, i)}</div>
         <div style={{ marginTop: 4 }}><FinePrint compact /></div>
-        {/* TODO(R-A2): one-line "why" (DET-2) and blurb (DET-6, P5) are not in contract v2 yet. */}
-        {detail?.blurb && <p style={{ margin: '8px 0 0', fontStyle: 'italic', opacity: 0.85 }}>{detail.blurb}</p>}
+        {detail?.why && <p data-testid="why" style={{ margin: '8px 0 0', fontSize: 14 }}>{detail.why}</p>}
+        {detail?.blurb && <p data-testid="blurb" style={{ margin: '6px 0 0', fontStyle: 'italic', opacity: 0.85 }}>{detail.blurb}</p>}
       </section>
       <Scores cols={cols} i={i} tier={tier} />
       <section><h3 style={{ margin: '0 0 6px', fontSize: 14 }}>Facts &amp; features</h3><Facts cols={cols} i={i} detail={detail} /></section>
