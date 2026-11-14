@@ -2,7 +2,7 @@
 
 *Single writer: **Pipeline Claude**. App Claude checks this and `app/public/data/manifest.json` → `contract_version` at every session start.*
 
-## Current version: **v2** (H3, real Moon-wide data; polar still stub)
+## Current version: **v2** (H3 real Moon-wide; H4 real polar, additive — still v2)
 
 Definition: `docs/technical-spec.md` §5 (files, columnar schema, tile layout) + `config.json` keys (spec §4) + golden-vector schema (`pipeline/tests/golden/`, from v2).
 
@@ -34,3 +34,13 @@ Definition: `docs/technical-spec.md` §5 (files, columnar schema, tile layout) +
 - **Polar azimuth/lon:** `geometry.py` measures azimuth from the lon=0 meridian at the pole; the polar export converts stereographic x/y to lon via `atan2(x, y)` consistently with that (to be fixed in P4; additive).
 - **v2 notes:** global rows are sorted by tile; `x,y` = lon,lat (deg). `ice_km10` = 65535 (n/a) for the whole global tier. `s_ice` = 0. Flags: hot_property = viability ≥ P95 (all plots); earth_view = limb (80°≤|lon|≤100°) with earth_frac ≥ 0.95; off_market = not landing_safe; price_cut is Rent-only (client side). `bw_*` = best-window minimum hours (lander: longest night in a 14-day stay; habitat: longest blackout in a 90-day stay) and start day-of-year (a window must fit in the year). Moon-wide viability tops out ≈ 65 (see Q-P6): price range ≈ $8K–$730K.
 - **Prices:** landmark premium (Apollo) is applied where `landmark_score > 0.5` (ASSUMED rule); price = BASE·exp(k·v/100)·(1+premium)·scarcity (scarcity cutoff in `config.json computed`).
+
+## H4 notes (polar tier real; additive, contract stays v2)
+- **Projection** (in `polar/cols.json` `projection` + `bounds` [-153600,-153600,153600,153600]): south polar stereographic, sphere R=1,737,400 m, k0=1, `x = ρ sin(lon)`, `y = ρ cos(lon)`, ρ = 2R·tan(45°+lat/2), lon east-positive, +y up. Azimuth/bearing α (0=N, 90=E) at a site maps to map direction (sin(lon+α), cos(lon+α)). Derive tile indices from `bounds` (16×16, ty increases with y); empty tiles have no file.
+- **Horizon tiles** (`polar/horizon/<tx>_<ty>.bin`): 180 uint8 per plot (2° steps from local north), rows in `row_in_tile` order; **elevation_deg = v × 0.16 − 6.0** (manifest `horizon` = {unit_deg 0.16, offset_deg −6, az_count 180}); v=0 clamps ≤ −6°, v=255 ≥ 34.8°. It is the horizon at the plot's **best cell** (also the cell whose light/Earth/temperature facts are shown; `detail.best_cell_xy`).
+- Polar plots: 78,464 (plot centre at lat ≤ −85°, 960 m plots, 240 m cells). Plot area facts (slope/roughness/relief/safe fraction) are whole-plot; light/comms/temperature facts from the best cell; `ice_km10` = distance to nearest PSR cell (cell sunlit < 1%) in 0.1 km. Plot IDs `SP-<row>-<col>` in detail (plot grid 320×320, row 0 at +y).
+- **Scarcity cutoff and the hot-property P95 are computed over global ∪ polar** and in `config.json computed.scarcity_viability_cutoff`; global prices/flags regenerated at H4 (global prices changed vs H3).
+- **Home-type gates** (human-approved 14 Nov): lander ≤ 48 h (longest night, `bw_lander_h`), habitat ≤ 168 h (longest blackout, `bw_habitat_h`), solar farm safe_area_frac ≥ 0.4 & sunlit_frac ≥ 0.6, ice depot ice_km ≤ 2 (polar only). Polar counts: 25,715 / 397 / 56 / 36,233 (landable plots).
+- `config.json` `safety.roughness_range_m` / `relief_range_m` are now [0,600] / [0,4000] (Q-P3).
+- Golden vectors gained `horizon_quantisation`. Known limits: Moon-wide `s_power` ≈ 0 (Q-P6, open); polar `s_power` max ≈ 0.26 under the spec's dark penalty (h50 = 120 h), ranking still puts Connecting Ridge / Malapert in the top 0.3%.
+- **Land type (polar tier):** the `|lon| > 90° → far_side` rule is skipped for polar plots (meaningless within 5° of the pole); mare/highland split uses the **global** plot median elevation − 1 km. **Price premium:** `apollo_premium` (+25%) within `apollo_radius_km` (50 km) of an Apollo/Artemis landmark, plus `peak_light_premium` (+50%) on Peak-of-light plots (additive in `(1 + premium)`).

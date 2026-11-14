@@ -57,17 +57,30 @@ def plot_tpi_extremes(dem: np.ndarray, radius_km: float):
     return np.percentile(b, 90, axis=-1), np.percentile(b, 10, axis=-1)
 
 
-def land_type(sunlit_frac, lat, lon, elev_mean_m, tpi_hi, tpi_lo, cfg, polar: bool) -> np.ndarray:
+def land_type(sunlit_frac, lat, lon, elev_mean_m, tpi_hi, tpi_lo, cfg, polar: bool, median_ref=None) -> np.ndarray:
     """Rules in priority order (LAND-1). `elev_mean_m` also sets the global-median mare/highland split."""
     ld = cfg["land"]
     sunlit_frac, lon = np.asarray(sunlit_frac), np.asarray(lon)
     out = np.full(sunlit_frac.shape, LT["highlands"], np.uint8)
-    out[elev_mean_m < np.median(elev_mean_m) - 1000.0] = LT["mare"]
+    ref = np.median(elev_mean_m) if median_ref is None else median_ref  # global plot median (spec)
+    out[elev_mean_m < ref - 1000.0] = LT["mare"]
     hi, lo = np.asarray(tpi_hi), np.asarray(tpi_lo)
     out[(lo < ld["tpi_floor"]) & (-lo > hi)] = LT["crater_floor"]
     out[(hi > ld["tpi_rim"]) & (hi >= -lo)] = LT["crater_rim"]
-    out[np.abs(lon) > 90] = LT["far_side"]
+    if not polar:  # "far side" is meaningless within 5 deg of the pole (a lon test there is arbitrary)
+        out[np.abs(lon) > 90] = LT["far_side"]
     if polar:
         out[sunlit_frac >= ld["peak_light_frac"]] = LT["peak_of_light"]
     out[sunlit_frac < 0.01] = LT["psr"]
+    return out
+
+
+def apollo_distance_km(lat, lon, lm: dict, chunk: int = 4000) -> np.ndarray:
+    """Great-circle distance (km) from each site to the nearest Apollo/Artemis landmark."""
+    m = lm["fame_class"] == "apollo_artemis"
+    out = np.empty(len(lat))
+    for i in range(0, len(lat), chunk):
+        d = great_circle_km(np.asarray(lat)[i : i + chunk, None], np.asarray(lon)[i : i + chunk, None],
+                            lm["lat"][m][None], lm["lon"][m][None])
+        out[i : i + chunk] = d.min(1)
     return out

@@ -27,25 +27,30 @@ def _ramp(n=256):
     return (cm(np.linspace(0, 1, n))[:, :3] * 255).astype(np.uint8)
 
 
-def _flags(tab, cfg):
+def _flags(tab, cfg, hot_cut, polar=False):
     f = np.zeros(tab["lat"].size, np.uint16)
     f |= (~tab["landing_safe"]).astype(np.uint16) << stub.FLAGS["off_market"]
-    p95 = np.percentile(tab["viability"], cfg["badges"]["hot_property_pct"])
-    f |= (tab["viability"] >= p95).astype(np.uint16) << stub.FLAGS["hot_property"]
-    limb = (np.abs(tab["lon"]) >= 80) & (np.abs(tab["lon"]) <= 100)
+    f |= (tab["viability"] >= hot_cut).astype(np.uint16) << stub.FLAGS["hot_property"]
+    limb = np.ones(tab["lat"].size, bool) if polar else (np.abs(tab["lon"]) >= 80) & (np.abs(tab["lon"]) <= 100)
     f |= (limb & (tab["earth_frac"] >= cfg["badges"]["earth_view_frac"])).astype(np.uint16) << stub.FLAGS["earth_view"]
+    if polar:
+        f |= np.uint16(1 << stub.FLAGS["tier_polar"])
     return f
 
 
-def _columns(tab, cfg):
-    tile = stub._tile_index(tab["lon"], tab["lat"], np.array([[-180], [-90]]), np.array([[180], [90]]))
+def _columns(tab, cfg, hot_cut, polar=False):
+    if polar:
+        h = polar_build_half()
+        tile = stub._tile_index(tab["x"], tab["y"], np.array([[-h], [-h]]), np.array([[h], [h]]))
+    else:
+        tile = stub._tile_index(tab["lon"], tab["lat"], np.array([[-180], [-90]]), np.array([[180], [90]]))
     order = np.argsort(tile, kind="stable")
     t = tile[order]
     start = np.r_[0, np.flatnonzero(np.diff(t)) + 1]
     row = np.arange(t.size) - np.repeat(start, np.diff(np.r_[start, t.size]))
     u8 = lambda a: np.clip(np.rint(a), 0, 100).astype(np.uint8)
     c = {
-        "x": tab["lon"], "y": tab["lat"], "lat": tab["lat"], "lon": tab["lon"], "area_km2": tab["area_km2"],
+        "x": tab["x"] if polar else tab["lon"], "y": tab["y"] if polar else tab["lat"], "lat": tab["lat"], "lon": tab["lon"], "area_km2": tab["area_km2"],
         "price": tab["price"], "rent_avg": tab["rent_avg"], "viability": u8(tab["viability"]),
         **{f"s_{k}": u8(100 * tab[f"s_{k}"]) for k in ("safety", "power", "comms", "thermal", "landmark", "ice")},
         "sunlit_pct": u8(100 * tab["sunlit_frac"]), "earth_pct": u8(100 * tab["earth_frac"]),
@@ -54,8 +59,8 @@ def _columns(tab, cfg):
         "longest_blackout_h": tab["longest_blackout_h"].astype(np.uint16),
         "temp_min_k": np.rint(tab["temp_min_k"]).astype(np.uint16),
         "temp_max_k": np.rint(tab["temp_max_k"]).astype(np.uint16),
-        "ice_km10": np.full(tab["lat"].size, 65535, np.uint16),
-        "land_type": tab["land_type"].astype(np.uint8), "flags": _flags(tab, cfg),
+        "ice_km10": np.rint(10 * tab["ice_km"]).astype(np.uint16) if polar else np.full(tab["lat"].size, 65535, np.uint16),
+        "land_type": tab["land_type"].astype(np.uint8), "flags": _flags(tab, cfg, hot_cut, polar),
         "bw_lander_h": tab["bw_lander_h"].astype(np.uint16), "bw_habitat_h": tab["bw_habitat_h"].astype(np.uint16),
         "bw_lander_start": tab["bw_lander_start"].astype(np.uint16),
         "bw_habitat_start": tab["bw_habitat_start"].astype(np.uint16),
@@ -141,11 +146,12 @@ def write_manifest(out: Path, tiers: dict, cfg, counts: dict | None = None):
     return m
 
 
-def export_global(tab: dict, cfg: dict, out, dem_npy) -> dict:
+def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None) -> dict:
+    hot_cut = float(np.percentile(tab["viability"], cfg["badges"]["hot_property_pct"])) if hot_cut is None else hot_cut
     out = Path(out)
     d = out / "global"
     d.mkdir(parents=True, exist_ok=True)
-    cols, order = _columns(tab, cfg)
+    cols, order = _columns(tab, cfg, hot_cut)
     n = stub._write_cols(d, cols, "global")
     meta = json.loads((d / "cols.json").read_text())
     meta["land_types"] = land.LAND_TYPES
@@ -160,5 +166,115 @@ def export_global(tab: dict, cfg: dict, out, dem_npy) -> dict:
         separators=(",", ":")))
     from . import config
 
-    config.export(cfg, out / "config.json", {"scarcity_viability_cutoff": float(tab["scarcity_cutoff"])})
-    return write_manifest(out, {"global": "real", "polar": "stub"}, cfg, {"global": n})
+    config.export(cfg, out / "config.json", {"scarcity_viability_cutoff": float(tab["scarcity_cutoff"] if cutoff is None else cutoff)})
+    return write_manifest(out, {"global": "real", "polar": json.loads((out / "manifest.json").read_text())["tiers"]["polar"] if (out / "manifest.json").exists() else "stub"}, cfg, {"global": n})
+
+
+def polar_build_half():
+    from .terrain import POLAR_HALF_M
+
+    return POLAR_HALF_M
+
+
+PROJECTION_POLAR = {"type": "polar_stereographic_south", "lat0": -90, "lon0": 0, "R": 1737400.0, "k0": 1.0,
+                    "forward": "x = rho*sin(lon), y = rho*cos(lon), rho = 2R*tan(45deg + lat/2); lon east-positive",
+                    "azimuth": "bearing a (0=local N, 90=E) -> map direction (sin(lon+a), cos(lon+a))"}
+
+
+def _write_polar_detail(d: Path, tab, cols, order, lm):
+    (d / "detail").mkdir(exist_ok=True)
+    nearby = tab["nearby"][order]
+    for t in np.unique(cols["tile"]):
+        idx = np.flatnonzero(cols["tile"] == t)
+        recs = []
+        for i in idx:
+            j = order[i]
+            recs.append({
+                "row": int(cols["row_in_tile"][i]), "id": f"SP-{int(tab['plot_row'][j]):04d}-{int(tab['plot_col'][j]):04d}",
+                "land_type": land.LAND_TYPES[int(cols["land_type"][i])],
+                "best_cell_xy": [round(float(tab["best_x"][j])), round(float(tab["best_y"][j]))],
+                "slope_p90_deg": round(float(tab["slope_p90_deg"][j]), 1), "roughness_m": round(float(tab["roughness_m"][j]), 1),
+                "relief_m": round(float(tab["relief_m"][j])), "safe_area_frac": round(float(tab["safe_area_frac"][j]), 3),
+                "landing_safe": bool(tab["landing_safe"][j]), "energy_wh_m2_day": round(float(tab["energy_wh_m2_day"][j])),
+                "longest_light_h": int(tab["longest_light_h"][j]), "mean_earth_el_deg": round(float(tab["mean_earth_el"][j]), 1),
+                "temp_mean_k": round(float(tab["temp_mean_k"][j])), "ice_km": round(float(tab["ice_km"][j]), 2),
+                "monthly_sunlit_pct": [int(round(100 * v)) for v in tab["monthly_sunlit"][j]],
+                "monthly_earth_pct": [int(round(100 * v)) for v in tab["monthly_earth"][j]],
+                "nearby": [lm["name"][k] for k in nearby[i] if k >= 0],
+            })
+        tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
+        (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
+
+
+def _write_horizon_tiles(d: Path, tab, cols, order):
+    (d / "horizon").mkdir(exist_ok=True)
+    for t in np.unique(cols["tile"]):
+        idx = np.flatnonzero(cols["tile"] == t)  # already row_in_tile order
+        tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
+        (d / "horizon" / f"{tx}_{ty}.bin").write_bytes(np.ascontiguousarray(tab["hzq"][order][idx]).tobytes())
+
+
+def _write_polar_overlays(d: Path, tab, size=1024):
+    (d / "overlay").mkdir(exist_ok=True)
+    ramp = _ramp()
+    stops = [[round(x, 2), "#%02x%02x%02x" % tuple(ramp[int(x * 255)])] for x in (0, 0.25, 0.5, 0.75, 1.0)]
+    n = 320
+    mask = np.zeros((n, n), np.uint8)
+    mask[tab["plot_row"], tab["plot_col"]] = 255
+    alpha = np.asarray(Image.fromarray(mask).resize((size, size), Image.NEAREST)) > 0
+    fields = {"viability": ("viability", 0, 100, "score"), "sunlit": ("sunlit_pct", 0, 100, "%"),
+              "earth": ("earth_pct", 0, 100, "%"), "temperature": ("temp_max_k", 40, 400, "K"),
+              "safety": ("s_safety", 0, 1, "score"), "ice": ("s_ice", 0, 1, "score")}
+    src = dict(tab, sunlit_pct=100 * tab["sunlit_frac"], earth_pct=100 * tab["earth_frac"])
+    for name, (f, lo, hi, unit) in fields.items():
+        g = np.full((n, n), np.nan, np.float32)
+        g[tab["plot_row"], tab["plot_col"]] = src[f]
+        g = np.where(np.isnan(g), np.nanmean(g), g)
+        v = np.asarray(Image.fromarray(g.astype(np.float32), "F").resize((size, size), Image.BILINEAR))
+        idx = (np.clip((v - lo) / (hi - lo), 0, 1) * 255).astype(np.uint8)
+        rgba = np.dstack([ramp[idx], np.where(alpha, 200, 0).astype(np.uint8)])
+        Image.fromarray(rgba, "RGBA").save(d / "overlay" / f"{name}.png", optimize=True)
+        (d / "overlay" / f"{name}.json").write_text(json.dumps(
+            {"name": name, "label": name.title(), "unit": unit, "min": lo, "max": hi, "ramp": stops, "size": [size, size],
+             "extent": [-polar_build_half(), -polar_build_half(), polar_build_half(), polar_build_half()]}))
+
+
+def _write_polar_basemap(d: Path, raw_dir, size=4096):
+    import rasterio
+    from rasterio.windows import from_bounds
+
+    h = polar_build_half()
+    with rasterio.open(Path(raw_dir) / "LDEM_80S_80MPP_ADJ_HILL.TIF") as ds:
+        a = ds.read(1, window=from_bounds(-h, -h, h, h, ds.transform).round_offsets().round_lengths())
+    a = np.nan_to_num(a.astype(np.float32))
+    lo, hi = np.percentile(a, [1, 99])
+    g = (np.clip((a - lo) / (hi - lo), 0, 1) * 255).astype(np.uint8)
+    Image.fromarray(g, "L").resize((size, size), Image.LANCZOS).convert("RGB").save(d / "basemap.jpg", quality=82)
+
+
+def export_polar(tab: dict, cfg: dict, out, raw_dir, hot_cut: float, cutoff: float) -> dict:
+    out = Path(out)
+    d = out / "polar"
+    # clear stale stub files in this tier
+    import shutil
+
+    if d.exists():
+        shutil.rmtree(d)
+    d.mkdir(parents=True)
+    cols, order = _columns(tab, cfg, hot_cut, polar=True)
+    n = stub._write_cols(d, cols, "polar")
+    meta = json.loads((d / "cols.json").read_text())
+    h = polar_build_half()
+    meta.update(land_types=land.LAND_TYPES, projection=PROJECTION_POLAR, bounds=[-h, -h, h, h])
+    (d / "cols.json").write_text(json.dumps(meta, indent=1))
+    lm = land.load_landmarks()
+    _write_polar_detail(d, tab, cols, order, lm)
+    _write_horizon_tiles(d, tab, cols, order)
+    _write_polar_overlays(d, tab)
+    _write_polar_basemap(d, raw_dir)
+    m = json.loads((out / "manifest.json").read_text()) if (out / "manifest.json").exists() else {}
+    tiers = {**m.get("tiers", {"global": "stub"}), "polar": "real"}
+    mm = write_manifest(out, tiers, cfg, {"polar": n})
+    mm["horizon"] = {"az_count": 180, "az_step_deg": 2, "unit_deg": 0.16, "offset_deg": -6.0, "dtype": "uint8"}
+    (out / "manifest.json").write_text(json.dumps(mm, indent=1))
+    return mm
