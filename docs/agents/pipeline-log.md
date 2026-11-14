@@ -1,24 +1,25 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` (pushed) · Contract: v1 (stub) · WP: P1 nearly done, P2 started
-- Done: ephemeris CSV, geometry, global terrain (real DEM), polar terrain code (validated on 80 m), `visibility.py` (ref + Numba kernel, parity-tested; whole Moon 64,800 sites × 8784 h in ~10 s, flat horizon).
-- DEMs all downloaded + sha256 in sources.yaml (LDSM dropped, Q-P4). Polar stats built from the 20 m DEM: data/work/terrain_polar_{cells,plots}_20m.npz (cells 1280², plots 320², gitignored). EPH-3 validation PASS (0.006°).
-- Next: P2 rest — sanity suite on real outputs (req §9), global plot assembly (`plots.py`), reviewer subagent; then P3 (land, scoring, pricing).
-- Env: `.venv` py3.11; `make test` (28 tests); intermediates in gitignored `data/work/`.
+- Branch: `pipeline` · Contract: **v2** (H3 merged to main) · P0–P2 ✅, P3 ✅ except gate calibration (needs polar data)
+- Real global tier in app/public/data (polar = stub). `python -m lunar_listings data` rebuilds it (needs data/work/*.npy/npz from `terrain.resample_global/build_global_stats`; ~30 s).
+- Next: P4 — `horizons.py` (Numba ray-march; PLAN MODE FIRST), polar visibility with horizons, polar plots/PSR/ice, polar export + horizon tiles, HOR-2 cross-check; then calibrate Home-type gates on polar counts and show humans the table (needs approval).
+- Open: Q-P6 (power penalty flat Moon-wide), calibration of gates, ruff has 6 style warnings (non-blocking).
+- Env: `.venv` py3.11, `make test` (48), intermediates in gitignored data/work/. NEVER run `make stub` over real data (guarded; --force).
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
 |---|---|---|---|---|
 | P0 | ✅ | 86cc05e | H0 | stub + contract v1 |
 | P1 | ✅ | see git log | — | ephemeris, geometry, global+polar terrain (20 m) |
-| P2 | ⬜ | | | |
-| P3 | ⬜ | | | |
+| P2 | ✅ | see git log | H3 | validate PASS 0.006°, sanity suite |
+| P3 | 🟨 | see git log | H3 | all but gate calibration (needs polar) |
 | P4 | ⬜ | | | |
 | P5 | ⬜ | | | |
 | P6 | ⬜ | | | |
 
 ## Contract/handoffs
+- H3 · 14 Nov · contract **v2** · real Moon-wide data (global tier), ≈72 MB app/public/data (polar still stub). `make data` regenerates global; `make stub` now refuses to overwrite real data without `--force`. Golden vectors v1 committed. Known: Q-P6 power score flat Moon-wide; Q-P7 below.
 - H0 · 14 Nov · contract v1 · stub data (fake values, real formats), ≈41 MB, 738 files. Details in CONTRACT.md 'v1 concrete details'. Known: polar ≈78k plots (disk to 85°S), not 91k; polar projection is a stand-in.
 <!-- newest first: H#, date/time, contract vN, main@sha, what's new, files, size MB, known issues -->
 
@@ -30,6 +31,7 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Q-P7: data folder 72 MB > 50 MB budget — commit anyway or Release asset? · answer: commit anyway (chat, 14 Nov); commit real data only at handoffs (H3, H4, H6).
 - Q-P5: Moon-wide Earth contact uses terrain_margin (1° over zero terrain) · answer: 'use your best judgement' (chat) → KEEP terrain_margin · 14 Nov.
 - Q-P4: PGDA throttled to ~1 MB/s; skip the 3.8 GB LDSM 20 m slope product and derive slope from the 20 m DEM · answer: yes, approved in chat · 14 Nov. Safe-fraction therefore comes from our own slope (central differences on 20 m DEM), not LDSM.
 - Q-P3: set safety roughness/relief normalisation ranges from data (roughness 0–600 m, relief 0–4000 m, Moon-wide tier; at 1° plots median roughness is 276 m / relief 1950 m) · answer: yes, approved in chat · 14 Nov. Spec §4 values (0–50 / 0–2000) are superseded; config updated. Humans may want to update the spec text.

@@ -2,13 +2,14 @@
 
 *Single writer: **Pipeline Claude**. App Claude checks this and `app/public/data/manifest.json` → `contract_version` at every session start.*
 
-## Current version: **v1** (H0, stub data)
+## Current version: **v2** (H3, real Moon-wide data; polar still stub)
 
 Definition: `docs/technical-spec.md` §5 (files, columnar schema, tile layout) + `config.json` keys (spec §4) + golden-vector schema (`pipeline/tests/golden/`, from v2).
 
 ## Change log
 | Version | Date | Handoff | Change | Files regenerated | Breaking? |
 |---|---|---|---|---|---|
+| v2 | 14 Nov | H3 | Real `global/` tier. `cols.json.land_types` = [highlands, mare, far_side, crater_rim, crater_floor, psr, peak_of_light] (read it from cols.json, don't hard-code). `manifest.tiers` = {global: real, polar: stub}; `detail/*.json` real fields (id, land_type, slope_p90_deg, roughness_m, relief_m, safe_area_frac, landing_safe, energy_wh_m2_day, longest_light_h, mean_earth_el_deg, temp_mean_k, monthly_sunlit_pct[12], monthly_earth_pct[12], nearby[]); overlays are 1440×720 RGBA, extent [-180,-90,180,90]; basemap = hillshade 8192×4096; landmarks.json = 1,454 IAU/curated; golden vectors `pipeline/tests/golden/golden_v1.json` | global/*, landmarks.json, config.json, manifest | No (additive; enum read from cols.json) |
 | v1 | 14 Nov | H0 | Spec §5 as written, made concrete (see below); `manifest.contract_version = 1`, `stub: true` | all (stub) | — |
 | v0 | 14 Nov | — | Draft | — | — |
 
@@ -31,3 +32,5 @@ Definition: `docs/technical-spec.md` §5 (files, columnar schema, tile layout) +
 - Stub values are fake (price = 5000·(1+6.9·v/100) is a placeholder); counts: global 64,800, polar ≈ 78k (not 91k).
 - **Monthly arrays** (`sunlit`/`earth`) are fractions 0–1 in the pipeline; the columnar/detail exports convert to percent where the schema says `_pct`.
 - **Polar azimuth/lon:** `geometry.py` measures azimuth from the lon=0 meridian at the pole; the polar export converts stereographic x/y to lon via `atan2(x, y)` consistently with that (to be fixed in P4; additive).
+- **v2 notes:** global rows are sorted by tile; `x,y` = lon,lat (deg). `ice_km10` = 65535 (n/a) for the whole global tier. `s_ice` = 0. Flags: hot_property = viability ≥ P95 (all plots); earth_view = limb (80°≤|lon|≤100°) with earth_frac ≥ 0.95; off_market = not landing_safe; price_cut is Rent-only (client side). `bw_*` = best-window minimum hours (lander: longest night in a 14-day stay; habitat: longest blackout in a 90-day stay) and start day-of-year (a window must fit in the year). Moon-wide viability tops out ≈ 65 (see Q-P6): price range ≈ $8K–$730K.
+- **Prices:** landmark premium (Apollo) is applied where `landmark_score > 0.5` (ASSUMED rule); price = BASE·exp(k·v/100)·(1+premium)·scarcity (scarcity cutoff in `config.json computed`).

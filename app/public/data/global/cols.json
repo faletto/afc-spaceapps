@@ -183,12 +183,13 @@
   }
  ],
  "land_types": [
+  "highlands",
   "mare",
-  "highland",
+  "far_side",
+  "crater_rim",
   "crater_floor",
-  "rim",
-  "ridge",
-  "psr_edge"
+  "psr",
+  "peak_of_light"
  ],
  "flags": {
   "off_market": 0,
