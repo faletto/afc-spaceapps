@@ -15,4 +15,4 @@ files:
 - name: LDEM_80S_20MPP_ADJ.TIF
   url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_20MPP_ADJ.TIF
   bytes: 2696082051
-  sha256: null
+  sha256: 09b7ca80f9e6a146f970225d18af72fc02787669b3ef51b888e347d2b6845649

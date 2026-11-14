@@ -3,15 +3,15 @@
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
 - Branch: `pipeline` (pushed) · Contract: v1 (stub) · WP: P1 nearly done, P2 started
 - Done: ephemeris CSV, geometry, global terrain (real DEM), polar terrain code (validated on 80 m), `visibility.py` (ref + Numba kernel, parity-tested; whole Moon 64,800 sites × 8784 h in ~10 s, flat horizon).
-- In progress: 20 m polar DEM download (`curl -C -` resumable; check `ls -l data/raw`; final size 2696082051). When complete: `make fetch` (records sha256; LDSM dropped, Q-P4), then `build_polar_stats('data/raw','data/work',cfg)` auto-uses the 20 m DEM.
-- Next: P2 rest — global plots/SAFE export glue, `validate.py` (EPH-3 Horizons site comparison, ≤1°/≤0.1°), sanity suite, docs/validation.md; then P3 (land, scoring, pricing).
+- DEMs all downloaded + sha256 in sources.yaml (LDSM dropped, Q-P4). Polar stats built from the 20 m DEM: data/work/terrain_polar_{cells,plots}_20m.npz (cells 1280², plots 320², gitignored). EPH-3 validation PASS (0.006°).
+- Next: P2 rest — sanity suite on real outputs (req §9), global plot assembly (`plots.py`), reviewer subagent; then P3 (land, scoring, pricing).
 - Env: `.venv` py3.11; `make test` (28 tests); intermediates in gitignored `data/work/`.
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
 |---|---|---|---|---|
 | P0 | ✅ | 86cc05e | H0 | stub + contract v1 |
-| P1 | ⬜ | | | |
+| P1 | ✅ | see git log | — | ephemeris, geometry, global+polar terrain (20 m) |
 | P2 | ⬜ | | | |
 | P3 | ⬜ | | | |
 | P4 | ⬜ | | | |
@@ -40,6 +40,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P1 complete (20 m polar stats) + P2 validate.py PASS · see git log
 - 14 Nov · P1/P2 · polar terrain code, visibility.py + tests (28 pass) · see git log
 - 14 Nov · P1 · global terrain (resample 1/32°, slope, plot stats) on real DEM; Q-P3 ranges applied; DEM fetch in progress (20 m DEM + slope remaining) · see git log
 - 14 Nov · P1 (part 1) · Horizons fetch+parser, ephemeris_2028.csv (8784 rows, 0.7 MB), ephemeris.py, geometry.py + tests · see git log
