@@ -125,7 +125,9 @@ test('glossary tooltip opens on focus and closes on Escape without closing the l
   await page.getByTestId('card').first().click();
   const term = page.locator('[data-term="sunlight"]');
   await term.focus();
-  await expect(page.getByRole('tooltip')).toContainText('Sun is above');
+  // Text comes from data/glossary.json (pipeline), including its formula and source.
+  await expect(page.getByRole('tooltip')).toContainText('visible fraction of the solar disk');
+  await expect(page.getByRole('tooltip')).toContainText('Source: Horizons ephemeris');
   await page.keyboard.press('Escape');
   await expect(page.getByRole('tooltip')).toHaveCount(0);
   await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
@@ -253,4 +255,19 @@ test('panning the map does not select a plot', async ({ page }) => {
   await page.mouse.down(); await page.mouse.move(x + 60, y + 20, { steps: 6 }); await page.mouse.up();
   await page.waitForTimeout(500);
   await expect(page.getByTestId('selected')).toHaveCount(0);
+});
+
+test('each basemap file downloads once; listing shows why, blurb and nearest feature', async ({ page }) => {
+  const seen: Record<string, number> = {};
+  page.on('request', (r) => { const m = /basemap(_small)?\.jpg$/.exec(r.url()); if (m) seen[m[0]] = (seen[m[0]] ?? 0) + 1; });
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.getByTestId('card').first().click();
+  await expect(page.getByTestId('why')).toContainText('Priced');
+  await expect(page.getByTestId('blurb')).not.toBeEmpty();
+  await expect(page.getByTestId('nearby')).toContainText('Nearest feature:');
+  await expect(page.getByTestId('nearby')).toContainText('km');
+  await page.waitForTimeout(3000); // let the full basemap finish
+  expect(seen['basemap_small.jpg']).toBe(1);
+  expect(seen['basemap.jpg']).toBe(1);
 });

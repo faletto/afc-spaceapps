@@ -3,8 +3,8 @@ import type { Columns, Tier } from '../data/types';
 import { formatPrice } from '../map/markers';
 import { factsLine } from './format';
 
-/** Thumbnail = basemap crop centred on the plot; zoom = how many cards-widths of basemap. */
-export const THUMB = { aspect: 2.4, zoom: 14 };
+/** Thumbnail = basemap crop centred on the plot; zoom = how many card-widths of basemap (small basemap is ~2048 px wide, so keep this modest). */
+export const THUMB = { aspect: 2.4, zoom: 10 };
 
 interface Props {
   cols: Columns; tier: Tier; i: number; basemapUrl: string | null;

@@ -1,11 +1,11 @@
 import { useId, useState, type ReactNode } from 'react';
-import { GLOSSARY } from './glossary';
+import { useGlossary } from './glossary';
 
 /** Glossary tooltip: keyboard-focusable, opens on hover/focus, Escape closes (spec §6.7, DET-8). */
 export function Term({ id, children, extra }: { id: string; children: ReactNode; extra?: string }) {
   const [open, setOpen] = useState(false);
   const tipId = useId();
-  const g = GLOSSARY[id];
+  const g = useGlossary((s) => s.entries[id]);
   if (!g) return <>{children}</>;
   return (
     <span style={{ position: 'relative' }}>

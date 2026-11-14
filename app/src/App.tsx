@@ -4,6 +4,7 @@ import { dataBase as base, dataSource as src } from './data/source';
 import { Filters } from './header/Filters';
 import { FinePrint } from './listing/FinePrint';
 import { OverlayControl } from './map/OverlayControl';
+import { loadGlossary } from './ui/glossary';
 import { Notice } from './listing/Notice';
 import { Listing } from './listing/Listing';
 import type { Columns, Tier } from './data/types';
@@ -18,20 +19,22 @@ export function App() {
   const [data, setData] = useState<Partial<Record<Tier, Columns>>>({});
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => { void loadGlossary(src); }, []);
+
   useEffect(() => {
     loadManifest(src).then(() => loadTier(src, tier)).then((c) => setData((d) => ({ ...d, [tier]: c }))).catch((e) => setError(String(e)));
   }, [tier]);
 
   const cols = data[tier];
   useResultsQuery(tier, cols);
-  const basemapUrl = useBasemap(tier, base);
+  const basemaps = useBasemap(tier, base);
   const results = useStore((s) => s.results);
   return (
     <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
       <div style={{ gridColumn: '1 / -1' }}><Filters cols={cols} /></div>
       <div style={{ position: 'relative' }}>
         {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
-        {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemapUrl} />}
+        {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} />}
         {cols && <OverlayControl tier={tier} />}
         <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
           {(['global', 'polar'] as const).map((t) => (
@@ -48,7 +51,7 @@ export function App() {
         <div style={{ flex: 1, minHeight: 0 }}>
         {cols && selection != null
           ? <Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} />
-          : cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemapUrl} />}
+          : cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemaps.small ?? basemaps.full} />}
         </div>
         <footer style={{ padding: '8px 12px', borderTop: '1px solid #262c38' }}><FinePrint compact /></footer>
       </aside>

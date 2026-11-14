@@ -1,11 +1,11 @@
 # App Claude — log
 
 *Single writer: **App Claude**. Others read only. Keep `## Resume here
-- Branch: `app` · Built against contract **v2** (main @ c5a4fc0 = H6; H3 + H4 real polar + H6 blurbs/why/rent golden all merged, additive) · A3 merged to main at M3.
+- Branch: `app` @ HEAD (see git log) · Built against contract **v2** (main @ c84e88b = M3 merge of app; includes Pipeline P6 final handoff 246068f) · A3 merged to main at M3 (pushed).
 - Done: A0–A3. Real data merged; filters, sorts (price ↑↓, viability, Sun Score, Signal Score), D-6 e2e, MAP-5 hover label, reviewer pass (no blocking). vitest 17, e2e 12, CI green.
 - Next: A4 — `science/*.ts` mirror (geometry, visibility) + parity tests vs `pipeline/tests/golden/golden_v1.json` (use `parity-checker`), merge H4 (polar real data + horizons), South Pole tier polish, **3D Tour** (plan mode first). Read spec §3.3, §3.6, §6.5, §7. H4 data (horizon tiles: elevation = v×0.16−6°) and golden vectors (`golden_v1.json`, `golden_rent_v1.json`, horizon quantisation) are on main; A6 rent parity can use `golden_rent_v1.json`.
-- Blockers: none (H4 + H6 data present). Open for Pipeline: R-A3 (glossary.json), R-A5 (basemap size; data folder now 130 MB). R-A2 resolved by H6 (`why`, `blurb`, `nearby`); R-A4 resolved (manifest v2, stub:false).
-- Known gaps: OV-7 comm window, OV-3 min/mean/max toggle, Home type + "More" filters (A5), Rent tab/time slider (A6; D-6 test has a TODO to add them); cards show "Plot #i" not the real id/badges (RES-2, A5); results flicker once on tier switch (null-rect query then rect query); PriceInput min>max gives 0 results with no hint; basemap blob URL flashes for one render after tier switch.
+- Blockers: none. All my requests to Pipeline are answered by P6 (R-A2 why/blurb/nearest_feature, R-A3 glossary.json, R-A4 manifest v2, R-A5 small basemaps) and adopted: glossary from data/glossary.json (fallback kept), small basemap first + thumbnails, full basemap in background, listing shows why/blurb/nearest feature.
+- Data is 137 MB in git (Q-P7 human-approved). Known gaps: OV-7 comm window, OV-3 min/mean/max toggle, Home type + "More" filters (A5), Rent tab/time slider (A6; D-6 test has a TODO to add them); cards show "Plot #i" not the real id/badges (RES-2, A5); results flicker once on tier switch (null-rect query then rect query); PriceInput min>max gives 0 results with no hint; basemap blob URL flashes for one render after tier switch.
 - Perf (real data, M3 GPU): first card ≈ 0.3 s; software-GL headless ≈ 3 s (was 5 s). Filter+sort ≈ 10 ms/64.8k rows. Software GL also loses deck.gl taps at fit zoom (picking readback > 250 ms) → map click now selects the hovered plot (hover picking is reliable).
 - ASSUMED: plot half-size global 0.5°/polar 480 m; price bands = quantiles of UNFILTERED prices; pills at fit+3 zoom (cap 1500); dots scale with zoom (≥0.8 px), fade under overlay, picking radius 5 px; list excludes off-market always; any price bound hides off-market plots on the map; "Hide off-market" hides grey rings.
 - e2e notes: runs against `vite build && preview` (4173); expect timeout 15 s, test timeout 60 s (software GL slow). Pill-click and dot-click tests use fixed geometry (1200×700 / 1400×800).
@@ -27,7 +27,7 @@
 <!-- contract version I'm built against; mismatches seen; adaptations made -->
 
 ## Open questions
-Q-A2: 14 Nov · First-load budget (3 s). Startup downloads ≈ 13 MB (basemap 9 MB + cols 4 MB); list is interactive in ~0.3 s on a GPU locally but 9 MB over a slow link may exceed 3 s. ASSUMED: acceptable for the demo (static host, brotli doesn't help JPEG); asked Pipeline for a smaller basemap (R-A5). Humans: is a ~13 MB first load OK, or should I lazy-load the basemap further / require a smaller JPEG?
+Q-A2 (mostly resolved by P6 small basemaps; leaving for humans to close): 14 Nov · First-load budget (3 s). NOW: first paint needs cols 4.1 MB + small basemap 0.65 MB + JS ≈ 6 MB; the 8.2 MB full basemap loads in the background. Original text: Startup downloads ≈ 13 MB (basemap 9 MB + cols 4 MB); list is interactive in ~0.3 s on a GPU locally but 9 MB over a slow link may exceed 3 s. ASSUMED: acceptable for the demo (static host, brotli doesn't help JPEG); asked Pipeline for a smaller basemap (R-A5). Humans: is a ~13 MB first load OK, or should I lazy-load the basemap further / require a smaller JPEG?
 <!-- Q-A#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
@@ -46,6 +46,7 @@ R-A1 (RESOLVED: names are s_safety,s_power,s_comms,s_thermal,s_landmark,s_ice; c
 <!-- reply to R-P#: … -->
 
 ## Done log
+- 14 Nov · A3 follow-up 2 · adopted P6: glossary.json via store (fallback), small-basemap-first + thumbnails from small, full basemap background, listing nearest feature · vitest 17, e2e 13
 - 14 Nov · A3 follow-up · merged H4+H6 (real polar tier, why/blurb); listing shows why + blurb; loader test pins contract v2 · vitest 17, e2e 12 ×2
 - 14 Nov · A3 done · merged H3 (contract v2); real detail fields (id, nearby, P90 slope, buildable area, energy, landing safe); shared basemap blob (1 download), map mounts after first results; Sun/Signal Score sorts; reviewer fixes: "Showing 200 of N", MAP-5 "Off market: not safe to land" hover label, price filter hides off-market plots, band-edge memo, store selectors, detail-tile retry on non-404, worker onerror rejects pending, formatPrice rollover, Escape ignored in inputs, memoised deck data + picking radius + click-selects-hover, D-6 test now filters to ~top-price plots · vitest 17, e2e 12
 - 14 Nov · A3 prep · filters (price/land/hide-off), query lifted to App+store, map mask, D-6 e2e, perf check · vitest 17, e2e 10

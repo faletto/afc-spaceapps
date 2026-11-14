@@ -39,7 +39,9 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         <div style={{ fontSize: 12, opacity: 0.7 }}>
           {Math.abs(lat).toFixed(2)}°{lat < 0 ? 'S' : 'N'}, {Math.abs(lon).toFixed(2)}°{lon < 0 ? 'W' : 'E'} · {tier === 'polar' ? 'Detailed survey' : 'Moon-wide estimate'}
         </div>
-        {detail?.nearby?.length ? <div data-testid="nearby" style={{ fontSize: 12, opacity: 0.8 }}>Near {detail.nearby.slice(0, 3).join(', ')}</div> : null}
+        {detail?.nearest_feature
+          ? <div data-testid="nearby" style={{ fontSize: 12, opacity: 0.8 }}>Nearest feature: {detail.nearest_feature}{detail.nearest_km != null ? `, ${detail.nearest_km.toFixed(0)} km` : ''}</div>
+          : detail?.nearby?.length ? <div data-testid="nearby" style={{ fontSize: 12, opacity: 0.8 }}>Near {detail.nearby.slice(0, 3).join(', ')}</div> : null}
       </header>
       <section>
         <div data-testid="listing-price" style={{ fontSize: 32, fontWeight: 800 }}>

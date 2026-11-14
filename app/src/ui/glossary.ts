@@ -1,10 +1,7 @@
 export interface GlossaryEntry { label: string; text: string; formula?: string; source?: string }
 
-/**
- * App-side FALLBACK glossary. Spec D-1 wants this text in `config/glossary.json` (Pipeline-owned);
- * requested as R-A3 — swap to the exported file when it lands. Keep ids stable.
- */
-export const GLOSSARY: Record<string, GlossaryEntry> = {
+/** Offline FALLBACK used until `data/glossary.json` (exported from `config/glossary.json`, D-1) has loaded. */
+export const FALLBACK_GLOSSARY: Record<string, GlossaryEntry> = {
   sunlight: { label: 'Sunlight', text: 'Share of the year the Sun is above the plot\'s horizon.', source: 'NASA JPL Horizons ephemeris, 2028' },
   longest_night: { label: 'Longest night', text: 'Longest continuous stretch without sunlight.' },
   earth_contact: { label: 'Earth contact', text: 'Share of the year Earth is high enough above the local horizon for direct radio contact.', source: 'NASA JPL Horizons ephemeris, 2028' },
@@ -21,3 +18,19 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   views: { label: 'Views Score', text: 'Closeness to famous landmarks.' },
   ice_score: { label: 'Ice Score', text: 'Water ice within reach (polar plots only).' },
 };
+
+import { create } from 'zustand';
+import type { Source } from '../data/loader';
+
+interface GlossaryState { entries: Record<string, GlossaryEntry> }
+export const useGlossary = create<GlossaryState>(() => ({ entries: FALLBACK_GLOSSARY }));
+
+/** Load the pipeline's glossary; entries override the fallback per id. Failure keeps the fallback. */
+export async function loadGlossary(src: Source): Promise<void> {
+  try {
+    const g = await src.json<Record<string, GlossaryEntry>>('glossary.json');
+    useGlossary.setState({ entries: { ...FALLBACK_GLOSSARY, ...g } });
+  } catch (e) {
+    console.warn('glossary.json not loaded; using built-in text', e);
+  }
+}

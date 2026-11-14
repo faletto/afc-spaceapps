@@ -82,6 +82,9 @@ export interface DetailRecord {
   monthly_sunlit_pct?: number[];
   monthly_earth_pct?: number[];
   nearby?: string[];
+  /** P6 (DET-1): nearest named feature and distance. */
+  nearest_feature?: string;
+  nearest_km?: number;
   /** H6: one-line price rationale (DET-2) and short blurb (DET-6). */
   why?: string;
   blurb?: string;
