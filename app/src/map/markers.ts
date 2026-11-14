@@ -17,11 +17,16 @@ export function priceBandEdges(prices: ArrayLike<number>, onMarket: Uint32Array,
 }
 export const bandOf = (p: number, edges: number[]) => { let b = 0; while (b < edges.length && p >= edges[b]!) b++; return b; };
 
+const UNITS = [[1e3, 'K'], [1e6, 'M'], [1e9, 'B']] as const;
 export function formatPrice(p: number): string {
-  if (p >= 1e9) return `$${(p / 1e9).toFixed(p >= 1e10 ? 0 : 1)}B`;
-  if (p >= 1e6) return `$${(p / 1e6).toFixed(p >= 1e7 ? 0 : 1)}M`;
-  if (p >= 1e3) return `$${(p / 1e3).toFixed(p >= 1e4 ? 0 : 1)}K`;
-  return `$${Math.round(p)}`;
+  if (p < 1e3) return `$${Math.round(p)}`;
+  for (const [k, [div, unit]] of UNITS.entries()) {
+    const v = p / div;
+    const text = v >= 10 ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1);
+    // Roll over to the next unit when rounding reaches 1000 (999,950 → $1.0M, not $1000K).
+    if (Number(text) < 1000 || k === UNITS.length - 1) return `$${text}${unit}`;
+  }
+  return `$${p}`; // unreachable
 }
 
 export interface MarkerSet {
@@ -31,6 +36,8 @@ export interface MarkerSet {
   colors?: Uint8Array;     // interleaved RGBA
 }
 export interface TierMarkers { on: MarkerSet; off: MarkerSet; edges: number[] }
+
+const edgeCache = new WeakMap<Columns, number[]>();
 
 /** `passing` (1 = shown) comes from the filter worker; price bands stay fixed by the unfiltered prices so colors don't shift. */
 export function buildMarkers(c: Columns, passing?: Uint8Array): TierMarkers {
@@ -43,7 +50,8 @@ export function buildMarkers(c: Columns, passing?: Uint8Array): TierMarkers {
   }
   const onIds = Uint32Array.from(on), offIds = Uint32Array.from(off);
   const price = c.col.price;
-  const edges = priceBandEdges(price, Uint32Array.from(allOn));
+  let edges = edgeCache.get(c);
+  if (!edges) edgeCache.set(c, (edges = priceBandEdges(price, Uint32Array.from(allOn))));
   const pos = (ids: Uint32Array) => {
     const p = new Float32Array(ids.length * 2);
     ids.forEach((i, k) => { p[2 * k] = c.col.x[i]!; p[2 * k + 1] = c.col.y[i]!; });

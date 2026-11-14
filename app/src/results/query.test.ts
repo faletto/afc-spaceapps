@@ -34,7 +34,7 @@ describe('queryResults', () => {
     const withOff = queryResults(mk(), null, 'price_asc', f).passing;
     expect(Array.from(withOff)).toEqual([1, 1, 1, 1]); // off-market plot 2 still drawn on the map
     expect(Array.from(queryResults(mk(), null, 'price_asc', { ...f, hideOff: true }).passing)).toEqual([1, 1, 0, 1]);
-    expect(Array.from(queryResults(mk(), null, 'price_asc', { ...f, priceMin: 25 }).passing)).toEqual([1, 0, 1, 1]); // price ignored for off-market
+    expect(Array.from(queryResults(mk(), null, 'price_asc', { ...f, priceMin: 25 }).passing)).toEqual([1, 0, 0, 1]); // any price bound hides off-market plots (no price)
   });
   it('never mutates the price column (D-6)', () => {
     const c = mk(), before = Array.from(c.col.price);

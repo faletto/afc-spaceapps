@@ -27,7 +27,7 @@ test('results list is capped, hover highlights, click selects', async ({ page })
   await page.goto('/');
   const count = page.getByTestId('count');
   await expect(count).toContainText('results');
-  await expect(count).toContainText('showing 200');
+  await expect(count).toContainText('Showing 200 of');
   const n = await page.getByTestId('card').count();
   expect(n).toBeGreaterThan(0);
   expect(n).toBeLessThanOrEqual(200);
@@ -138,12 +138,14 @@ test('filters: price range narrows list + map count, land type, hide off-market,
   await page.goto('/');
   const count = page.getByTestId('count');
   const match = page.getByTestId('match-count');
-  await expect(count).toContainText('showing 200');
+  await expect(count).toContainText('Showing 200 of');
   const all = (await match.textContent())!;
+  const countAll = await count.textContent();
 
   await page.getByLabel('Min price').fill('30k');
   await expect(match).not.toHaveText(all);
-  await expect(count).not.toContainText('62,811');
+  expect(Number((await match.textContent())!.replace(/\D/g, ''))).toBeLessThan(Number(all.replace(/\D/g, '')));
+  await expect(count).not.toHaveText(countAll!);
   await page.getByRole('combobox', { name: /Sort/ }).selectOption('price_asc');
   // cheapest remaining card must be >= $30K
   await expect(page.getByTestId('card').first()).toContainText(/\$(3\d|[4-9]\d)(\.\d)?K|\$\d(\.\d)?M/);
@@ -193,7 +195,10 @@ test('D-6: Buy price never changes with filters, sort, overlay, tier, selection'
   expect(await priceIn(id)).toBe(price);
 
   // Filters that keep the plot, plus a land-type round trip.
-  await page.getByLabel('Min price').fill('1');
+  // A price filter that really excludes most plots but keeps this one: min = 90% of its displayed price.
+  const shown = Number(/\$(\d+(?:\.\d+)?)([KM])/.exec(price)!.slice(1, 2)[0]) * (price.includes('M') ? 1000 : 1);
+  await page.getByLabel('Min price').fill(`${Math.floor(shown * 0.9)}k`);
+  await expect(page.getByTestId('match-count')).not.toHaveText('64,800 plots match');
   await page.getByText('Land type').click();
   await page.getByLabel('Mare').check();
   await page.getByLabel('Mare').uncheck();
@@ -217,4 +222,35 @@ test('D-6: Buy price never changes with filters, sort, overlay, tier, selection'
   expect(await priceIn(id)).toBe(price);
   expect(await listingPrice()).toContain(price);
   // TODO(A6): add the Rent tab / move-in / stay / time slider to this test once they exist.
+});
+
+test('clicking a dot at the default Moon-wide zoom selects its plot and opens the listing', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.getByTestId('card').first().waitFor();
+  await page.locator('canvas').first().waitFor();
+  await page.waitForTimeout(1500);
+  const box = (await page.locator('canvas').first().boundingBox())!;
+  const s = Math.min(box.width / 360, box.height / 180); // fit scale (px per degree)
+  // Plot centres are on half-degree grid points; (-100.5, 20.5) is an on-market plot in the stub-free real data.
+  const x = box.x + box.width / 2 - 100.5 * s, y = box.y + box.height / 2 - 20.5 * s;
+  await page.mouse.move(x - 6, y - 6);
+  await page.mouse.move(x, y, { steps: 4 });
+  await page.waitForTimeout(500); // let hover picking settle
+  await page.mouse.click(x, y);
+  await expect(page.getByTestId('selected')).toBeVisible();
+  await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
+});
+
+test('panning the map does not select a plot', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.locator('canvas').first().waitFor();
+  await page.waitForTimeout(1500);
+  const box = (await page.locator('canvas').first().boundingBox())!;
+  const x = box.x + box.width / 2, y = box.y + box.height / 2;
+  await page.mouse.move(x, y); await page.waitForTimeout(300);
+  await page.mouse.down(); await page.mouse.move(x + 60, y + 20, { steps: 6 }); await page.mouse.up();
+  await page.waitForTimeout(500);
+  await expect(page.getByTestId('selected')).toHaveCount(0);
 });

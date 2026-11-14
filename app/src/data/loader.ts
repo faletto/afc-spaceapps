@@ -92,7 +92,11 @@ export const tileName = (tile: number, tilesPerAxis: number) => `${tile % tilesP
 /** Lazy per-tile detail; tiles with no file (empty polar corners) resolve to []. */
 export function loadDetailTile(src: Source, tier: Tier, tile: number, tilesPerAxis: number): Promise<DetailRecord[]> {
   return memo(`detail:${tier}:${tile}`, () =>
-    src.json<DetailRecord[]>(`${tier}/detail/${tileName(tile, tilesPerAxis)}.json`).catch(() => []));
+    // Only a missing file (empty polar corner) means "no records"; other failures reject so memo() evicts and a retry can succeed.
+    src.json<DetailRecord[]>(`${tier}/detail/${tileName(tile, tilesPerAxis)}.json`).catch((e: unknown) => {
+      if (String(e).includes('HTTP 404')) return [];
+      throw e;
+    }));
 }
 
 /** Horizon tile: elevation_deg = v * unit_deg + offset_deg, 180 azimuth samples per plot. */

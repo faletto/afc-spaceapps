@@ -5,6 +5,7 @@ describe('markers', () => {
   it('formats prices', () => {
     expect(formatPrice(4200)).toBe('$4.2K'); expect(formatPrice(25000)).toBe('$25K');
     expect(formatPrice(4.2e6)).toBe('$4.2M'); expect(formatPrice(900)).toBe('$900');
+    expect(formatPrice(999_950)).toBe('$1.0M'); expect(formatPrice(727_758)).toBe('$728K'); expect(formatPrice(9_999)).toBe('$10.0K');
   });
   it('bands by quantile', () => {
     const p = Float32Array.from({ length: 100 }, (_, i) => i);

@@ -15,12 +15,15 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
     let live = true;
     setDetail(null);
     const tile = cols.col.tile[i]!, row = cols.col.row_in_tile[i]!;
-    loadDetailTile(dataSource, tier, tile, cols.meta.tiles_per_axis).then((rs) => { if (live) setDetail(rs[row] ?? null); });
+    loadDetailTile(dataSource, tier, tile, cols.meta.tiles_per_axis).then((rs) => { if (live) setDetail(rs[row] ?? null); }).catch((e) => console.warn('detail not loaded', e));
     return () => { live = false; };
   }, [cols, tier, i]);
 
   useEffect(() => {
-    const k = (e: KeyboardEvent) => e.key === 'Escape' && onBack();
+    const k = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (e.key === 'Escape' && !(t && ['INPUT', 'SELECT', 'TEXTAREA'].includes(t.tagName))) onBack();
+    };
     window.addEventListener('keydown', k);
     return () => window.removeEventListener('keydown', k);
   }, [onBack]);

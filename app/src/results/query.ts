@@ -11,12 +11,13 @@ export interface Results {
   passing: Uint8Array;
 }
 
-/** Does plot i pass the filters? Off-market plots have no price, so only land type and hideOff apply to them. */
+/** Does plot i pass the filters? Off-market plots have no price, so any price bound hides them (they can't be "in range"). */
 export function passes(c: Columns, i: number, f: Filters): boolean {
   const off = isOffMarket(c, i);
   if (off && f.hideOff) return false;
   if (f.landTypes.length && !f.landTypes.includes(c.col.land_type[i]!)) return false;
-  if (!off) {
+  if (f.priceMin != null || f.priceMax != null) {
+    if (off) return false;
     const p = c.col.price[i]!;
     if (f.priceMin != null && p < f.priceMin) return false;
     if (f.priceMax != null && p > f.priceMax) return false;

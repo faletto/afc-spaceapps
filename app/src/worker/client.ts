@@ -10,7 +10,14 @@ class ComputeClient {
   private seq = 0;
   private ready = new Set<Tier>();
 
+  private failAll(message: string) {
+    for (const p of this.pending.values()) p.fail(new Error(message));
+    this.pending.clear();
+  }
+
   constructor() {
+    this.w.onerror = (e) => this.failAll(`compute worker error: ${e.message}`);
+    this.w.onmessageerror = () => this.failAll('compute worker message error');
     this.w.onmessage = (e: MessageEvent<Res>) => {
       const p = this.pending.get(e.data.id);
       if (!p) return;

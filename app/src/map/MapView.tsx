@@ -8,6 +8,8 @@ import { useStore } from '../state/store';
 import { BAND_COLORS, bandOf, buildMarkers, formatPrice, visibleIds } from './markers';
 import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, tierBounds } from './tiers';
 
+/** Dots are < 2 px at the Moon-wide zoom; pick the nearest marker within this many pixels so they stay clickable. */
+const PICK_RADIUS_PX = 5;
 const VIEW = new OrthographicView({ id: 'map', flipY: false });
 interface VS { target: [number, number, number]; zoom: number }
 
@@ -15,7 +17,11 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [vs, setVs] = useState<VS>({ target: [0, 0, 0], zoom: 0 });
-  const { selection, hover, select, setHover, setViewRect, overlay, overlayOpacity } = useStore();
+  const selection = useStore((s) => s.selection), hover = useStore((s) => s.hover);
+  const select = useStore((s) => s.select), setHover = useStore((s) => s.setHover), setViewRect = useStore((s) => s.setViewRect);
+  const overlay = useStore((s) => s.overlay), overlayOpacity = useStore((s) => s.overlayOpacity);
+  const down = useRef<[number, number] | null>(null);
+  const [offTip, setOffTip] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const el = box.current!;
@@ -28,6 +34,15 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   const fit = size.w ? fitZoom(bounds, size.w, size.h) : 0;
   const passing = useStore((s) => s.results?.passing);
   const markers = useMemo(() => buildMarkers(cols, passing), [cols, passing]);
+  // deck.gl diffs layer `data` by identity: build the binary attribute objects once per marker set, not once per render,
+  // otherwise every hover re-uploads all attributes (and swallows clicks).
+  const dotData = useMemo(() => ({
+    length: markers.on.ids.length,
+    attributes: { getPosition: { value: markers.on.positions, size: 2 }, getFillColor: { value: markers.on.colors!, size: 4, normalized: true } },
+  }), [markers]);
+  const offData = useMemo(() => ({
+    length: markers.off.ids.length, attributes: { getPosition: { value: markers.off.positions, size: 2 } },
+  }), [markers]);
 
   // Re-fit when the tier or container size changes.
   useEffect(() => {
@@ -66,17 +81,17 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     }),
     // Off market (MAP-5): hollow grey ring — distinct by shape, not only color.
     new ScatterplotLayer({
-      id: 'off', data: { length: markers.off.ids.length, attributes: { getPosition: { value: markers.off.positions, size: 2 } } },
+      id: 'off', data: offData,
       filled: false, stroked: true, getLineColor: [170, 170, 170, 220], lineWidthUnits: 'pixels', getLineWidth: 1.5,
       radiusUnits: 'pixels', getRadius: Math.max(dotR + 0.5, 2.5), opacity: dotOpacity, pickable: true,
-      onHover: (info) => setHover(info.index >= 0 ? markers.off.ids[info.index]! : null),
+      onHover: (info) => { setHover(info.index >= 0 ? markers.off.ids[info.index]! : null); setOffTip(info.index >= 0 ? { x: info.x, y: info.y } : null); },
       onClick: (info) => info.index >= 0 && select(markers.off.ids[info.index]!),
     }),
     new ScatterplotLayer({
       id: 'dots', visible: !pills,
-      data: { length: markers.on.ids.length, attributes: { getPosition: { value: markers.on.positions, size: 2 }, getFillColor: { value: markers.on.colors!, size: 4, normalized: true } } },
+      data: dotData,
       radiusUnits: 'pixels', getRadius: dotR, opacity: dotOpacity, pickable: true,
-      onHover: (info) => setHover(info.index >= 0 ? markers.on.ids[info.index]! : null),
+      onHover: (info) => { setHover(info.index >= 0 ? markers.on.ids[info.index]! : null); if (info.index >= 0) setOffTip(null); },
       onClick: (info) => info.index >= 0 && select(markers.on.ids[info.index]!),
     }),
     new TextLayer<number>({
@@ -96,13 +111,27 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   ];
 
   return (
-    <div ref={box} style={{ position: 'absolute', inset: 0, background: '#0b0d12' }}>
+    <div
+      ref={box} style={{ position: 'absolute', inset: 0, background: '#0b0d12' }}
+      onPointerDownCapture={(e) => { down.current = [e.clientX, e.clientY]; }}
+      // deck.gl's own tap needs pointer-down→up within ~250 ms, which slow GPUs miss while picking 64.8k markers.
+      // Hover picking is reliable, so a plain click (not a drag) selects the plot under the pointer.
+      onClick={(e) => {
+        const d = down.current;
+        if (hover != null && d && Math.hypot(e.clientX - d[0], e.clientY - d[1]) < 4) select(hover);
+      }}
+    >
       {size.w > 0 && (
         <DeckGL
-          views={VIEW} viewState={vs} controller={{ dragRotate: false }} layers={layers}
+          views={VIEW} viewState={vs} pickingRadius={PICK_RADIUS_PX} controller={{ dragRotate: false }} layers={layers}
           onViewStateChange={({ viewState }) => setVs(viewState as unknown as VS)}
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         />
+      )}
+      {offTip && (
+        <div role="tooltip" style={{ position: 'absolute', left: offTip.x + 12, top: offTip.y + 12, background: '#222a3a', border: '1px solid #3a4560', borderRadius: 6, padding: '4px 8px', fontSize: 12, pointerEvents: 'none', color: '#eee' }}>
+          Off market: not safe to land
+        </div>
       )}
     </div>
   );

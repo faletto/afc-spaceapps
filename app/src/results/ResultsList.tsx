@@ -50,7 +50,7 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
         <h2 style={{ margin: 0, fontSize: 18 }}>Lunar real estate</h2>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
           <span data-testid="count">
-            {total.toLocaleString()} results{total > RESULT_CAP ? ` · showing ${RESULT_CAP}` : ''}
+            {total.toLocaleString()} results{total > RESULT_CAP ? ` · Showing ${RESULT_CAP} of ${total.toLocaleString()}` : ''}
           </span>
           <label>
             Sort:{' '}
