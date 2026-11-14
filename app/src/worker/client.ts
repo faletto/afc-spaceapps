@@ -1,5 +1,5 @@
 import type { Columns, Tier } from '../data/types';
-import type { Rect, SortKey } from '../state/store';
+import type { Filters, Rect, SortKey } from '../state/store';
 import type { Req, Res } from './compute';
 import type { Results } from '../results/query';
 
@@ -16,7 +16,7 @@ class ComputeClient {
       if (!p) return;
       this.pending.delete(e.data.id);
       if (e.data.type === 'error') p.fail(new Error(e.data.message));
-      else p.ok({ ids: e.data.ids, total: e.data.total });
+      else p.ok({ ids: e.data.ids, total: e.data.total, passing: e.data.passing });
     };
   }
 
@@ -27,12 +27,12 @@ class ComputeClient {
     this.w.postMessage(msg);
   }
 
-  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey): Promise<Results> {
+  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey, filters: Filters): Promise<Results> {
     this.init(tier, c);
     const id = ++this.seq;
     return new Promise((ok, fail) => {
       this.pending.set(id, { ok, fail });
-      this.w.postMessage({ type: 'query', id, tier, rect, sort } satisfies Req);
+      this.w.postMessage({ type: 'query', id, tier, rect, sort, filters } satisfies Req);
     });
   }
 }

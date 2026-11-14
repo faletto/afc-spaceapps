@@ -26,7 +26,8 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
 
   const bounds = tierBounds(cols);
   const fit = size.w ? fitZoom(bounds, size.w, size.h) : 0;
-  const markers = useMemo(() => buildMarkers(cols), [cols]);
+  const passing = useStore((s) => s.results?.passing);
+  const markers = useMemo(() => buildMarkers(cols, passing), [cols, passing]);
 
   // Re-fit when the tier or container size changes.
   useEffect(() => {

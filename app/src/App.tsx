@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { loadManifest, loadTier } from './data/loader';
 import { dataBase as base, dataSource as src } from './data/source';
+import { Filters } from './header/Filters';
 import { FinePrint } from './listing/FinePrint';
 import { OverlayControl } from './map/OverlayControl';
 import { Notice } from './listing/Notice';
 import { Listing } from './listing/Listing';
 import type { Columns, Tier } from './data/types';
 import { MapView } from './map/MapView';
+import { useResultsQuery } from './results/useResults';
 import { ResultsList } from './results/ResultsList';
 import { useStore } from './state/store';
 
@@ -20,9 +22,11 @@ export function App() {
   }, [tier]);
 
   const cols = data[tier];
+  useResultsQuery(tier, cols);
   const basemapUrl = `${base}${tier}/basemap.jpg`;
   return (
-    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
+    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
+      <div style={{ gridColumn: '1 / -1' }}><Filters cols={cols} /></div>
       <div style={{ position: 'relative' }}>
         {cols && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemapUrl} />}
         {cols && <OverlayControl tier={tier} />}

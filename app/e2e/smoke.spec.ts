@@ -130,3 +130,91 @@ test('glossary tooltip opens on focus and closes on Escape without closing the l
   await expect(page.getByRole('tooltip')).toHaveCount(0);
   await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
 });
+
+test('filters: price range narrows list + map count, land type, hide off-market, clear', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  const count = page.getByTestId('count');
+  const match = page.getByTestId('match-count');
+  await expect(count).toContainText('showing 200');
+  const all = (await match.textContent())!;
+
+  await page.getByLabel('Min price').fill('30k');
+  await expect(match).not.toHaveText(all);
+  await expect(count).not.toContainText('62,811');
+  await page.getByRole('combobox', { name: /Sort/ }).selectOption('price_asc');
+  // cheapest remaining card must be >= $30K
+  await expect(page.getByTestId('card').first()).toContainText(/\$(3\d|[4-9]\d)(\.\d)?K|\$\d(\.\d)?M/);
+
+  await page.getByLabel('Max price').fill('abc');
+  await expect(page.getByLabel('Max price')).toHaveAttribute('aria-invalid', 'true');
+
+  await page.getByRole('button', { name: 'Clear filters' }).click();
+  await expect(match).toHaveText(all);
+  await expect(page.getByLabel('Min price')).toHaveValue('');
+
+  await page.getByText('Land type').click();
+  await page.getByLabel('Mare').check();
+  await expect(match).not.toHaveText(all);
+  await page.getByLabel('Mare').uncheck();
+  await expect(match).toHaveText(all);
+
+  await page.getByLabel('Hide off-market plots').check();
+  await expect(match).not.toHaveText(all);
+  expect(errors).toEqual([]);
+});
+
+test('D-6: Buy price never changes with filters, sort, overlay, tier, selection', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  const cardFor = (id: string) => page.locator(`[data-testid="card"][data-plot="${id}"]`);
+  const priceIn = async (id: string) => (await cardFor(id).locator('div >> text=/^\\$/').first().textContent())!;
+
+  await expect(page.getByTestId('card').first()).toBeVisible();
+  const top = page.getByTestId('card').first();
+  const id = (await top.getAttribute('data-plot'))!;
+  const price = await priceIn(id);
+
+  const listingPrice = async () => {
+    await cardFor(id).click();
+    const t = (await page.getByTestId('listing-price').textContent())!;
+    await page.getByRole('button', { name: '← Back to results' }).click();
+    await expect(page.getByRole('article', { name: 'Listing' })).toHaveCount(0);
+    return t;
+  };
+  expect(await listingPrice()).toContain(price);
+
+  // Overlay + opacity.
+  await page.getByRole('combobox', { name: 'Overlay' }).selectOption('viability');
+  await page.getByRole('slider', { name: 'Overlay opacity' }).fill('0.2');
+  await expect(cardFor(id)).toBeVisible();
+  expect(await priceIn(id)).toBe(price);
+
+  // Filters that keep the plot, plus a land-type round trip.
+  await page.getByLabel('Min price').fill('1');
+  await page.getByText('Land type').click();
+  await page.getByLabel('Mare').check();
+  await page.getByLabel('Mare').uncheck();
+  await page.getByLabel('Hide off-market plots').check();
+  await expect(cardFor(id)).toBeVisible();
+  expect(await priceIn(id)).toBe(price);
+
+  // Sort round trip.
+  const sort = page.getByRole('combobox', { name: /Sort/ });
+  await sort.selectOption('viability_desc');
+  await sort.selectOption('price_desc');
+  await expect(cardFor(id)).toBeVisible();
+  expect(await priceIn(id)).toBe(price);
+  expect(await listingPrice()).toContain(price);
+
+  // Tier round trip.
+  await page.getByRole('button', { name: 'South Pole District' }).click();
+  await expect(page.getByTestId('count')).toContainText('results');
+  await page.getByRole('button', { name: 'Moon-wide' }).click();
+  await expect(cardFor(id)).toBeVisible();
+  expect(await priceIn(id)).toBe(price);
+  expect(await listingPrice()).toContain(price);
+  // TODO(A6): add the Rent tab / move-in / stay / time slider to this test once they exist.
+});

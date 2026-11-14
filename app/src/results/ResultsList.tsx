@@ -3,13 +3,13 @@ import { List, type RowComponentProps } from 'react-window';
 import type { Columns, Tier } from '../data/types';
 import { useStore, type SortKey } from '../state/store';
 import { ListingCard } from './ListingCard';
-import { compute } from '../worker/client';
-import { RESULT_CAP, type Results } from './query';
+import { RESULT_CAP } from './query';
 
 const SORTS: [SortKey, string][] = [
   ['price_desc', 'Price (high to low)'], ['price_asc', 'Price (low to high)'],
   ['viability_desc', 'Viability'], ['sunlit_desc', 'Sunlight'],
 ];
+const EMPTY: number[] = [];
 const COLS = 2, ROW_H = 200;
 
 interface RowProps {
@@ -32,14 +32,9 @@ function Row({ index, style, ids, cols, tier, basemapUrl, hover, selection, setH
 }
 
 export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: Tier; basemapUrl: string }) {
-  const { viewRect, sort, setSort, hover, selection, setHover, select } = useStore();
-  // Filter/sort run in the compute worker; keep the previous page until the new one arrives (latest request wins).
-  const [{ ids, total }, setRes] = useState<Results>({ ids: [], total: 0 });
-  useEffect(() => {
-    let live = true;
-    compute().query(tier, cols, viewRect, sort).then((r) => live && setRes(r)).catch(() => undefined);
-    return () => { live = false; };
-  }, [tier, cols, viewRect, sort]);
+  const { sort, setSort, hover, selection, setHover, select } = useStore();
+  const results = useStore((s) => s.results);
+  const ids = results?.ids ?? EMPTY, total = results?.total ?? 0;
   const box = useRef<HTMLDivElement>(null);
   const [h, setH] = useState(400);
   useEffect(() => {

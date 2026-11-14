@@ -1,11 +1,11 @@
 import { decodeColumns } from '../data/loader';
 import type { Columns, ColsJson, Tier } from '../data/types';
 import { queryResults, type Results } from '../results/query';
-import type { Rect, SortKey } from '../state/store';
+import type { Filters, Rect, SortKey } from '../state/store';
 
 export type Req =
   | { type: 'init'; tier: Tier; meta: ColsJson; buffer: ArrayBuffer }
-  | { type: 'query'; id: number; tier: Tier; rect: Rect | null; sort: SortKey };
+  | { type: 'query'; id: number; tier: Tier; rect: Rect | null; sort: SortKey; filters: Filters };
 export type Res = { type: 'result'; id: number } & Results | { type: 'error'; id: number; message: string };
 
 /** Pure message handler (testable without a Worker). Holds decoded columns per tier. */
@@ -15,6 +15,6 @@ export function makeHandler() {
     if (m.type === 'init') { tiers[m.tier] = decodeColumns(m.meta, m.buffer); return null; }
     const c = tiers[m.tier];
     if (!c) return { type: 'error', id: m.id, message: `tier ${m.tier} not initialised` };
-    return { type: 'result', id: m.id, ...queryResults(c, m.rect, m.sort) };
+    return { type: 'result', id: m.id, ...queryResults(c, m.rect, m.sort, m.filters) };
   };
 }

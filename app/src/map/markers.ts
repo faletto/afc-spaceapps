@@ -32,12 +32,18 @@ export interface MarkerSet {
 }
 export interface TierMarkers { on: MarkerSet; off: MarkerSet; edges: number[] }
 
-export function buildMarkers(c: Columns): TierMarkers {
-  const on: number[] = [], off: number[] = [];
-  for (let i = 0; i < c.rows; i++) (isOffMarket(c, i) ? off : on).push(i);
+/** `passing` (1 = shown) comes from the filter worker; price bands stay fixed by the unfiltered prices so colors don't shift. */
+export function buildMarkers(c: Columns, passing?: Uint8Array): TierMarkers {
+  const on: number[] = [], off: number[] = [], allOn: number[] = [];
+  for (let i = 0; i < c.rows; i++) {
+    const offm = isOffMarket(c, i);
+    if (!offm) allOn.push(i);
+    if (passing && !passing[i]) continue;
+    (offm ? off : on).push(i);
+  }
   const onIds = Uint32Array.from(on), offIds = Uint32Array.from(off);
   const price = c.col.price;
-  const edges = priceBandEdges(price, onIds);
+  const edges = priceBandEdges(price, Uint32Array.from(allOn));
   const pos = (ids: Uint32Array) => {
     const p = new Float32Array(ids.length * 2);
     ids.forEach((i, k) => { p[2 * k] = c.col.x[i]!; p[2 * k + 1] = c.col.y[i]!; });
