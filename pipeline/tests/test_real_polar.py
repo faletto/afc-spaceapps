@@ -71,3 +71,16 @@ def test_blurbs_why_and_featured_flags(pol):
     assert all(r["blurb"] and r["why"].startswith("Priced") and "{" not in r["blurb"] for r in rec)
     feat = (g["flags"] >> 4) & 1
     assert 5 <= feat.sum() <= 20
+
+
+def test_independent_lola_crosscheck():
+    """HOR-2 spirit: our lighting vs NASA's LOLA-derived average visibility (skipped without the data)."""
+    work = Path(__file__).resolve().parents[2] / "data" / "work" / "polar_plots.npz"
+    if not (work.exists() and (D.parents[2] / "data" / "raw" / "illum").exists()):
+        pytest.skip("cross-check data not downloaded")
+    from lunar_listings import crosscheck
+
+    o = np.load(work)
+    sun = crosscheck.sample_illum("AVGVISIB_85S_060M_201608", o["best_x"].astype(float), o["best_y"].astype(float))
+    s = crosscheck.stats(o["sunlit_frac"], sun)
+    assert s["r"] > 0.95 and s["rmse"] < 0.06

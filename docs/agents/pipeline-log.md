@@ -3,7 +3,8 @@
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
 - Branch: `pipeline` · Contract v2 (+H4, H6, P6 notes) · P0–P6 ✅. From-scratch rebuild verified byte-identical (737 files; `make all-data`).
 - P6 done: `make terrain/all-data`, `pipeline/README.md`, payload check (gzip core ≈ 9 MB; polar detail+horizon ≈ 11 MB), App requests R-A2/A3/A4/A5 answered (nearest_feature/km, glossary.json, manifest v2, basemap_small).
-- Open: TEMP-4 Diviner cross-check (needs the exact PDS file), HOR-2 external profile (needs a Moon Trek/QuickMap profile), Q-P6 (flat power score), polar detail is 53 MB raw (NFR-4 says 60 MB total incl. horizons; gzip is 11 MB) — trim if the humans mean raw.
+- Cross-checks DONE (NASA data): `crosscheck.py` → docs/validation.md. LOLA illumination (PGDA): Sun r=0.988, RMSE 0.024; Earth r=0.957 (bias −0.066, expected from the 1° margin); PSR agreement 98.2%. Diviner (PDS): see Q-P8. HOR-2 external profile no longer needed (LOLA illumination serves). NFR-4: no raw-size limit (human), no trim.
+- Open: Q-P6 (flat power score), Q-P8 (polar T1 maxima/night floor).
 - Maintenance: bug fixes requested by App in app-log.md `## Requests to Pipeline Claude`. Rebuild: `make all-data`. NEVER `make stub` over real data.
 
 ## Milestones
@@ -25,6 +26,7 @@
 <!-- newest first: H#, date/time, contract vN, main@sha, what's new, files, size MB, known issues -->
 
 ## Open questions
+- Q-P8 · 14 Nov · TEMP-4 (Diviner, NASA PDS) shows our T1 matches Diviner for PSRs (40 K vs 43 K median) but overstates lit-site maxima (annual max median 207 K vs binned Diviner ≈ 65–130 K; binned maps average out extremes) and the 95 K night floor (Diviner nights ≈ 65 K median). The thermal sub-score uses swing = max − min, so polar comfort is likely overstated. Proposal (not applied): lower `thermal.floor_k` for polar and add a shadow-fraction term to T_max; or leave and label as modelled. ASSUMED leave until humans decide.
 - Q-P6 · 14 Nov · Moon-wide `s_power` is ≈ 0.04 on almost every plot: longest night ≈ 360 h → penalty(360; h50=120, k=2) = 0.10, times norm(energy) ≈ 0.45. Power therefore doesn't discriminate Moon-wide (only polar light matters). Viability tops out ≈ 65, scarcity cutoff ≈ 58, top Moon-wide price ≈ $730K. Spec values used as-is; proposal for the P3 calibration: raise `penalty.dark.h50` to ~400 h (or apply the dark penalty only in the polar tier). ASSUMED keep spec until a human decides.
 - (answered, see below) Q-P5 · 14 Nov · Reviewer: Moon-wide plots use `terrain_margin` (m≡0) so Earth contact needs only ≥ 1° elevation, vs COMM-1's 5° cutoff. Follows the spec's decided mode. My default: ASSUMED keep. Please confirm for the Moon-wide tier (or set `comms.mode: absolute` there).
 - Q-P2 · 14 Nov · Spec's TSI sanity band 1320–1412 W/m² is too tight: 2028 gives 1310–1413 (L☉/4πr² is correct). ASSUMED band 1300–1420; tell me if you want the spec fixed.
@@ -46,6 +48,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P6 · NASA cross-checks: LOLA illumination (HOR-2) + Diviner (TEMP-4) in docs/validation.md; sources.yaml extended
 - 14 Nov · P6 · make terrain/all-data, README, rebuild byte-identical, glossary.json, nearest_feature, basemap_small · final handoff
 - 14 Nov · P5 · blurbs, featured, rent_for_stay + rent golden, demo number · H6
 - 14 Nov · P4 · projection, horizons.py (Numba; 1.25 M cells in 11.5 min), polar build, export, sanity tests, reviewer fixes (polar far-side rule, global median, premiums) · H4

@@ -50,8 +50,9 @@ detail ≈ 3 MB lazy; basemaps ≈ 12 MB. Raw on disk ≈ 130 MB (most of it JSO
 - Horizon tiles: `elevation = v × 0.16° − 6°` (spec −3°; real skylines reach −5.8°).
 - Dark/blackout penalty uses the spec's `h50 = 120 h`; this makes the power sub-score small almost everywhere (Q-P6, open).
 - Home-type gates calibrated and human-approved on the polar tier (habitat 168 h, ice 2 km).
-- Not done: TEMP-4 (Diviner cross-check; needs the south-polar GDR from PDS) and HOR-2's external profile (needs a
-  Moon Trek/QuickMap profile). The cone/wall/20 m-vs-80 m checks are in `tests/test_horizons.py`.
+- Independent NASA cross-checks run in `make validate` (report in `docs/validation.md`): LOLA-derived average Sun/Earth
+  visibility (PGDA; Sun r = 0.99) as the HOR-2 check, and LRO Diviner polar maps (PDS) for TEMP-4 (PSRs agree; lit-site
+  maxima and the night floor are model-limited, Q-P8). Data lands in `data/raw/{illum,diviner}` via `make fetch`.
 
 ## Troubleshooting
 - `ModuleNotFoundError` / wrong Python: use `.venv` (system Python may be too new for Numba/rasterio).
