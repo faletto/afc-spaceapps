@@ -10,6 +10,7 @@ export interface TourProps { tile: number; rowInTile: number; tilesPerAxis: numb
 
 /** DET-5: 3D Tour panorama for a polar plot. Own time control until the global slider (A6) lands. */
 export function Tour({ tile, rowInTile, tilesPerAxis, bestXY, lat, lon }: TourProps) {
+  const bx = bestXY?.[0], by = bestXY?.[1];
   const [model, setModel] = useState<TourModel | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [t, setT] = useState(24 * 273); // ~30 Sep
@@ -20,11 +21,11 @@ export function Tour({ tile, rowInTile, tilesPerAxis, bestXY, lat, lon }: TourPr
       if (!live) return;
       const q = hz.subarray(rowInTile * 180, rowInTile * 180 + 180);
       if (q.length < 180) { setErr('No horizon data for this plot.'); return; }
-      const p = bestXY ? polarXYToLatLon(bestXY[0], bestXY[1]) : { lat, lon };
+      const p = bx != null && by != null ? polarXYToLatLon(bx, by) : { lat, lon };
       setModel(buildTour(p.lat, p.lon, q, eph, cfg));
     }).catch((e) => { if (live) setErr(String(e)); });
     return () => { live = false; };
-  }, [tile, rowInTile, tilesPerAxis, bestXY, lat, lon]);
+  }, [tile, rowInTile, tilesPerAxis, bx, by, lat, lon]);
 
   const texts = useMemo(() => (model ? [sunCountdown(model, t), earthCountdown(model, t)] : null), [model, t]);
   if (err) return <p role="alert">3D Tour unavailable: {err}</p>;

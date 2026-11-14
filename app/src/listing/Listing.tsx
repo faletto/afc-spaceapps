@@ -55,7 +55,7 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
       </section>
       <Gallery
         photo={<div style={{ padding: 16, borderRadius: 6, background: '#1a2030', color: '#9aa3b8', fontSize: 13 }}>No photos from the Moon yet. {tier === 'polar' ? 'Try the 3D Tour.' : ''}</div>}
-        tour={tier === 'polar' ? { tile: cols.col.tile[i]!, rowInTile: cols.col.row_in_tile[i]!, tilesPerAxis: cols.meta.tiles_per_axis, bestXY: detail?.best_cell_xy, lat, lon } : null}
+        tour={tier === 'polar' && detail?.best_cell_xy ? { tile: cols.col.tile[i]!, rowInTile: cols.col.row_in_tile[i]!, tilesPerAxis: cols.meta.tiles_per_axis, bestXY: detail?.best_cell_xy, lat, lon } : null}
       />
       <Scores cols={cols} i={i} tier={tier} />
       <section><h3 style={{ margin: '0 0 6px', fontSize: 14 }}>Facts &amp; features</h3><Facts cols={cols} i={i} detail={detail} /></section>

@@ -1,5 +1,6 @@
 import type { OverlayLegend, ColArray, ColsJson, Columns, ColumnName, Manifest, Tier } from './types';
 import { COLUMN_DTYPES } from './types';
+import type { SciConfig } from '../science/visibility';
 
 export const EXPECTED_CONTRACT = 2;
 
@@ -112,7 +113,7 @@ export function loadHorizonTile(src: Source, tile: number, tilesPerAxis: number)
 }
 
 /** config.json subset the client science needs (thermal, power, comms). */
-export const loadConfig = (src: Source) => memo('config', () => src.json<import('../science/visibility').SciConfig>('config.json'));
+export const loadConfig = (src: Source) => memo('config', () => src.json<SciConfig>('config.json'));
 
 /** Plot index → ordinal value in real units. */
 export const value = (c: Columns, name: ColumnName, i: number) => c.col[name][i]! * (c.scales[name] ?? 1);

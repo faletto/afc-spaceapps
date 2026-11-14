@@ -22,18 +22,19 @@ export function TourCanvas({ model, t }: { model: TourModel; t: number }) {
       g.fillText(l, xOf(az) - 6, 14); g.fillRect(xOf(az), 18, 1, 6);
     }
     const k0 = Math.max(0, t - s.t0), k1 = Math.min(s.n, k0 + WINDOW_H);
-    const dots = (el: Float64Array, az: Float64Array, col: string) => {
+    // Hollow = not counted by the series (Sun: <50% of disk visible; Earth: below horizon + margin), same criterion as the stats.
+    const dots = (el: Float64Array, az: Float64Array, ok: Uint8Array, col: string) => {
       for (let k = k0; k < k1; k++) {
         const e = el[k]!;
         if (e < EL_MIN || e > EL_MAX) continue;
-        const hidden = e < horizonAt(hz, az[k]!);
+        const hidden = !ok[k];
         g.beginPath(); g.arc(xOf(az[k]!), yOf(e), 2.2, 0, 7);
         if (hidden) { g.strokeStyle = col; g.globalAlpha = 0.5; g.lineWidth = 1; g.stroke(); } else { g.fillStyle = col; g.globalAlpha = 1; g.fill(); }
       }
       g.globalAlpha = 1;
     };
-    dots(s.sunEl, s.sunAz, '#ffd166');
-    dots(s.earthEl, s.earthAz, '#4cc9f0');
+    dots(s.sunEl, s.sunAz, s.sunlit, '#ffd166');
+    dots(s.earthEl, s.earthAz, s.earthOk, '#4cc9f0');
     g.beginPath(); g.moveTo(0, H);
     for (let px = 0; px <= W; px += 2) g.lineTo(px, yOf(horizonAt(hz, (px / W) * 360 - 180)));
     g.lineTo(W, H); g.closePath();
@@ -51,7 +52,7 @@ export function TourCanvas({ model, t }: { model: TourModel; t: number }) {
     <div>
       <canvas ref={ref} width={W} height={H} data-testid="tour-canvas" role="img"
         aria-label="360-degree horizon panorama with Sun and Earth paths" style={{ width: '100%', height: 'auto', borderRadius: 6, display: 'block' }} />
-      <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>Vertical scale ×{vscale} · dots = next 30 days (hollow = behind terrain) · north in the centre</div>
+      <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>Vertical scale ×{vscale} · dots = next 30 days (hollow = Sun mostly hidden or no Earth signal) · north in the centre</div>
     </div>
   );
 }

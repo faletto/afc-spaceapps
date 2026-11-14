@@ -4,7 +4,8 @@
 - Branch: `app` (A4 work on `app-a4` worktree, pushed to `app`) · contract **v2**, main @ 8bc695e merged.
 - Done (A4, mostly): `geo/geometry.ts`, `geo/projections.ts` (polar inverse), `science/visibility.ts` (series, stats, runs, best_window, countdown helpers) with **exact golden parity** (`science/visibility.test.ts`: angles 1e-6, stats 1e-9, runs/windows exact); **3D Tour** (`tour/*`, listing `Gallery` Photos | 3D Tour tab, polar only; canvas panorama, Sun/Earth 30-day paths, hollow = behind terrain, countdowns, own time slider until A6). e2e `tour.spec.ts`.
 - BLOCKERS for correct tour visuals (Pipeline): **R-A6** shipped `app/public/data/ephemeris.bin` is still the v1 STUB (fake Sun/Earth); parity test builds the real one from `pipeline/data/ephemeris_2028.csv`. **R-A7** golden `horizon_quantisation.cases` were generated with `quantize` default offset −3, manifest/data use −6 → that test is `it.skip`.
-- Next: reviewer pass on A4; South Pole tier polish (not started); countdown golden (none exists; countdown is derived from masks that ARE golden-tested); then merge app→main at M4; A5 (home type, More filters, badges, real ids on cards).
+- Reviewer pass on A4 done (no blocking; fixed: tour waits for detail.best_cell_xy, primitive effect deps, hollow dots use series flags, wrap-around tests). DEFERRED: TIME-2 — Tour uses its own time slider; A6 must wire it to the global slider (owner: App, A6). Not done: memoising the series per plot, axis clip above 15°.
+- Next: South Pole tier polish (not started); countdown golden (none exists; countdown is derived from masks that ARE golden-tested); then merge app→main at M4; A5 (home type, More filters, badges, real ids on cards).
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 

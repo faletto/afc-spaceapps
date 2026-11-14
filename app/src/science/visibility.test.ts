@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { azEl, earthAzEl, enuFrame } from '../geo/geometry';
 import { polarXYToLatLon } from '../geo/projections';
-import { bestWindow, decodeHorizon, runsOfFalse, siteSeries, siteStats, type SciConfig } from './visibility';
+import { bestWindow, decodeHorizon, horizonAt, hoursToChange, runsOfFalse, siteSeries, siteStats, type SciConfig } from './visibility';
 
 const data = (p: string) => new URL(`../../public/data/${p}`, import.meta.url);
 const golden = JSON.parse(readFileSync(new URL('../../../pipeline/tests/golden/golden_v1.json', import.meta.url), 'utf8'));
@@ -67,6 +67,17 @@ describe('visibility parity', () => {
       const d = decodeHorizon([c.q], q.unit_deg, q.offset_deg)[0]!;
       expect(Math.abs(d - Math.min(34.8, Math.max(-6, c.deg)))).toBeLessThanOrEqual(0.08 + 1e-9);
     }
+  });
+  it('horizonAt wraps circularly', () => {
+    const hz = Float64Array.from({ length: 180 }, (_, k) => (k === 0 ? 10 : k === 179 ? 20 : 0));
+    expect(horizonAt(hz, 0)).toBe(10);
+    expect(horizonAt(hz, 360)).toBe(10);
+    expect(horizonAt(hz, -2)).toBe(20);
+    expect(horizonAt(hz, 359)).toBeCloseTo(15, 9); // halfway between sample 179 (358°) and sample 0 (360°)
+  });
+  it('hoursToChange reports direction', () => {
+    expect(hoursToChange([1, 1, 0], 0)).toEqual({ hours: 2, to: 0 });
+    expect(hoursToChange([0, 1], 0)).toEqual({ hours: 1, to: 1 });
   });
   it('decodeHorizon uses v*0.16-6', () => {
     expect(decodeHorizon([0, 255])[0]).toBe(-6);
