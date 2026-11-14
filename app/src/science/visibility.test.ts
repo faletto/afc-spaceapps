@@ -45,7 +45,8 @@ describe('geometry parity', () => {
 });
 
 describe('visibility parity', () => {
-  golden.visibility.forEach((g: Record<string, number[] | number>, idx: number) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  golden.visibility.forEach((g: Record<string, any>, idx: number) => {
     it(`site ${idx} (${g.lat}, ${g.lon})`, () => {
       const s = siteSeries(g.lat as number, g.lon as number, g.horizon as number[], eph, cfg);
       const st = siteStats(s, eph, cfg);

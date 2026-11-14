@@ -111,6 +111,9 @@ export function loadHorizonTile(src: Source, tile: number, tilesPerAxis: number)
     new Uint8Array(await src.bin(`polar/horizon/${tileName(tile, tilesPerAxis)}.bin`).catch(() => new ArrayBuffer(0))));
 }
 
+/** config.json subset the client science needs (thermal, power, comms). */
+export const loadConfig = (src: Source) => memo('config', () => src.json<import('../science/visibility').SciConfig>('config.json'));
+
 /** Plot index → ordinal value in real units. */
 export const value = (c: Columns, name: ColumnName, i: number) => c.col[name][i]! * (c.scales[name] ?? 1);
 
