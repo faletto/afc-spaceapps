@@ -4,7 +4,7 @@
 - Branch: `pipeline` · Contract v2 (+H4, H6, P6 notes) · P0–P6 ✅. From-scratch rebuild verified byte-identical (737 files; `make all-data`).
 - P6 done: `make terrain/all-data`, `pipeline/README.md`, payload check (gzip core ≈ 9 MB; polar detail+horizon ≈ 11 MB), App requests R-A2/A3/A4/A5 answered (nearest_feature/km, glossary.json, manifest v2, basemap_small).
 - Cross-checks DONE (NASA data): `crosscheck.py` → docs/validation.md. LOLA illumination (PGDA): Sun r=0.988, RMSE 0.024; Earth r=0.957 (bias −0.066, expected from the 1° margin); PSR agreement 98.2%. Diviner (PDS): see Q-P8. HOR-2 external profile no longer needed (LOLA illumination serves). NFR-4: no raw-size limit (human), no trim.
-- Q-P6 RESOLVED (human): net-energy Sun score (see CONTRACT 'Q-P6 change'); data + goldens regenerated; new demo SP-0032-0154 (day 218 $22,034/mo → day 232 $10,064/mo, −54%). Open: Q-P8 (polar T1 maxima/night floor), tuning of the ASSUMED load/battery constants if wanted.
+- Q-P6 RESOLVED (human): net-energy Sun score (see CONTRACT 'Q-P6 change'); data + goldens regenerated; new demo SP-0032-0154 (day 218 $22,034/mo → day 232 $10,064/mo, −54%). Q-P8 RESOLVED (leave + label modelled). Nothing open except tuning of the ASSUMED load/battery constants if wanted.
 - Maintenance: bug fixes requested by App in app-log.md `## Requests to Pipeline Claude`. Rebuild: `make all-data`. NEVER `make stub` over real data.
 
 ## Milestones
@@ -34,6 +34,7 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Q-P8: polar T1 maxima/night floor vs Diviner · answer: human said "do that" → option 1: leave the model, label temperatures as modelled (glossary text updated; app should keep the 'modelled' wording) · 14 Nov.
 - Q-P6: Sun/power score → net estimated energy production over the mission duration (full year Buy, stay window Rent); net = harvest − continuous load, with battery-mass factor for the longest night · answer: chosen in chat (human) 14 Nov. Constants load 500 W, ref 3000 W, 150 Wh/kg, 2000 kg are ASSUMED.
 - Q-P7: data folder 72 MB > 50 MB budget — commit anyway or Release asset? · answer: commit anyway (chat, 14 Nov); commit real data only at handoffs (H3, H4, H6).
 - Q-P5: Moon-wide Earth contact uses terrain_margin (1° over zero terrain) · answer: 'use your best judgement' (chat) → KEEP terrain_margin · 14 Nov.
