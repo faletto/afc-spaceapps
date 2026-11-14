@@ -56,7 +56,12 @@ test('card opens listing, back returns to results (state kept)', async ({ page }
   await page.setViewportSize({ width: 1400, height: 800 });
   await page.goto('/');
   await expect(page.getByTestId('count')).toContainText('results');
+  // Sorting runs in the worker, so wait for the list to actually re-sort before reading a card.
+  const firstPrice = page.getByTestId('card').first().locator('div >> text=/^\\$/').first();
+  await expect(firstPrice).toBeVisible();
+  const descTop = await firstPrice.textContent();
   await page.getByRole('combobox', { name: /Sort/ }).selectOption('price_asc');
+  await expect(firstPrice).not.toHaveText(descTop!);
   const countBefore = await page.getByTestId('count').textContent();
   const card = page.getByTestId('card').first();
   const plot = await card.getAttribute('data-plot');
