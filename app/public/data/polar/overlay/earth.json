@@ -1,0 +1,1 @@
+{"name": "earth", "label": "Earth", "unit": "%", "min": 0, "max": 100, "ramp": [[0, "#0000ff"], [1, "#ff0000"]], "size": [1024, 1024]}
