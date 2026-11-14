@@ -61,3 +61,23 @@ def test_partial_year_window_parity(eph):
                                   w["tsi"], w["r_sun_km"], CFG, month)
     assert np.allclose(k["monthly_sunlit"][0], r["monthly_sunlit"], equal_nan=True)
     assert np.isnan(k["monthly_sunlit"][0, 5]) and k["sunlit_frac"][0] == pytest.approx(r["sunlit_frac"])
+
+
+def test_masks_match_stats_and_best_window(eph):
+    lat = np.array([0.0, 60.0, -88.0, -30.0])
+    lon = np.array([10.0, -100.0, 40.0, 170.0])
+    hz = np.zeros((4, 180))
+    sun, eok = visibility.site_masks(lat, lon, hz, eph, CFG)
+    st = visibility.site_stats(lat, lon, hz, eph, CFG)
+    assert np.allclose(sun.mean(1), st["sunlit_frac"]) and np.allclose(eok.mean(1), st["earth_frac"])
+    for stay in (14, 90):
+        for mask in (sun, eok):
+            h, d = visibility.best_window(mask, stay)
+            for i in range(4):
+                assert (h[i], d[i]) == visibility.best_window_ref(mask[i], stay)
+    h14, _ = visibility.best_window(sun, 14)
+    assert h14[0] <= st["longest_dark_h"][0]  # a 14-day window cannot contain a longer night than the year's
+
+
+def test_runs_of_false():
+    assert visibility.runs_of_false(np.array([1, 0, 0, 1, 0], bool)) == [(1, 2), (4, 1)]
