@@ -1,0 +1,8 @@
+# DEM sources. sha256 filled by `make fetch` on first download (trust-on-first-use; upstream publishes none), then verified.
+base_pgda: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp
+files:
+  - {name: Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif, url: https://planetarymaps.usgs.gov/mosaic/Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif, bytes: 8494203833, sha256: null}
+  - {name: LDEM_80S_80MPP_ADJ.TIF, url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_80MPP_ADJ.TIF, bytes: 189158392, sha256: null}
+  - {name: LDEM_80S_80MPP_ADJ_HILL.TIF, url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_80MPP_ADJ_HILL.TIF, bytes: 88474342, sha256: null}
+  - {name: LDEM_80S_20MPP_ADJ.TIF, url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_20MPP_ADJ.TIF, bytes: 2696082051, sha256: null}
+  - {name: LDSM_80S_20MPP_ADJ.TIF, url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDSM_80S_20MPP_ADJ.TIF, bytes: 3778056355, sha256: null}

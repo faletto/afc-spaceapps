@@ -9,3 +9,9 @@ def fetch_ephemeris() -> int:
     rows = ephemeris.parse_horizons(horizons.get(horizons.ephemeris_params(year)), n_steps=n)
     ephemeris.write_csv(rows)
     return len(rows)
+
+
+def fetch_all() -> None:
+    print("ephemeris rows:", fetch_ephemeris())
+    from . import dem
+    dem.fetch_all()
