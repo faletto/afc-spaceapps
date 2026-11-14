@@ -4,7 +4,7 @@
 - Branch: `app` · Built against contract v1 (main @ 35351cd, stub data) · Unpushed: 0 after push
 - Done: A0, **A1** (loader, MapView, results list, listing shell, fine print footer + dismissible first-load notice). vitest 10, e2e 6, lint/tsc clean.
 - Next: A2 — overlay plumbing + legends + opacity; Web Worker scaffold (filter/sort over typed arrays, move `queryResults` there); glossary tooltips (config/glossary.json).
-- Blockers: Q-A1 (CI needs `.github/`).
+- Blockers: none. CI: `.github/workflows/app.yml` added (check first run on GitHub).
 - Known gaps (A1): results list scroll position resets after Back; nearest-feature/landmarks, "why" line, photos/3D tour, rent not yet (later WPs). Listing "why" needs a pipeline field (R-A2).
 - ASSUMED: plot half-size global 0.5°/polar 480 m; price bands = quantiles; pills at fit+3 zoom (cap 1500); list excludes off-market; sorts price↑↓/viability/sunlight; main-thread query for now.
 - e2e pill-click uses fixed pixel coords (1200×700, 5×300 wheel) — update if layout changes.
@@ -26,10 +26,10 @@
 <!-- contract version I'm built against; mismatches seen; adaptations made -->
 
 ## Open questions
-Q-A1: 14 Nov · A0 requires a CI job for app, but `.github/` isn't in my write scope. Who owns it? ASSUMED: leave until answered; I can supply a workflow YAML on request.
 <!-- Q-A#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+Q-A1: human granted App Claude permission to write the app CI workflow → `.github/workflows/app.yml` (app/** paths only: lint, tsc, vitest, build, Playwright). Pipeline's job is not in this file. · chat · 14 Nov
 <!-- Q-A#: answer · source · date -->
 
 ## Requests to Pipeline Claude
