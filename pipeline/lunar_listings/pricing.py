@@ -16,6 +16,13 @@ def price_usd(viability, cfg, landmark_premium=0.0, cutoff=None) -> np.ndarray:
     return base
 
 
+def landmark_premium(apollo_km, land_type_is_peak, cfg) -> np.ndarray:
+    """Apollo/Artemis premium within apollo_radius_km, plus peak_light_premium on Peak-of-light plots (additive)."""
+    p = cfg["price"]
+    return np.where(np.asarray(apollo_km) <= p["apollo_radius_km"], p["apollo_premium"], 0.0) + np.where(
+        land_type_is_peak, p["peak_light_premium"], 0.0)
+
+
 def price_range(price, cfg, polar: bool):
     u = cfg["price"]["range"]["polar" if polar else "global"]
     return price * (1 - u), price * (1 + u)

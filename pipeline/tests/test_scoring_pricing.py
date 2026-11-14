@@ -45,3 +45,9 @@ def test_range_rent_format_badges():
 def test_scarcity_cutoff_quantile():
     v = np.arange(100.0)
     assert pricing.scarcity_cutoff(v, CFG) == pytest.approx(97.02, abs=0.01)
+
+
+def test_landmark_premium():
+    import numpy as np
+    prem = pricing.landmark_premium(np.array([10.0, 60.0, 10.0]), np.array([False, False, True]), CFG)
+    assert list(prem) == [0.25, 0.0, 0.25 + 0.5]

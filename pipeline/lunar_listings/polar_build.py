@@ -134,13 +134,16 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     el = np.where(np.isnan(el), np.nanmean(el), el).reshape(NC, NC)
     tpi = el - ndimage.uniform_filter(el, size=2 * round(cfg["land"]["tpi_radius_km"] * 1000 / CELL_M) + 1)
     tp = tpi.ravel()[c["idx"]].reshape(n, K * K)
+    gdem = np.load(work / "dem_global_32.npy")
+    gmed = float(np.median(terrain.plot_blocks(gdem).mean(-1)))  # global plot median (spec: mare = median - 1 km)
     ltype = land.land_type(cs["sunlit_frac"], plat, plon, area["elev_mean_m"], np.percentile(tp, 90, 1),
-                           np.percentile(tp, 10, 1), cfg, polar=True)
+                           np.percentile(tp, 10, 1), cfg, polar=True, median_ref=gmed)
+    apollo_km = land.apollo_distance_km(plat, plon, lm)
     out = {**{k: v for k, v in st.items()}, "plot_row": pr, "plot_col": pc, "lat": plat, "lon": plon,
            "x": px[pr, pc], "y": py[pr, pc], "area_km2": np.full(n, (PLOT_M / 1000) ** 2), "best_cell": c["idx"][sel],
            "best_x": c["x"][sel], "best_y": c["y"][sel], "hzq": c["hzq"][sel], "hazard_score": hazard,
            "landing_safe": landing_safe, "viability": viability, "land_type": ltype, "ice_km": ice_km,
-           "landmark_score": cs["landmark_score"], "nearby": nearby,
+           "landmark_score": cs["landmark_score"], "nearby": nearby, "apollo_km": apollo_km,
            "bw_lander_h": bwl[0], "bw_lander_start": bwl[1], "bw_habitat_h": bwh[0], "bw_habitat_start": bwh[1],
            **{f"s_{k}": v for k, v in sub.items()}, **{k: v for k, v in area.items()}}
     np.savez(work / "polar_plots.npz", **out)
