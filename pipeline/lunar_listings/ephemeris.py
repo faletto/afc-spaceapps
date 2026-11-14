@@ -58,4 +58,5 @@ def load(path: Path = DEFAULT_CSV) -> dict:
         "earth_xyz": lonlat_to_unit(a[:, 0], a[:, 1]),
         "earth_dist_m": a[:, 5] * 1e3,
         "tsi": L_SUN / (4 * np.pi * (a[:, 4] * 1e3) ** 2),
+        "r_sun_km": a[:, 4],
     }
