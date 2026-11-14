@@ -133,7 +133,7 @@ def slope_deg_planar(dem: np.ndarray, res_m: float) -> np.ndarray:
 
 def polar_block_stats(dem, slope, res_m, block_m, max_slope_deg, rows_per_chunk=8):
     """Stats per block_m x block_m block (e.g. 240 m cells, 960 m plots), chunked over block rows."""
-    n = int(round(block_m / res_m))
+    n = round(block_m / res_m)
     nb = dem.shape[0] // n
     out = {}
     for r0 in range(0, nb, rows_per_chunk):
@@ -157,3 +157,23 @@ def polar_lat_deg(x, y):
     """South polar stereographic (k0=1 at pole): lat from radius, r = 2R tan((90-|lat|)/2)."""
     r = np.hypot(x, y)
     return -90.0 + np.degrees(2 * np.arctan(r / (2 * R_M)))
+
+
+def build_polar_stats(raw_dir, out_dir, cfg) -> str:
+    """Polar cell (cell_m) and plot (plot_m) stats. Uses the 20 m DEM if fully downloaded, else the 80 m one."""
+    from pathlib import Path
+
+    raw, out_dir = Path(raw_dir), Path(out_dir)
+    name, full = "LDEM_80S_20MPP_ADJ.TIF", 2_696_082_051
+    f20 = raw / name
+    src = f20 if f20.exists() and f20.stat().st_size == full else raw / "LDEM_80S_80MPP_ADJ.TIF"
+    dem, res = read_polar_core(src)
+    slope = slope_deg_planar(dem, res)
+    p = cfg["grid"]["polar"]
+    ms = cfg["safety"]["max_slope_deg"]
+    cells = polar_block_stats(dem, slope, res, p["cell_m"], ms)
+    plots = polar_block_stats(dem, slope, res, p["plot_m"], ms)
+    tag = f"{round(res)}m"
+    np.savez_compressed(out_dir / f"terrain_polar_cells_{tag}.npz", **cells)
+    np.savez_compressed(out_dir / f"terrain_polar_plots_{tag}.npz", **plots)
+    return str(src.name)
