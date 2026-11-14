@@ -52,3 +52,41 @@ test('list follows the map view and sort', async ({ page }) => {
   const first = await page.getByTestId('card').first().textContent();
   expect(first).toContain('$');
 });
+
+test('card opens listing, back returns to results (state kept)', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await expect(page.getByTestId('count')).toContainText('results');
+  await page.getByRole('combobox').selectOption('price_asc');
+  const countBefore = await page.getByTestId('count').textContent();
+  const card = page.getByTestId('card').first();
+  const plot = await card.getAttribute('data-plot');
+  const priceText = (await card.locator('div >> text=/^\\$/').first().textContent())!;
+
+  await card.click();
+  await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
+  await expect(page.getByTestId('listing-price')).toContainText(priceText);
+  await expect(page.getByTestId('viability')).toBeVisible();
+  await expect(page.getByTestId('fineprint').first()).toBeVisible();
+  await expect(page.getByTestId('card')).toHaveCount(0);
+  await expect(page.getByTestId('selected')).toHaveText('Selected plot #' + plot);
+
+  await page.getByRole('button', { name: '← Back to results' }).click();
+  await expect(page.getByRole('article', { name: 'Listing' })).toHaveCount(0);
+  await expect(page.getByTestId('count')).toHaveText(countBefore!);
+  await expect(page.getByRole('combobox')).toHaveValue('price_asc');
+  await expect(page.getByTestId('selected')).toHaveCount(0);
+});
+
+test('Escape closes the listing; notice is dismissible', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByTestId('notice')).toBeVisible();
+  await page.getByRole('button', { name: 'Got it' }).click();
+  await expect(page.getByTestId('notice')).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByTestId('notice')).toHaveCount(0);
+  await page.getByTestId('card').first().click();
+  await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('card').first()).toBeVisible();
+});

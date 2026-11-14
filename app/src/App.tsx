@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { httpSource, loadManifest, loadTier } from './data/loader';
+import { loadManifest, loadTier } from './data/loader';
+import { dataBase as base, dataSource as src } from './data/source';
+import { FinePrint } from './listing/FinePrint';
+import { Notice } from './listing/Notice';
+import { Listing } from './listing/Listing';
 import type { Columns, Tier } from './data/types';
 import { MapView } from './map/MapView';
 import { ResultsList } from './results/ResultsList';
 import { useStore } from './state/store';
 
-const src = httpSource();
-const base = import.meta.env.BASE_URL + 'data/';
-
 export function App() {
-  const { tier, setTier, selection } = useStore();
+  const { tier, setTier, selection, select } = useStore();
   const [data, setData] = useState<Partial<Record<Tier, Columns>>>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -34,9 +35,15 @@ export function App() {
           {cols && selection != null && <span data-testid="selected">Selected plot #{selection}</span>}
         </div>
       </div>
-      <aside style={{ borderLeft: '1px solid #262c38', minHeight: 0 }}>
-        {cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemapUrl} />}
+      <aside style={{ borderLeft: '1px solid #262c38', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, minHeight: 0 }}>
+        {cols && selection != null
+          ? <Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} />
+          : cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemapUrl} />}
+        </div>
+        <footer style={{ padding: '8px 12px', borderTop: '1px solid #262c38' }}><FinePrint compact /></footer>
       </aside>
+      <Notice />
     </div>
   );
 }
