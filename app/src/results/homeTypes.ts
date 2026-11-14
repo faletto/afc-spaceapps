@@ -50,5 +50,5 @@ export function matchPct(c: Columns, i: number, type: HomeType, cfg: HomeCfg): n
 export function plotName(tier: Tier, x: number, y: number): string {
   const p = (n: number, w: number) => String(n).padStart(w, '0');
   if (tier === 'global') return `G-${p(Math.floor(y + 90), 3)}-${p(Math.floor(x + 180), 3)}`;
-  return `SP-${p(Math.floor((153600 - y) / 960), 4)}-${p(Math.floor((x + 153600) / 960), 4)}`;
+  return `SP-${p(Math.min(319, Math.floor((153600 - y) / 960)), 4)}-${p(Math.min(319, Math.floor((x + 153600) / 960)), 4)}`;
 }

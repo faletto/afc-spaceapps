@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { List, type RowComponentProps } from 'react-window';
 import type { Columns, Tier } from '../data/types';
-import { NO_FILTERS, useStore, type SortKey } from '../state/store';
+import { useStore, type SortKey } from '../state/store';
 import { ListingCard } from './ListingCard';
 import { PlotsForYou } from './PlotsForYou';
 import { RESULT_CAP } from './query';
@@ -37,7 +37,7 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
   const { sort, setSort, hover, selection, setHover, select } = useStore();
   const results = useStore((s) => s.results);
   const homeType = useStore((s) => s.filters.homeType);
-  const quiet = useStore((s) => s.filters === NO_FILTERS);
+  const quiet = useStore((s) => { const f = s.filters; return f.priceMin == null && f.priceMax == null && !f.landTypes.length && !f.hideOff && f.homeType === 'any' && !f.minSun && !f.minEarth; });
   const ids = results?.ids ?? EMPTY, match = results?.match ?? EMPTY, total = results?.total ?? 0;
   const box = useRef<HTMLDivElement>(null);
   const [h, setH] = useState(400);

@@ -8,7 +8,8 @@
 - A5 (in progress, on `app-a4`/`app`, NOT merged to main): Home type filter (gates via bw_lander_h/bw_habitat_h/sunlit/ice; polar-only ice depot hint), match % on cards, Best match sort (default when a type is chosen), More panel (min sunlight/Earth), real plot ids on cards (G-lat-lon / SP-row-col derived from x,y), badges (max 2 on cards: Hot property, Earth view, Peak of light, Off market), "Plots for you" strip (featured flag: best, cheapest, next best). vitest 38, e2e 17 (3 new in a5.spec.ts).
 - ASSUMED: solar-farm gate = sunlit ≥ 60% only (safe_area_frac isn't a column, R-A8); match % uses only the weights listed per type in config (Σw·s/Σw); `Any` match = viability.
 - Left for A5/A6: OV-11 Solar power overlay (needs R-A8 overlay PNG), Price cut badge (Rent tab, A6), named-score tooltips already done, FIL-6 URL state (P2), Tour↔global slider (TIME-2, A6), South Pole tier polish, tour memoisation.
-- Next: reviewer on A5 (end of package), then merge to main at M5 on human OK; then A6 (Rent).
+- A5 reviewer pass done (no blocking). Fixed: no query until config loaded (no '0 plots' flash), 'Plots for you' structural check, plotName clamp, gate-boundary/match/store/badge/featured tests (vitest 44, e2e 17). Merged to main at M5.
+- Next: A6 (Rent tab, move-in/stay, time slider wired to the Tour (TIME-2), Price cut badge, rent parity vs golden_rent_v1.json).
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 
@@ -20,7 +21,7 @@
 | A2 | ✅ (OV-7 comm window deferred) | see git log | no | worker + overlays + tooltips |
 | A3 | ✅ | see Done log | M3 | real data, filters, D-6 e2e, reviewer pass |
 | A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | M4 (94204b7) |
-| A5 | 🟡 home type/match/badges/ids/Plots for you ✅; OV-11 pending R-A8 | see git log | no | |
+| A5 | ✅ (OV-11 pending R-A8; Price cut badge in A6) | see git log | M5 | reviewer pass done |
 | A6 | ⬜ | | | |
 | A7 | ⬜ | | | |
 
@@ -28,6 +29,7 @@
 <!-- contract version I'm built against; mismatches seen; adaptations made -->
 
 ## Open questions
+Q-A3 (14 Nov): Home-type match % — is `config.home_types.<type>.weights` a FULL override (what I do: only the listed weights count, Σw·s/Σw) or a DELTA onto `config.weights` defaults (spec §6.8 says 'weight changes vs. defaults')? Default: full override. ASSUMED; humans/Pipeline please confirm.
 Q-A2 (mostly resolved by P6 small basemaps; leaving for humans to close): 14 Nov · First-load budget (3 s). NOW: first paint needs cols 4.1 MB + small basemap 0.65 MB + JS ≈ 6 MB; the 8.2 MB full basemap loads in the background. Original text: Startup downloads ≈ 13 MB (basemap 9 MB + cols 4 MB); list is interactive in ~0.3 s on a GPU locally but 9 MB over a slow link may exceed 3 s. ASSUMED: acceptable for the demo (static host, brotli doesn't help JPEG); asked Pipeline for a smaller basemap (R-A5). Humans: is a ~13 MB first load OK, or should I lazy-load the basemap further / require a smaller JPEG?
 <!-- Q-A#: date · question · context · my default (ASSUMED if proceeding) -->
 

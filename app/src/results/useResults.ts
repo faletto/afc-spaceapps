@@ -15,7 +15,7 @@ export function useResultsQuery(tier: Tier, cols: Columns | undefined) {
   const [home, setHome] = useState<HomeCfg | null>(null);
   useEffect(() => { loadConfig(dataSource).then((c) => setHome((c as unknown as { home_types: HomeCfg }).home_types)).catch((e) => console.warn('config not loaded', e)); }, []);
   useEffect(() => {
-    if (!cols) return;
+    if (!cols || (filters.homeType !== 'any' && !home)) return; // wait for config.json so the home gate isn't applied as 'fail all'
     let live = true;
     compute().query(tier, cols, viewRect, sort, filters, home).then((r) => live && setResults(r)).catch((e) => console.error('query failed', e));
     return () => { live = false; };
