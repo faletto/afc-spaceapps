@@ -1,2 +1,2 @@
 """Lunar Listings data pipeline."""
-CONTRACT_VERSION = 1
+CONTRACT_VERSION = 2

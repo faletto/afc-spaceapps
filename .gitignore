@@ -10,3 +10,4 @@ data/cache/large/
 *.egg-info/
 .pytest_cache/
 .ruff_cache/
+data/work/

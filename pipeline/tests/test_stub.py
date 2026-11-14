@@ -17,7 +17,7 @@ def out(tmp_path_factory):
 def test_manifest(out):
     m = json.loads((out / "manifest.json").read_text())
     assert m["horizon"]["offset_deg"] < 0
-    assert m["contract_version"] == 1 and m["counts"]["global"] == 64800 and m["counts"]["polar"] > 50_000
+    assert m["contract_version"] == 2 and m["counts"]["global"] == 64800 and m["counts"]["polar"] > 50_000
     for f in m["files"][:20]:
         assert hashlib.sha256((out / f["path"]).read_bytes()).hexdigest() == f["sha256"]
 
