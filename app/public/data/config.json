@@ -15,7 +15,7 @@
   "mode": "terrain_margin"
  },
  "computed": {
-  "scarcity_viability_cutoff": 85
+  "scarcity_viability_cutoff": 58.25757217919818
  },
  "grid": {
   "global": {
@@ -80,6 +80,25 @@
   "near_dem_radius_m": 5000,
   "step_growth": 0.01
  },
+ "ice": {
+  "max_km": 50
+ },
+ "land": {
+  "peak_light_frac": 0.7,
+  "tpi_floor": -300,
+  "tpi_radius_km": 5,
+  "tpi_rim": 300
+ },
+ "landmarks": {
+  "d0_km": 100,
+  "fame_weights": {
+   "apollo_artemis": 1.0,
+   "major_crater": 0.6,
+   "other": 0.3
+  },
+  "max_nearby": 5,
+  "radius_km": 300
+ },
  "moon": {
   "radius_m": 1737400
  },
@@ -127,11 +146,11 @@
   "min_safe_frac": 0.25,
   "relief_range_m": [
    0,
-   2000
+   4000
   ],
   "roughness_range_m": [
    0,
-   50
+   600
   ],
   "slope_p90_range": [
    0,

@@ -1,1 +1,1 @@
-{"name": "viability", "label": "Viability", "unit": "%", "min": 0, "max": 100, "ramp": [[0, "#0000ff"], [1, "#ff0000"]], "size": [1024, 512]}
+{"name": "viability", "label": "Viability", "unit": "score", "min": 0, "max": 100, "ramp": [[0, "#440154"], [0.25, "#3b518a"], [0.5, "#208f8c"], [0.75, "#5bc862"], [1.0, "#fde724"]], "size": [1440, 720], "extent": [-180, -90, 180, 90]}
