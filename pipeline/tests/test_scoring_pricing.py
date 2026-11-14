@@ -51,3 +51,13 @@ def test_landmark_premium():
     import numpy as np
     prem = pricing.landmark_premium(np.array([10.0, 60.0, 10.0]), np.array([False, False, True]), CFG)
     assert list(prem) == [0.25, 0.0, 0.25 + 0.5]
+
+
+def test_power_score_net_energy():
+    # no sun -> 0; abundant sun and no night -> 1; long night costs battery mass
+    assert scoring.power_score(0.0, 0.0, CFG) == 0
+    assert scoring.power_score(30000.0, 0.0, CFG) == pytest.approx(1.0)
+    short, long_ = scoring.power_score(30000.0, 100.0, CFG), scoring.power_score(30000.0, 600.0, CFG)
+    assert long_ < short < 1.0
+    # harvest below the continuous load -> nothing net (500 W load: 500/(10*0.3)*24 = 4000 Wh/m2/day break-even)
+    assert scoring.power_score(3999.0, 0.0, CFG) == 0 and scoring.power_score(5000.0, 0.0, CFG) > 0

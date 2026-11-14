@@ -68,7 +68,7 @@ def build_rent(work_dir=None) -> dict:
     from . import horizons, polar, pricing
 
     cfg, eph = config.load(), ephemeris.load()
-    cutoff = 57.3
+    cutoff = 62.3  # = config.json computed.scarcity_viability_cutoff after Q-P6 (net-energy power score)
     sites = [_site("eq", 0.0, 0.0, np.zeros(180), 0.2, 0.1, True, 0.0, None),
              _site("midlat", 45.0, 100.0, np.zeros(180), 0.35, 0.3, True, 0.0, None),
              _site("farside", 0.0, 180.0, np.zeros(180), 0.25, 0.05, True, 0.0, None)]
@@ -76,13 +76,14 @@ def build_rent(work_dir=None) -> dict:
     if npz.exists():
         o = np.load(npz)
         la, lo = polar.xy_to_lonlat(o["best_x"], o["best_y"])
-        for sid, i in (("SP-0172-0148", int(np.flatnonzero((o["plot_row"] == 172) & (o["plot_col"] == 148))[0])),
+        for sid, i in (("SP-0032-0154", int(np.flatnonzero((o["plot_row"] == 32) & (o["plot_col"] == 154))[0])),
+                       ("SP-0172-0148", int(np.flatnonzero((o["plot_row"] == 172) & (o["plot_col"] == 148))[0])),
                        ("top_viability", int(np.argmax(o["viability"]))), ("psr", int(np.argmin(o["sunlit_frac"])))):
             sites.append(_site(sid, la[i], lo[i], horizons.dequantize(o["hzq"][i], 0.16, -6.0), o["hazard_score"][i],
                                o["landmark_score"][i], o["landing_safe"][i], 0.0, o["ice_km"][i]))
     cases = []
     for s in sites:
-        for day in (1, 100, 274, 288, 330):
+        for day in (1, 100, 218, 232, 274, 288, 330):
             for stay in (14, 30, 90, 366):
                 r = pricing.rent_for_stay(s, eph, cfg, cutoff, day, stay)
                 cases.append({"site": s["id"], "move_in_day": day, "stay_days": stay, **{k: float(v) for k, v in r.items()}})

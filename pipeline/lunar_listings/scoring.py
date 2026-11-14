@@ -17,14 +17,29 @@ def thermal_hazard(temp_min_k, temp_max_k, cfg):
     return (cold + swing) / 2
 
 
+def power_score(energy_wh_m2_day, longest_dark_h, cfg):
+    """Net energy score (Q-P6): average harvested power of the panel minus a continuous load, normalised, times a
+    battery-mass factor for bridging the longest night. Over the whole year (Buy) or the stay window (Rent).
+
+    harvest_w = energy_wh_m2_day / 24 * area * efficiency   (energy_wh_m2_day = mean daily Sun-tracking-panel flux)
+    net_w     = max(0, harvest_w - load_w)
+    battery   = load_w * longest_dark_h / battery_wh_per_kg  [kg]
+    score     = norm(net_w, 0..net_ref_w) / (1 + battery / battery_ref_kg)
+    """
+    pw = cfg["power"]
+    harvest = np.asarray(energy_wh_m2_day, float) / 24.0 * pw["area_m2"] * pw["efficiency"]
+    net = np.maximum(0.0, harvest - pw["load_w"])
+    battery_kg = pw["load_w"] * np.asarray(longest_dark_h, float) / pw["battery_wh_per_kg"]
+    return norm(net, (0.0, pw["net_ref_w"])) / (1.0 + battery_kg / pw["battery_ref_kg"])
+
+
 def subscores(t: dict, cfg: dict, polar: bool = False) -> dict:
     """t: table with energy_wh_m2_day, longest_dark_h, earth_frac, longest_blackout_h, hazard_score,
     temp_min_k, temp_max_k, landmark_score, (ice_km for polar)."""
     pen = cfg["penalty"]
     s = {
         "safety": 1.0 - np.asarray(t["hazard_score"]),
-        "power": norm(t["energy_wh_m2_day"], cfg["norm"]["energy_wh_m2_day"])
-        * penalty(t["longest_dark_h"], pen["dark"]["h50"], pen["dark"]["k"]),
+        "power": power_score(t["energy_wh_m2_day"], t["longest_dark_h"], cfg),
         "comms": np.asarray(t["earth_frac"])
         * penalty(t["longest_blackout_h"], pen["blackout"]["h50"], pen["blackout"]["k"]),
         "thermal": 1.0 - thermal_hazard(t["temp_min_k"], t["temp_max_k"], cfg),

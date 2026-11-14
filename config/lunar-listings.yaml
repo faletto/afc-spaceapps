@@ -5,7 +5,9 @@ grid:
   global: { plot_deg: 1.0, terrain_res_deg: 0.03125 }
   polar:  { lat_min: -85.0, cell_m: 240, plot_m: 960, refine: false }
 horizon: { az_step_deg: 2, d_max_m: 150000, step_growth: 0.01, mast_m: 2.0, near_dem_radius_m: 5000 }
-power:  { panel: vertical_tracking, area_m2: 10, efficiency: 0.30, sunlit_threshold: 0.5 }
+power:  { panel: vertical_tracking, area_m2: 10, efficiency: 0.30, sunlit_threshold: 0.5,
+          # Q-P6 (human-chosen 14 Nov): Sun score = net energy over the duration. ASSUMED values below, tune if needed.
+          load_w: 500, net_ref_w: 3000, battery_wh_per_kg: 150, battery_ref_kg: 2000 }
 comms:  { mode: terrain_margin, cutoff_deg: 5.0, margin_deg: 1.0 }
 thermal: { albedo: 0.12, emissivity: 0.95, floor_k: 95, psr_floor_k: 40, cold_range_k: [40, 120], swing_range_k: [100, 300] }
 safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], roughness_range_m: [0, 600], relief_range_m: [0, 4000] }  # Q-P3 (human-approved 14 Nov): spec's 0-50/0-2000 saturate at 1-deg plots; Moon-wide tier. Polar ranges revisited in P4.
