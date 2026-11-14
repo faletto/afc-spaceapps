@@ -1,5 +1,5 @@
 PY := .venv/bin/python
-.PHONY: setup stub fetch data validate test app demo
+.PHONY: setup stub fetch polar data validate test app demo
 setup:
 	uv venv --python 3.11 && uv pip install -e "pipeline[dev]"
 	@if [ -f app/package.json ]; then cd app && npm ci; fi
@@ -7,6 +7,8 @@ stub:
 	$(PY) -m lunar_listings stub
 fetch:
 	$(PY) -m lunar_listings fetch
+polar:
+	$(PY) -u -m lunar_listings polar
 data:
 	$(PY) -m lunar_listings data
 validate:
