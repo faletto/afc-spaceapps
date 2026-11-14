@@ -43,8 +43,15 @@ export type ColArray = Float32Array | Uint8Array | Uint16Array;
 /** Raw stored values; real value = stored * scales[name]. */
 export interface Columns {
   rows: number;
+  /** Raw cols.bin (copied to the compute worker). */
+  buffer: ArrayBuffer;
   meta: ColsJson;
   scales: Record<string, number>;
   col: { [K in ColumnName]: ColArray };
 }
 export const ICE_NA = 65535;
+
+export interface OverlayLegend {
+  name: string; label: string; unit: string; min: number; max: number;
+  ramp: [number, string][]; size: [number, number];
+}

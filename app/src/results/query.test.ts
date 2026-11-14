@@ -4,6 +4,7 @@ import { queryResults } from './query';
 
 const mk = (): Columns => ({
   rows: 4,
+  buffer: new ArrayBuffer(0),
   meta: { flags: { off_market: 0 }, bounds: [0, 0, 1, 1] } as unknown as Columns['meta'],
   scales: {},
   col: {

@@ -3,9 +3,10 @@ import DeckGL from '@deck.gl/react';
 import { OrthographicView } from '@deck.gl/core';
 import { BitmapLayer, PolygonLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers';
 import type { Columns, Tier } from '../data/types';
+import { dataBase } from '../data/source';
 import { useStore } from '../state/store';
 import { BAND_COLORS, bandOf, buildMarkers, formatPrice, visibleIds } from './markers';
-import { fitZoom, PILL_CAP, PILL_ZOOM_ABOVE_FIT, plotSquare, tierBounds } from './tiers';
+import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, tierBounds } from './tiers';
 
 const VIEW = new OrthographicView({ id: 'map', flipY: false });
 interface VS { target: [number, number, number]; zoom: number }
@@ -14,7 +15,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [vs, setVs] = useState<VS>({ target: [0, 0, 0], zoom: 0 });
-  const { selection, hover, select, setHover, setViewRect } = useStore();
+  const { selection, hover, select, setHover, setViewRect, overlay, overlayOpacity } = useStore();
 
   useEffect(() => {
     const el = box.current!;
@@ -42,6 +43,11 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     return () => clearTimeout(t);
   }, [vs, size, setViewRect]);
 
+  // Dot radius follows plot size on screen so dots don't wall off the basemap/overlay; fade them under an overlay.
+  const plotPx = 2 ** vs.zoom * 2 * PLOT_HALF[tier];
+  const dotR = Math.min(4, Math.max(0.8, plotPx * 0.3));
+  const dotOpacity = overlay ? 0.35 : 1;
+
   const pills = vs.zoom - fit >= PILL_ZOOM_ABOVE_FIT;
   const shown = useMemo(() => {
     if (!pills || !size.w) return [];
@@ -54,18 +60,21 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
 
   const layers = [
     new BitmapLayer({ id: 'basemap', image: basemapUrl, bounds }),
+    overlay && new BitmapLayer({
+      id: 'overlay', opacity: overlayOpacity, bounds, image: `${dataBase}${tier}/overlay/${overlay}.png`,
+    }),
     // Off market (MAP-5): hollow grey ring — distinct by shape, not only color.
     new ScatterplotLayer({
       id: 'off', data: { length: markers.off.ids.length, attributes: { getPosition: { value: markers.off.positions, size: 2 } } },
       filled: false, stroked: true, getLineColor: [170, 170, 170, 220], lineWidthUnits: 'pixels', getLineWidth: 1.5,
-      radiusUnits: 'pixels', getRadius: 3.5, pickable: true,
+      radiusUnits: 'pixels', getRadius: Math.max(dotR + 0.5, 2.5), opacity: dotOpacity, pickable: true,
       onHover: (info) => setHover(info.index >= 0 ? markers.off.ids[info.index]! : null),
       onClick: (info) => info.index >= 0 && select(markers.off.ids[info.index]!),
     }),
     new ScatterplotLayer({
       id: 'dots', visible: !pills,
       data: { length: markers.on.ids.length, attributes: { getPosition: { value: markers.on.positions, size: 2 }, getFillColor: { value: markers.on.colors!, size: 4, normalized: true } } },
-      radiusUnits: 'pixels', getRadius: 3, pickable: true,
+      radiusUnits: 'pixels', getRadius: dotR, opacity: dotOpacity, pickable: true,
       onHover: (info) => setHover(info.index >= 0 ? markers.on.ids[info.index]! : null),
       onClick: (info) => info.index >= 0 && select(markers.on.ids[info.index]!),
     }),

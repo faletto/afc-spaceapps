@@ -47,7 +47,7 @@ test('list follows the map view and sort', async ({ page }) => {
   for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(150); }
   await page.waitForTimeout(800);
   expect(await text()).not.toBe(before);
-  await page.getByRole('combobox').selectOption('price_asc');
+  await page.getByRole('combobox', { name: /Sort/ }).selectOption('price_asc');
   const first = await page.getByTestId('card').first().textContent();
   expect(first).toContain('$');
 });
@@ -56,7 +56,7 @@ test('card opens listing, back returns to results (state kept)', async ({ page }
   await page.setViewportSize({ width: 1400, height: 800 });
   await page.goto('/');
   await expect(page.getByTestId('count')).toContainText('results');
-  await page.getByRole('combobox').selectOption('price_asc');
+  await page.getByRole('combobox', { name: /Sort/ }).selectOption('price_asc');
   const countBefore = await page.getByTestId('count').textContent();
   const card = page.getByTestId('card').first();
   const plot = await card.getAttribute('data-plot');
@@ -73,7 +73,7 @@ test('card opens listing, back returns to results (state kept)', async ({ page }
   await page.getByRole('button', { name: '← Back to results' }).click();
   await expect(page.getByRole('article', { name: 'Listing' })).toHaveCount(0);
   await expect(page.getByTestId('count')).toHaveText(countBefore!);
-  await expect(page.getByRole('combobox')).toHaveValue('price_asc');
+  await expect(page.getByRole('combobox', { name: /Sort/ })).toHaveValue('price_asc');
   await expect(page.getByTestId('selected')).toHaveCount(0);
 });
 
@@ -88,4 +88,40 @@ test('Escape closes the listing; notice is dismissible', async ({ page }) => {
   await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('card').first()).toBeVisible();
+});
+
+test('overlay: select shows legend with unit/range, opacity works, ice is polar-only', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text())); // deck.gl logs layer errors here
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  const sel = page.getByRole('combobox', { name: 'Overlay' });
+  await expect(page.getByTestId('legend')).toHaveCount(0);
+  await expect(sel.locator('option[value="ice"]')).toHaveCount(0);
+  await sel.selectOption('sunlit');
+  const legend = page.getByTestId('legend');
+  await expect(legend).toContainText('Sunlight');
+  await expect(legend).toContainText('(%)');
+  await expect(legend).toContainText('100');
+  await page.getByRole('slider', { name: 'Overlay opacity' }).fill('0.3');
+  await page.getByRole('button', { name: 'South Pole District' }).click();
+  await expect(sel.locator('option[value="ice"]')).toHaveCount(1);
+  await sel.selectOption('ice');
+  await expect(legend).toContainText('Ice access');
+  await sel.selectOption('');
+  await expect(legend).toHaveCount(0);
+  await page.waitForTimeout(300);
+  expect(errors).toEqual([]);
+});
+
+test('glossary tooltip opens on focus and closes on Escape without closing the listing', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('card').first().click();
+  const term = page.locator('[data-term="sunlight"]');
+  await term.focus();
+  await expect(page.getByRole('tooltip')).toContainText('Sun is above');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('tooltip')).toHaveCount(0);
+  await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
 });

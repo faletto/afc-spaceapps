@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { loadManifest, loadTier } from './data/loader';
 import { dataBase as base, dataSource as src } from './data/source';
 import { FinePrint } from './listing/FinePrint';
+import { OverlayControl } from './map/OverlayControl';
 import { Notice } from './listing/Notice';
 import { Listing } from './listing/Listing';
 import type { Columns, Tier } from './data/types';
@@ -24,6 +25,7 @@ export function App() {
     <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
       <div style={{ position: 'relative' }}>
         {cols && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemapUrl} />}
+        {cols && <OverlayControl tier={tier} />}
         <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
           {(['global', 'polar'] as const).map((t) => (
             <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 12px', fontWeight: tier === t ? 700 : 400 }}>

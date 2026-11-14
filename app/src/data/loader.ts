@@ -1,4 +1,4 @@
-import type { ColArray, ColsJson, Columns, ColumnName, Manifest, Tier } from './types';
+import type { OverlayLegend, ColArray, ColsJson, Columns, ColumnName, Manifest, Tier } from './types';
 import { COLUMN_DTYPES } from './types';
 
 export const EXPECTED_CONTRACT = 1;
@@ -37,7 +37,7 @@ export function decodeColumns(meta: ColsJson, buf: ArrayBuffer): Columns {
   for (const name of Object.keys(COLUMN_DTYPES)) {
     if (!(name in col)) throw new Error(`cols.json missing column "${name}"`);
   }
-  return { rows: meta.rows, meta, scales, col: col as Columns['col'] };
+  return { rows: meta.rows, buffer: buf, meta, scales, col: col as Columns['col'] };
 }
 
 const cache = new Map<string, Promise<unknown>>();
@@ -82,3 +82,8 @@ export function loadHorizonTile(src: Source, tile: number, tilesPerAxis: number)
 
 /** Plot index → ordinal value in real units. */
 export const value = (c: Columns, name: ColumnName, i: number) => c.col[name][i]! * (c.scales[name] ?? 1);
+
+export const OVERLAY_NAMES = ['viability', 'sunlit', 'earth', 'temperature', 'safety', 'ice'] as const;
+export type OverlayName = (typeof OVERLAY_NAMES)[number];
+export const loadLegend = (src: Source, tier: Tier, name: string) =>
+  memo(`legend:${tier}:${name}`, () => src.json<OverlayLegend>(`${tier}/overlay/${name}.json`));
