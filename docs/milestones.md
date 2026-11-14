@@ -1,8 +1,8 @@
 # Lunar Listings — Final Milestones
 
-*NASA Space Apps Challenge 2026 · Team afc-spaceapps · v2.0 (final) · 14 Nov 2026*
+*NASA Space Apps Challenge 2026 · Team afc-spaceapps · v2.2 (final) · 14 Nov 2026*
 
-*Builds `docs/requirements.md` v2.0. Merges the team's build order (requirements draft v0.1, §9.2) with milestones v1.0. Earlier versions are in `docs/archive/`.*
+*Builds `docs/requirements.md` v2.2 (final). v2.2 applies the requirements v2.1 follow-ups (Zillow patterns: results list, facts line, Off-market dots, 3D Tour, Home type and sort, named scores, badges, price range, Rent tab) and the v2.2 fixes. Earlier versions are in `docs/archive/`. Implementation details: `docs/technical-spec.md`.*
 
 ![Build plan](img/roadmap.png)
 
@@ -36,10 +36,10 @@
 | **M0** | Setup & contract | Repo, decisions, data contract + stub data, downloads started | P0 |
 | **M1** | Skeleton + raw data | App shows map, fake price markers and listing panel; ephemeris cached; DEM downsampled | P0 |
 | **M2** | Geometry + Moon-wide systems | Validated Sun/Earth geometry; Systems A–D for every global plot; sanity checks pass | P0 |
-| **M3** | Real Moon-wide map ★ | Real prices on the global map; overlays; price filter; listing panel with real facts | P0 |
-| **M4** | South Pole District (MVP) | Terrain-aware polar lighting and comms; polar plots; sky view | P0 |
-| **M5** | Listings come alive | Blurbs, land types, landmarks, nearby, ice access, price history, presets, featured listings | P1 |
-| **M6** | Time & move-in date | Time slider, comm-window overlay, move-in date re-pricing | P1 |
+| **M3** | Real Moon-wide map ★ | Real prices on the global map; results list; facts line; Off-market dots; overlays; price filter | P0 |
+| **M4** | South Pole District (MVP) | Terrain-aware polar lighting and comms; polar plots; **3D Tour** | P0 |
+| **M5** | Listings come alive | Blurbs, land types, landmarks, ice access, **Home type + sort**, **named scores**, **badges**, **price range**, "Plots for you" | P1 |
+| **M6** | Time & **Rent** | Time slider, comm-window overlay, **Rent tab** (move-in + stay → Rent Moonstimate), rent history | P1 |
 | **M7** | Trust, polish & demo mode | About/formulas/validation pages, disclaimer, demo and presentation modes, novice test | P0/P1 |
 | **M8** | Freeze & submit | Rehearsed demo, 30 s video, 7-slide deck, project page, submission | P0 |
 | *Stretch* | P2 lane | Ask the realtor (AI), compare, adjustable weights, relay toggle, T2 heat model | P2 |
@@ -70,7 +70,7 @@ M0 ─▶ M1 ─▶ M2 ─▶ M3 ─▶ M4 ─┬─▶ M5 ─┐
 ### M1 — Skeleton + raw data (parallel)
 
 **Exit criteria:**
-- [ ] **Frontend:** basemap with pan and zoom; price markers from the stub; click → listing panel (stub facts); South Pole tab; disclaimer shown. *(UI-1/2/3, MAP-1–4, DET-1–4 on stub)*
+- [ ] **Frontend:** basemap with pan and zoom; markers from the stub (dots zoomed out, price pills zoomed in); **results list of cards** with facts lines; click a pin or card → listing with "← Back to results" (stub facts); South Pole tab; disclaimer fine print. *(UI-1/2/3, MAP-1–4, RES-1–3, DET-1–4, DET-10 on stub)*
 - [ ] **Data A:** ephemeris cache for the analysis year: sub-solar and sub-Earth points, Sun and Earth range, hourly, committed. *(EPH-1, EPH-4)*
 - [ ] **Data B:** global DEM downsampled; slope, roughness and relief rasters; polar DEM cropped. *(SAFE inputs)*
 - [ ] **P:** screenshot of the skeleton UI (for the "how we built it" record).
@@ -87,8 +87,9 @@ M0 ─▶ M1 ─▶ M2 ─▶ M3 ─▶ M4 ─┬─▶ M5 ─┐
 
 **Exit criteria:**
 - [ ] Viability and Moonstimate computed (VS-1–3, VS-5, PRICE-1/2) and written to `plots_global.json`.
-- [ ] The app runs on real data: price markers, listing panel with real facts and the "why" line, price filter (FIL-1).
+- [ ] The app runs on real data: zoom-dependent markers (MAP-2), grey **Off market** dots (MAP-5), virtualized **results list** with count and Price sort (RES-1–3), listing with real facts, **facts line** (DET-10) and the "why" line, price filter (FIL-1). The Buy price never changes with UI state (automated test, D-6).
 - [ ] Overlays OV-1 to OV-5 with legends and colorblind-safe palettes.
+- [ ] **Home-type gate calibration** (v2.2 F1): `best_window` values computed; gate values set so each type returns ≥ [TBD, e.g. 50] plots. (The filter UI itself ships in M5.)
 - [ ] Demo steps 1–3 (requirements §11) work.
 - [ ] Tagged `m3`; screen recording saved.
 - [ ] **P:** capture the near side vs. far side contrast with the Earth-contact overlay.
@@ -96,13 +97,13 @@ M0 ─▶ M1 ─▶ M2 ─▶ M3 ─▶ M4 ─┬─▶ M5 ─┐
 ### M4 — South Pole District: MVP (Data A + B + Frontend)
 
 **Exit criteria:**
-- [ ] Terrain horizons computed for polar analysis cells (HOR-1); one horizon cross-checked (HOR-2).
+- [ ] Terrain horizons computed for polar analysis cells (HOR-1), and **every polar plot's horizon exported in lazy-loaded tiles** (v2.2 F7); one horizon cross-checked (HOR-2).
 - [ ] Polar SOL, COMM and TEMP use terrain-aware visibility (SOL-2, COMM-4).
 - [ ] `plots_polar.json` with ~1 km plots; polar overlays.
-- [ ] **Sky view** on the polar listing: horizon, Sun and Earth paths, time to next sunset and Earthset (DET-5).
-- [ ] Sanity checks: Shackleton floor ≈ 0 sunlit; known lit rims and ridges in the top tier; steep walls "Not buildable".
+- [ ] **3D Tour** tab next to Photos on the polar listing: 360° horizon, Sun and Earth paths, time to next sunset and Earthset (DET-5).
+- [ ] Sanity checks: Shackleton floor ≈ 0 sunlit; known lit rims and ridges in the top tier; steep walls "Off market".
 - [ ] Demo steps 4–5 work. **MVP reached.**
-- [ ] **P:** hero clip of the Sun skimming the horizon in the sky view; capture of the polar sunlight overlay (peaks glowing, PSRs black).
+- [ ] **P:** hero clip of the Sun skimming the horizon in the **3D Tour**; capture of the polar sunlight overlay (peaks glowing, PSRs black).
 
 ### M5 — Listings come alive (Data B + Frontend)
 
@@ -111,20 +112,24 @@ M0 ─▶ M1 ─▶ M2 ─▶ M3 ─▶ M4 ─┬─▶ M5 ─┐
 - [ ] Land types (LAND-1) and land-type filter (FIL-2).
 - [ ] Landmark layer with Artemis III regions and Apollo sites (MAP-6, LAND-2/3); nearby list (DET-9).
 - [ ] Ice access (ICE-1/2, OV-8).
-- [ ] Price history chart (DET-7).
-- [ ] "Shopping for" presets (FIL-4) re-price the map.
-- [ ] Featured listings in the empty panel (UI-5).
-- [ ] **P:** capture "same Moon, different shoppers": Home base vs. Ice depot maps.
+- [ ] **Home type** filter (FIL-4) hides plots failing the type's gates and adds a **match %**; **Sort** dropdown incl. Best match (FIL-7, VS-7). No price changes.
+- [ ] **Named scores** (Landing / Sun / Signal / Comfort / Views / Ice, DET-3).
+- [ ] **Badges** (DET-11, v2.2 thresholds: Earth view only at polar/limb plots).
+- [ ] **Moonstimate range** (PRICE-3).
+- [ ] Solar power overlay (OV-11).
+- [ ] **"Plots for you"** featured listings (RES-4).
+- [ ] **P:** capture "same Moon, different home types": Habitat vs. Ice depot results.
 
-### M6 — Time & move-in date (Data A + Frontend)
+### M6 — Time & Rent (Data A + Frontend)
 
 **Exit criteria:**
 - [ ] Time slider (TIME-1/2) and comm-window overlay (OV-7) at ≥ 15 fps.
-- [ ] Sky view follows the slider.
-- [ ] **Move-in date** (SCN-1) re-prices the selected plot, with a highlighted explanation of the change.
-- [ ] Ties labeled (VS-4).
+- [ ] 3D Tour follows the slider.
+- [ ] **Buy / Rent tabs** (UI-6). On Rent: move-in date + stay length (RENT-1); **Rent Moonstimate** for the selected plot, /mo and total (RENT-2), recomputed in < 200 ms (NFR-10); change highlighted with its reason and the Price cut badge (RENT-3).
+- [ ] **Rent history** chart (DET-7).
+- [ ] Consistency test: 1-year Rent = `RENT_RATIO · Buy price` (RENT-5).
 - [ ] Demo step 6 works.
-- [ ] **P:** find the real **before/after number** for the video ("arrive 2 weeks later → price ↓ X%").
+- [ ] **P:** find the real **before/after number** for the video ("move in 2 weeks later → rent ↓ X%").
 
 ### M7 — Trust, polish & demo mode (Frontend + P)
 
@@ -155,7 +160,7 @@ M0 ─▶ M1 ─▶ M2 ─▶ M3 ─▶ M4 ─┬─▶ M5 ─┐
 
 ### Stretch (P2 lane, only after M4)
 
-Ask the realtor (AI) · compare two plots · adjustable weights · relay toggle (SCN-2) · T2 heat-equation model · map search box · URL state · play/pause.
+Ask the realtor / Contact agent (AI, DET-12) · Save ♡ (DET-13) · Est. payment parody (DET-14) · whole-map Rent pins (RENT-4) · tie labels (VS-4) · compare two plots · adjustable weights · relay what-if (SCN-2) · T2 heat-equation model · map search box · URL state · play/pause.
 
 ---
 
@@ -190,7 +195,9 @@ Ask the realtor (AI) · compare two plots · adjustable weights · relay toggle 
 | Terrain horizons too slow | Smaller polar core area; fewer azimuths; precompute offline; SOL-4 fallback | M4 |
 | Too many markers | Clustering by zoom; canvas/WebGL rendering | M1–M3 |
 | Parody too close to Zillow branding | Original name, logo and colors; parody the layout only | M1 |
-| "Selling the Moon" taken literally | Fictional-premise disclaimer; Outer Space Treaty line | M1, M7 |
+| "Selling the Moon" taken literally | Zestimate-style fine print under every price; Outer Space Treaty line | M1, M7 |
+| A Home type returns no plots | Gates checked over reference stays and calibrated in M3 (v2.2 F1) | M3, M5 |
+| Results list too slow on ~65,000 plots | Virtualized, capped list (v2.2 F6) | M3 |
 | Prices feel arbitrary | Deterministic formula; why line; formulas page; sanity checks | M3, M7 |
 | Network or AI down during judging | Offline demo mode; recordings | M7–M8 |
 | Presentation squeezed | Assets captured every milestone; M8 is 15%; feature freeze | All |
