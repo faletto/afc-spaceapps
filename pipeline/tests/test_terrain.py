@@ -45,3 +45,28 @@ def test_hazard_bounds():
     cfg = {"safety": {"slope_p90_range": [0, 30], "roughness_range_m": [0, 50], "relief_range_m": [0, 2000]}}
     assert terrain.hazard_score(0, 0, 0, cfg) == 0
     assert terrain.hazard_score(99, 99, 99999, cfg) == 1
+
+
+def test_polar_lat_and_grid():
+    x, y = terrain.polar_plot_centers(320, 960.0)
+    assert x.shape == (320, 320) and y[0, 0] > 0 and x[0, 0] < 0
+    assert terrain.polar_lat_deg(0.0, 0.0) == -90
+    assert terrain.polar_lat_deg(151_800.0, 0.0) == pytest.approx(-85.0, abs=0.01)
+    lat = terrain.polar_lat_deg(x, y)
+    assert 70_000 < (lat <= -85).sum() < 85_000  # disc of plots inside 85 deg S
+
+
+def test_polar_block_stats_chunking_matches_whole():
+    rng = np.random.default_rng(0)
+    dem = rng.normal(0, 30, (192, 192)).astype(np.float32)
+    s = terrain.slope_deg_planar(dem, 20.0)
+    a = terrain.polar_block_stats(dem, s, 20.0, 240.0, 8.0, rows_per_chunk=1)
+    b = terrain.polar_block_stats(dem, s, 20.0, 240.0, 8.0, rows_per_chunk=99)
+    assert a["slope_mean_deg"].shape == (16, 16)
+    for k in a:
+        assert np.allclose(a[k], b[k])
+
+
+def test_planar_slope_of_ramp():
+    ramp = np.tile(np.arange(50) * 20.0 * np.tan(np.radians(6)), (50, 1))
+    assert terrain.slope_deg_planar(ramp, 20.0).mean() == pytest.approx(6.0, abs=0.01)

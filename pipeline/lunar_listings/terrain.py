@@ -51,13 +51,14 @@ def detrended_std(z: np.ndarray, n=CELLS_PER_DEG) -> np.ndarray:
     return (zc - b * X - d * Y).std(-1)
 
 
-def global_plot_stats(dem: np.ndarray, slope: np.ndarray, max_slope_deg: float) -> dict:
-    z, s = plot_blocks(dem), plot_blocks(slope)
+def global_plot_stats(dem: np.ndarray, slope: np.ndarray, max_slope_deg: float, n: int = CELLS_PER_DEG) -> dict:
+    """Per-block stats; blocks are n x n source pixels (n=32 for 1-deg global plots)."""
+    z, s = plot_blocks(dem, n), plot_blocks(slope, n)
     return {
         "slope_mean_deg": s.mean(-1),
         "slope_p90_deg": np.percentile(s, 90, axis=-1),
         "safe_area_frac": (s < max_slope_deg).mean(-1),
-        "roughness_m": detrended_std(z),
+        "roughness_m": detrended_std(z, n),
         "relief_m": z.max(-1) - z.min(-1),
     }
 
@@ -98,3 +99,61 @@ def build_global_stats(dem_npy, out_npz, max_slope_deg: float) -> dict:
     st = global_plot_stats(dem, slope_deg_lonlat(dem), max_slope_deg)
     np.savez_compressed(out_npz, **{k: v.astype(np.float32) for k, v in st.items()})
     return st
+
+
+# ---------------------------------------------------------------- polar tier (south polar stereographic)
+POLAR_HALF_M = 153_600.0  # core square half-width = 160 plots of 960 m; covers the 85 deg S disc (r = 151.8 km)
+
+
+def read_polar_core(tif, half_m: float = POLAR_HALF_M):
+    """Read the central square of a PGDA polar GeoTIFF. Returns (array float32 metres, res_m).
+
+    Transform is read from the header and asserted: square pixels, pole at the raster centre.
+    Stereographic scale distortion at 85 deg S is ~0.2% (ignored; documented in spec 3.4).
+    """
+    import rasterio
+    from rasterio.windows import from_bounds
+
+    with rasterio.open(tif) as ds:
+        res = ds.res[0]
+        assert abs(ds.res[0] - ds.res[1]) < 1e-6
+        b = ds.bounds
+        assert abs(b.left + b.right) < 1 and abs(b.top + b.bottom) < 1, "pole not at raster centre"
+        win = from_bounds(-half_m, -half_m, half_m, half_m, ds.transform).round_offsets().round_lengths()
+        a = ds.read(1, window=win).astype(np.float32)
+        if ds.nodata is not None:
+            a[a == ds.nodata] = np.nan
+    return a, res
+
+
+def slope_deg_planar(dem: np.ndarray, res_m: float) -> np.ndarray:
+    gy, gx = np.gradient(dem, res_m)
+    return np.degrees(np.arctan(np.hypot(gx, gy))).astype(np.float32)
+
+
+def polar_block_stats(dem, slope, res_m, block_m, max_slope_deg, rows_per_chunk=8):
+    """Stats per block_m x block_m block (e.g. 240 m cells, 960 m plots), chunked over block rows."""
+    n = int(round(block_m / res_m))
+    nb = dem.shape[0] // n
+    out = {}
+    for r0 in range(0, nb, rows_per_chunk):
+        sl = slice(r0 * n, min(r0 + rows_per_chunk, nb) * n)
+        part = global_plot_stats(dem[sl], slope[sl], max_slope_deg, n)
+        part["elev_mean_m"] = plot_blocks(dem[sl], n).mean(-1)
+        for k, v in part.items():
+            out.setdefault(k, []).append(v)
+    return {k: np.concatenate(v, axis=0) for k, v in out.items()}
+
+
+def polar_plot_centers(n_plots: int, plot_m: float):
+    """x, y (metres, +y up) of plot centres for an n x n plot grid centred on the pole; row 0 at +y."""
+    c = (np.arange(n_plots) + 0.5 - n_plots / 2) * plot_m
+    x = np.broadcast_to(c[None, :], (n_plots, n_plots))
+    y = np.broadcast_to(-c[:, None], (n_plots, n_plots))
+    return x, y
+
+
+def polar_lat_deg(x, y):
+    """South polar stereographic (k0=1 at pole): lat from radius, r = 2R tan((90-|lat|)/2)."""
+    r = np.hypot(x, y)
+    return -90.0 + np.degrees(2 * np.arctan(r / (2 * R_M)))
