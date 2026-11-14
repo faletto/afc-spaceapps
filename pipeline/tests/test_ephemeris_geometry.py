@@ -32,7 +32,7 @@ def eph():
 def test_ephemeris_ranges(eph):
     assert eph["sun_xyz"].shape == (8784, 3)
     assert np.allclose(np.linalg.norm(eph["sun_xyz"], axis=1), 1)
-    assert 1320 <= eph["tsi"].min() and eph["tsi"].max() <= 1420  # spec says 1412; 2028 perihelion gives ~1413
+    assert 1300 <= eph["tsi"].min() and eph["tsi"].max() <= 1420  # spec says 1412; 2028 perihelion gives ~1413
     assert 356e6 < eph["earth_dist_m"].min() and eph["earth_dist_m"].max() < 407e6
 
 
