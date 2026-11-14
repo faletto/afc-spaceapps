@@ -61,3 +61,13 @@ def test_power_score_net_energy():
     assert long_ < short < 1.0
     # harvest below the continuous load -> nothing net (500 W load: 500/(10*0.3)*24 = 4000 Wh/m2/day break-even)
     assert scoring.power_score(3999.0, 0.0, CFG) == 0 and scoring.power_score(5000.0, 0.0, CFG) > 0
+
+
+def test_power_model_follows_config():
+    import copy
+    heavy = copy.deepcopy(CFG)
+    heavy["power"]["load_w"] = 1000
+    assert scoring.power_score(20000.0, 100.0, heavy) < scoring.power_score(20000.0, 100.0, CFG)
+    big_battery_ok = copy.deepcopy(CFG)
+    big_battery_ok["power"]["battery_ref_kg"] = 20000
+    assert scoring.power_score(20000.0, 600.0, big_battery_ok) > scoring.power_score(20000.0, 600.0, CFG)

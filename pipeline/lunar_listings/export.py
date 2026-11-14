@@ -172,11 +172,13 @@ def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None)
         [{"name": str(n_), "type": str(t), "lat": float(la), "lon": float(lo), "fame": {"apollo_artemis": 100, "major_crater": 60, "other": 30}[str(f)]}
          for n_, t, la, lo, f in zip(lm["name"], lm["type"], lm["lat"], lm["lon"], lm["fame_class"], strict=True)],
         separators=(",", ":")))
-    import shutil
-
     from . import config
 
-    shutil.copy(Path(__file__).resolve().parents[2] / "config" / "glossary.json", out / "glossary.json")
+    gl = (Path(__file__).resolve().parents[2] / "config" / "glossary.json").read_text()
+    for k, v in cfg["power"].items():  # glossary text follows the config, so changing the model needs no text edits
+        if isinstance(v, (int, float)):
+            gl = gl.replace("{" + k + ":g}", f"{v:g}")
+    (out / "glossary.json").write_text(gl)
     config.export(cfg, out / "config.json", {"scarcity_viability_cutoff": float(tab["scarcity_cutoff"] if cutoff is None else cutoff)})
     return write_manifest(out, {"global": "real", "polar": json.loads((out / "manifest.json").read_text())["tiers"]["polar"] if (out / "manifest.json").exists() else "stub"}, cfg, {"global": n})
 
