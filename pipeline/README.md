@@ -54,6 +54,17 @@ detail ≈ 3 MB lazy; basemaps ≈ 12 MB. Raw on disk ≈ 130 MB (most of it JSO
   visibility (PGDA; Sun r = 0.99) as the HOR-2 check, and LRO Diviner polar maps (PDS) for TEMP-4 (PSRs agree; lit-site
   maxima and the night floor are model-limited, Q-P8). Data lands in `data/raw/{illum,diviner}` via `make fetch`.
 
+## Changing the model later
+Everything tunable is in `config/lunar-listings.yaml`; edit it and run `make data` (~30 s; `make polar` first only if the
+lighting or horizon settings change, ~30 s with cached cells). `config.json`, the glossary text, prices, scarcity cutoff,
+badges and golden vectors all follow the config (regenerate goldens with `python -c "from lunar_listings import golden;
+golden.write(); golden.write_rent()"` and update `cutoff` in `golden.build_rent`). Common knobs:
+- **Sun score:** `power.load_w`, `power.net_ref_w`, `power.battery_wh_per_kg`, `power.battery_ref_kg` (also `area_m2`, `efficiency`).
+- **Night/blackout penalty (Signal score):** `penalty.blackout.{h50,k}`; **Earth contact:** `comms.margin_deg` / `mode`.
+- **Temperatures:** `thermal.floor_k`, `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
+- **Prices:** `price.base_usd`, `k`, `scarcity_*`, `range.*`, `rent_ratio`; **Home-type gates:** `home_types.*.gates`.
+The app mirror (`science/*.ts`, `rent.ts`) must read these from `config.json`, never hard-code them.
+
 ## Troubleshooting
 - `ModuleNotFoundError` / wrong Python: use `.venv` (system Python may be too new for Numba/rasterio).
 - Downloads stall (PGDA throttles): `make fetch` resumes (`curl -C -`).

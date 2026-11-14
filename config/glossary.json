@@ -61,8 +61,8 @@
   },
   "sun_score": {
     "label": "Sun Score",
-    "text": "Net solar energy over the period: what a 10 m\u00b2 panel harvests minus a 500 W continuous load, reduced by the battery mass needed to ride out the longest night.",
-    "formula": "norm(harvest - load) / (1 + battery_kg / 2000)",
+    "text": "Net solar energy over the period: what a {area_m2:g} m\u00b2 panel harvests minus a {load_w:g} W continuous load, reduced by the battery mass needed to ride out the longest night.",
+    "formula": "norm(harvest - load, 0..{net_ref_w:g} W) / (1 + battery_kg / {battery_ref_kg:g})",
     "source": "Horizons + LOLA, Lunar Listings model"
   },
   "signal": {
