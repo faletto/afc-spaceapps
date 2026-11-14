@@ -11,6 +11,7 @@
 | D-4 | Price: BASE $5,000, k 6.9; range ±25% Moon-wide, ±10% polar; RENT_RATIO 0.006 |
 | D-5 | Grids: 1° Moon-wide; polar 240 m cells, 960 m plots, core area 85–90°S |
 | D-6 | Product name: "Lunar Listings" (working name) |
+| D-7 | **Computer 1 = Advik's MacBook → Pipeline Claude** (branch `pipeline`; uses the existing local clone). **Computer 2 = teammate's machine → App Claude** (branch `app`; fresh clone). |
 
 ## Pending (agents: use the default and mark ASSUMED until answered)
 | ID | Question | Default |

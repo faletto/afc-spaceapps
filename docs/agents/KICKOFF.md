@@ -6,7 +6,9 @@ Each prompt is self-contained: the agent learns everything else from `CLAUDE.md`
 
 ---
 
-## Computer 1 — Pipeline Claude
+## Computer 1 (Advik's MacBook) — Pipeline Claude
+
+*Uses the existing clone at `~/Programming/NASA_Space_Apps/afc-spaceapps`. Push the local commits first (`git push`). Needs ~10 GB free disk for the LOLA DEMs and their working copies.*
 
 ```
 You are Pipeline Claude for the Lunar Listings repo (NASA Space Apps 2026).
@@ -26,7 +28,9 @@ You are Pipeline Claude for the Lunar Listings repo (NASA Space Apps 2026).
 Start with P0 now. Before writing code, show me a 5-line plan and ask any questions.
 ```
 
-## Computer 2 — App Claude
+## Computer 2 (teammate's machine) — App Claude
+
+*Fresh clone. Needs Node 20+. No large downloads: the data arrives through git at the handoffs.*
 
 ```
 You are App Claude for the Lunar Listings repo (NASA Space Apps 2026).
