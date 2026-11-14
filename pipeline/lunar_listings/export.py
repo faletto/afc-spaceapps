@@ -75,6 +75,7 @@ def _columns(tab, cfg, hot_cut, polar=False):
 
 def _write_detail(d: Path, tab, cols, order, lm):
     (d / "detail").mkdir(exist_ok=True)
+    nn_i, nn_km = land.nearest_landmark(tab["lat"], tab["lon"], lm)
     nearby = tab["nearby"][order]
     ids = (tab["lat_idx"][order], tab["lon_idx"][order])
     for t in np.unique(cols["tile"]):
@@ -94,6 +95,7 @@ def _write_detail(d: Path, tab, cols, order, lm):
                 "monthly_earth_pct": [int(round(100 * v)) for v in tab["monthly_earth"][j]],
                 "nearby": [lm["name"][k] for k in nearby[i] if k >= 0],
             })
+            recs[-1].update(nearest_feature=str(lm["name"][nn_i[j]]), nearest_km=round(float(nn_km[j]), 1))
             recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], False, recs[-1]["nearby"]))
         tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
@@ -122,7 +124,9 @@ def _write_basemap(d: Path, dem_npy, size=(8192, 4096)):
     az, alt = np.radians(315), np.radians(45)
     shade = (np.sin(alt) + np.cos(alt) * (gx * np.sin(az) + gy * np.cos(az))) / np.sqrt(1 + gx**2 + gy**2)
     g = (np.clip(shade, 0, 1) * 215 + 25).astype(np.uint8)
-    Image.fromarray(g, "L").resize(size, Image.LANCZOS).convert("RGB").save(d / "basemap.jpg", quality=82)
+    img = Image.fromarray(g, "L").resize(size, Image.LANCZOS).convert("RGB")
+    img.save(d / "basemap.jpg", quality=78)
+    img.resize((size[0] // 4, size[1] // 4), Image.LANCZOS).save(d / "basemap_small.jpg", quality=80)
 
 
 def write_manifest(out: Path, tiers: dict, cfg, counts: dict | None = None):
@@ -168,8 +172,11 @@ def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None)
         [{"name": str(n_), "type": str(t), "lat": float(la), "lon": float(lo), "fame": {"apollo_artemis": 100, "major_crater": 60, "other": 30}[str(f)]}
          for n_, t, la, lo, f in zip(lm["name"], lm["type"], lm["lat"], lm["lon"], lm["fame_class"], strict=True)],
         separators=(",", ":")))
+    import shutil
+
     from . import config
 
+    shutil.copy(Path(__file__).resolve().parents[2] / "config" / "glossary.json", out / "glossary.json")
     config.export(cfg, out / "config.json", {"scarcity_viability_cutoff": float(tab["scarcity_cutoff"] if cutoff is None else cutoff)})
     return write_manifest(out, {"global": "real", "polar": json.loads((out / "manifest.json").read_text())["tiers"]["polar"] if (out / "manifest.json").exists() else "stub"}, cfg, {"global": n})
 
@@ -187,6 +194,7 @@ PROJECTION_POLAR = {"type": "polar_stereographic_south", "lat0": -90, "lon0": 0,
 
 def _write_polar_detail(d: Path, tab, cols, order, lm):
     (d / "detail").mkdir(exist_ok=True)
+    nn_i, nn_km = land.nearest_landmark(tab["lat"], tab["lon"], lm)
     nearby = tab["nearby"][order]
     for t in np.unique(cols["tile"]):
         idx = np.flatnonzero(cols["tile"] == t)
@@ -206,6 +214,7 @@ def _write_polar_detail(d: Path, tab, cols, order, lm):
                 "monthly_earth_pct": [int(round(100 * v)) for v in tab["monthly_earth"][j]],
                 "nearby": [lm["name"][k] for k in nearby[i] if k >= 0],
             })
+            recs[-1].update(nearest_feature=str(lm["name"][nn_i[j]]), nearest_km=round(float(nn_km[j]), 1))
             recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], True, recs[-1]["nearby"]))
         tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
@@ -254,7 +263,9 @@ def _write_polar_basemap(d: Path, raw_dir, size=4096):
     a = np.nan_to_num(a.astype(np.float32))
     lo, hi = np.percentile(a, [1, 99])
     g = (np.clip((a - lo) / (hi - lo), 0, 1) * 255).astype(np.uint8)
-    Image.fromarray(g, "L").resize((size, size), Image.LANCZOS).convert("RGB").save(d / "basemap.jpg", quality=82)
+    img = Image.fromarray(g, "L").resize((size, size), Image.LANCZOS).convert("RGB")
+    img.save(d / "basemap.jpg", quality=78)
+    img.resize((size // 4, size // 4), Image.LANCZOS).save(d / "basemap_small.jpg", quality=80)
 
 
 def export_polar(tab: dict, cfg: dict, out, raw_dir, hot_cut: float, cutoff: float) -> dict:

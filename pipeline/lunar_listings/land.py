@@ -84,3 +84,13 @@ def apollo_distance_km(lat, lon, lm: dict, chunk: int = 4000) -> np.ndarray:
                             lm["lat"][m][None], lm["lon"][m][None])
         out[i : i + chunk] = d.min(1)
     return out
+
+
+def nearest_landmark(lat, lon, lm: dict, chunk: int = 4000):
+    """(index, km) of the nearest landmark for each site."""
+    n = len(lat)
+    idx, km = np.empty(n, np.int32), np.empty(n)
+    for i in range(0, n, chunk):
+        d = great_circle_km(np.asarray(lat)[i : i + chunk, None], np.asarray(lon)[i : i + chunk, None], lm["lat"][None], lm["lon"][None])
+        idx[i : i + chunk], km[i : i + chunk] = d.argmin(1), d.min(1)
+    return idx, km
