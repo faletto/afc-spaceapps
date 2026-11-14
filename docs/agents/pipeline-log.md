@@ -3,7 +3,7 @@
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
 - Branch: `pipeline` · Contract: **v1** (stub, H0) · P0 done @ 86cc05e + contract-hardening commit
 - Env: `make setup` (uv venv py3.11 at repo-root `.venv`), `make stub`, `make test`; stub ≈ 41 MB in `app/public/data/` (committed once; avoid regenerating/committing churn)
-- P1 part 1 done (ephemeris + geometry, tests green). Next: terrain (global resample, slope/roughness/relief; polar crop/240 m cells), spec §3.4 + DEM fetch/sources.yaml; then golden TSI/geometry check vs Horizons.
+- P1: ephemeris, geometry, global terrain done (data/work/terrain_global.npz, gitignored). DEM fetch resumable: `make fetch` (log data/work/fetch2.log). Next: polar crop + 240 m cells (80 m + 20 m DEMs, LDSM slope), spec §3.4.
 - Blockers: none. Note: system python is 3.15; always use `.venv` (3.11).
 
 ## Milestones
@@ -27,6 +27,7 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Q-P3: set safety roughness/relief normalisation ranges from data (roughness 0–600 m, relief 0–4000 m, Moon-wide tier; at 1° plots median roughness is 276 m / relief 1950 m) · answer: yes, approved in chat · 14 Nov. Spec §4 values (0–50 / 0–2000) are superseded; config updated. Humans may want to update the spec text.
 <!-- Q-P#: answer · source (answers.md / chat) · date -->
 
 ## Requests to App Claude
@@ -37,6 +38,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P1 · global terrain (resample 1/32°, slope, plot stats) on real DEM; Q-P3 ranges applied; DEM fetch in progress (20 m DEM + slope remaining) · see git log
 - 14 Nov · P1 (part 1) · Horizons fetch+parser, ephemeris_2028.csv (8784 rows, 0.7 MB), ephemeris.py, geometry.py + tests · see git log
 - 14 Nov · P0 · scaffold + config + stub, contract v1 · 86cc05e (+ hardening commit) · 10 passed
 <!-- newest first: date time · WP · what · sha · tests -->

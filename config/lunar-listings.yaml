@@ -8,7 +8,7 @@ horizon: { az_step_deg: 2, d_max_m: 150000, step_growth: 0.01, mast_m: 2.0, near
 power:  { panel: vertical_tracking, area_m2: 10, efficiency: 0.30, sunlit_threshold: 0.5 }
 comms:  { mode: terrain_margin, cutoff_deg: 5.0, margin_deg: 1.0 }
 thermal: { albedo: 0.12, emissivity: 0.95, floor_k: 95, psr_floor_k: 40, cold_range_k: [40, 120], swing_range_k: [100, 300] }
-safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], roughness_range_m: [0, 50], relief_range_m: [0, 2000] }
+safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], roughness_range_m: [0, 600], relief_range_m: [0, 4000] }  # Q-P3 (human-approved 14 Nov): spec's 0-50/0-2000 saturate at 1-deg plots; Moon-wide tier. Polar ranges revisited in P4.
 norm:   { energy_wh_m2_day: [0, 30000] }
 penalty: { dark: { h50: 120, k: 2 }, blackout: { h50: 120, k: 2 } }
 weights: { safety: 0.30, power: 0.25, comms: 0.20, thermal: 0.15, landmark: 0.10, ice: 0.0 }
