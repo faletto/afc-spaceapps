@@ -23,6 +23,7 @@
 <!-- newest first: H#, date/time, contract vN, main@sha, what's new, files, size MB, known issues -->
 
 ## Open questions
+- Q-P5 · 14 Nov · Reviewer: Moon-wide plots use `terrain_margin` (m≡0) so Earth contact needs only ≥ 1° elevation, vs COMM-1's 5° cutoff. Follows the spec's decided mode. My default: ASSUMED keep. Please confirm for the Moon-wide tier (or set `comms.mode: absolute` there).
 - Q-P2 · 14 Nov · Spec's TSI sanity band 1320–1412 W/m² is too tight: 2028 gives 1310–1413 (L☉/4πr² is correct). ASSUMED band 1300–1420; tell me if you want the spec fixed.
 - Q-P1 · 14 Nov · Stub data (41 MB) committed to git; real data likely larger (detail JSON). Default: ASSUMED commit if < 50 MB total, else Release asset (per answers.md).
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->

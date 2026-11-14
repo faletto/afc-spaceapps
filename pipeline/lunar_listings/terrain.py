@@ -55,9 +55,9 @@ def global_plot_stats(dem: np.ndarray, slope: np.ndarray, max_slope_deg: float, 
     """Per-block stats; blocks are n x n source pixels (n=32 for 1-deg global plots)."""
     z, s = plot_blocks(dem, n), plot_blocks(slope, n)
     return {
-        "slope_mean_deg": s.mean(-1),
-        "slope_p90_deg": np.percentile(s, 90, axis=-1),
-        "safe_area_frac": (s < max_slope_deg).mean(-1),
+        "slope_mean_deg": np.nanmean(s, -1),
+        "slope_p90_deg": np.nanpercentile(s, 90, axis=-1),
+        "safe_area_frac": np.nanmean(np.where(np.isnan(s), np.nan, s < max_slope_deg), -1),
         "roughness_m": detrended_std(z, n),
         "relief_m": z.max(-1) - z.min(-1),
     }
@@ -102,7 +102,7 @@ def build_global_stats(dem_npy, out_npz, max_slope_deg: float) -> dict:
 
 
 # ---------------------------------------------------------------- polar tier (south polar stereographic)
-POLAR_HALF_M = 153_600.0  # core square half-width = 160 plots of 960 m; covers the 85 deg S disc (r = 151.8 km)
+POLAR_HALF_M = 153_600.0  # core square half-width: 320 x 320 plots of 960 m (n_plots=320); covers the 85 deg S disc (r = 151.8 km)
 
 
 def read_polar_core(tif, half_m: float = POLAR_HALF_M):

@@ -77,8 +77,8 @@ def site_stats_ref(lat, lon, horizon_deg, sun, earth, dist_m, tsi, r_sun_km, cfg
         "longest_light_h": _runs_longest(sunlit), "energy_wh_m2_day": energy,
         "earth_frac": earth_ok.mean(), "longest_blackout_h": _runs_longest(~earth_ok),
         "mean_earth_el": ee.mean(), "temp_min_k": t.min(), "temp_mean_k": t.mean(), "temp_max_k": t.max(),
-        "monthly_sunlit": np.array([sunlit[month == k].mean() for k in range(12)]),
-        "monthly_earth": np.array([earth_ok[month == k].mean() for k in range(12)]),
+        "monthly_sunlit": np.array([sunlit[month == k].mean() if (month == k).any() else np.nan for k in range(12)]),
+        "monthly_earth": np.array([earth_ok[month == k].mean() if (month == k).any() else np.nan for k in range(12)]),
     }
 
 
@@ -172,8 +172,8 @@ def _kernel(lat, lon, hz, sun, earth, dist, tsi, rsun, month, vertical, thr, use
         out[i, 8] = (tsum40 if psr else tsum95) / nt
         out[i, 9] = tmax40 if psr else tmax95
         for k in range(12):
-            mon_s[i, k] /= counts[k]
-            mon_e[i, k] /= counts[k]
+            mon_s[i, k] = mon_s[i, k] / counts[k] if counts[k] > 0 else np.nan
+            mon_e[i, k] = mon_e[i, k] / counts[k] if counts[k] > 0 else np.nan
 
 
 KEYS = ["sunlit_frac", "longest_dark_h", "longest_light_h", "energy_wh_m2_day", "earth_frac",

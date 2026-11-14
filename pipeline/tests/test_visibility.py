@@ -49,3 +49,15 @@ def test_psr_floor_and_dark(eph):
     hz = np.full(180, 60.0)  # walled-in site: Sun never above 60 deg wall
     r = _ref(-89.0, 0.0, hz, eph)
     assert r["sunlit_frac"] == 0 and r["temp_max_k"] == 40 and r["longest_dark_h"] == 8784
+
+
+def test_partial_year_window_parity(eph):
+    """A window missing most months must not crash the kernel and must match the reference (NaN months)."""
+    sl = slice(0, 24 * 40)
+    w = {k: v[sl] for k, v in eph.items()}
+    month = visibility.month_of_hour(2028, len(w["tsi"]))
+    k = visibility.site_stats(np.array([10.0]), np.array([20.0]), np.zeros((1, 180)), w, CFG)
+    r = visibility.site_stats_ref(10.0, 20.0, np.zeros(180), w["sun_xyz"], w["earth_xyz"], w["earth_dist_m"],
+                                  w["tsi"], w["r_sun_km"], CFG, month)
+    assert np.allclose(k["monthly_sunlit"][0], r["monthly_sunlit"], equal_nan=True)
+    assert np.isnan(k["monthly_sunlit"][0, 5]) and k["sunlit_frac"][0] == pytest.approx(r["sunlit_frac"])

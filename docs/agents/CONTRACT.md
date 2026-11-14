@@ -29,3 +29,5 @@ Definition: `docs/technical-spec.md` §5 (files, columnar schema, tile layout) +
 - **Overlays:** RGBA PNG per tier + `<name>.json` legend `{name,label,unit,min,max,ramp,size}`; names: viability, sunlit, earth, temperature, safety, ice. **Basemap:** `<tier>/basemap.jpg`.
 - **`config.json`** = validated YAML + `computed.scarcity_viability_cutoff` (stub: 85).
 - Stub values are fake (price = 5000·(1+6.9·v/100) is a placeholder); counts: global 64,800, polar ≈ 78k (not 91k).
+- **Monthly arrays** (`sunlit`/`earth`) are fractions 0–1 in the pipeline; the columnar/detail exports convert to percent where the schema says `_pct`.
+- **Polar azimuth/lon:** `geometry.py` measures azimuth from the lon=0 meridian at the pole; the polar export converts stereographic x/y to lon via `atan2(x, y)` consistently with that (to be fixed in P4; additive).
