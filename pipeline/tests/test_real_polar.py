@@ -62,3 +62,12 @@ def test_horizon_tile_decodes_to_plausible_angles(pol):
     b = np.fromfile(D / "polar" / "horizon" / f"{t % 16}_{t // 16}.bin", np.uint8).reshape(-1, 180)
     ang = b * 0.16 - 6.0
     assert -6 <= ang.min() and ang.max() < 36 and ang.mean() > 0
+
+
+def test_blurbs_why_and_featured_flags(pol):
+    _, g = pol
+    t = int(g["tile"][0])
+    rec = json.loads((D / "polar" / "detail" / f"{t % 16}_{t // 16}.json").read_text())
+    assert all(r["blurb"] and r["why"].startswith("Priced") and "{" not in r["blurb"] for r in rec)
+    feat = (g["flags"] >> 4) & 1
+    assert 5 <= feat.sum() <= 20

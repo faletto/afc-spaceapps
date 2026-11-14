@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from . import CONTRACT_VERSION, land, stub
+from . import CONTRACT_VERSION, blurbs, land, stub
 
 OVERLAY_FIELDS = {  # name -> (table field, lo, hi, unit)
     "viability": ("viability", 0, 100, "score"), "sunlit": ("sunlit_pct", 0, 100, "%"),
@@ -33,6 +33,8 @@ def _flags(tab, cfg, hot_cut, polar=False):
     f |= (tab["viability"] >= hot_cut).astype(np.uint16) << stub.FLAGS["hot_property"]
     limb = np.ones(tab["lat"].size, bool) if polar else (np.abs(tab["lon"]) >= 80) & (np.abs(tab["lon"]) <= 100)
     f |= (limb & (tab["earth_frac"] >= cfg["badges"]["earth_view_frac"])).astype(np.uint16) << stub.FLAGS["earth_view"]
+    if "featured" in tab:
+        f |= tab["featured"].astype(np.uint16) << stub.FLAGS["featured"]
     if polar:
         f |= np.uint16(1 << stub.FLAGS["tier_polar"])
     return f
@@ -92,6 +94,7 @@ def _write_detail(d: Path, tab, cols, order, lm):
                 "monthly_earth_pct": [int(round(100 * v)) for v in tab["monthly_earth"][j]],
                 "nearby": [lm["name"][k] for k in nearby[i] if k >= 0],
             })
+            recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], False, recs[-1]["nearby"]))
         tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
 
@@ -151,6 +154,7 @@ def export_global(tab: dict, cfg: dict, out, dem_npy, hot_cut=None, cutoff=None)
     out = Path(out)
     d = out / "global"
     d.mkdir(parents=True, exist_ok=True)
+    tab = {**tab, "featured": featured_mask(tab, land.load_landmarks(), False)}
     cols, order = _columns(tab, cfg, hot_cut)
     n = stub._write_cols(d, cols, "global")
     meta = json.loads((d / "cols.json").read_text())
@@ -202,6 +206,7 @@ def _write_polar_detail(d: Path, tab, cols, order, lm):
                 "monthly_earth_pct": [int(round(100 * v)) for v in tab["monthly_earth"][j]],
                 "nearby": [lm["name"][k] for k in nearby[i] if k >= 0],
             })
+            recs[-1].update(_text_fields(tab, j, recs[-1]["id"], recs[-1]["land_type"], True, recs[-1]["nearby"]))
         tx, ty = int(t) % stub.N_TILES_AXIS, int(t) // stub.N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
 
@@ -261,6 +266,7 @@ def export_polar(tab: dict, cfg: dict, out, raw_dir, hot_cut: float, cutoff: flo
     if d.exists():
         shutil.rmtree(d)
     d.mkdir(parents=True)
+    tab = {**tab, "featured": featured_mask(tab, land.load_landmarks(), True)}
     cols, order = _columns(tab, cfg, hot_cut, polar=True)
     n = stub._write_cols(d, cols, "polar")
     meta = json.loads((d / "cols.json").read_text())
@@ -278,3 +284,32 @@ def export_polar(tab: dict, cfg: dict, out, raw_dir, hot_cut: float, cutoff: flo
     mm["horizon"] = {"az_count": 180, "az_step_deg": 2, "unit_deg": 0.16, "offset_deg": -6.0, "dtype": "uint8"}
     (out / "manifest.json").write_text(json.dumps(mm, indent=1))
     return mm
+
+
+def featured_mask(tab: dict, lm: dict, polar: bool) -> np.ndarray:
+    """Featured plots (for 'Plots for you' and the demo): top-viability plots plus the plots holding the best-known
+    landmarks (Apollo/Artemis sites)."""
+    n = tab["lat"].size
+    m = np.zeros(n, bool)
+    m[np.argsort(-tab["viability"])[:5 if polar else 3]] = True
+    sel = np.flatnonzero((lm["fame_class"] == "apollo_artemis") & np.isin(lm["type"], ["artemis"] if polar else ["apollo"]))
+    for k in sel:
+        m[np.argmin(land.great_circle_km(tab["lat"], tab["lon"], lm["lat"][k], lm["lon"][k]))] = True
+    return m
+
+
+def _facts(tab, j, land_name, polar, lm_names):
+    ice = float(tab["ice_km"][j]) if polar else 999.0
+    return {"sunlit": float(tab["sunlit_frac"][j]), "earth": float(tab["earth_frac"][j]), "land": land_name, "ice_km": ice,
+            "tmin_k": float(tab["temp_min_k"][j]), "tmax_k": float(tab["temp_max_k"][j]),
+            "slope_deg": float(tab["slope_mean_deg"][j]), "viability": float(tab["viability"][j]),
+            "safe": int(bool(tab["landing_safe"][j])), "dark_h": float(tab["longest_dark_h"][j]), "polar": int(polar),
+            "apollo_km": float(tab["apollo_km"][j]), "nearby": lm_names}
+
+
+def _text_fields(tab, j, plot_id, land_name, polar, nearby_names):
+    f = _facts(tab, j, land_name, polar, nearby_names[0] if nearby_names else "")
+    sub = {k: float(tab[f"s_{k}"][j]) for k in ("safety", "power", "comms", "thermal", "landmark", "ice")}
+    if not polar:
+        sub.pop("ice")
+    return {"blurb": blurbs.blurb(plot_id, f), "why": blurbs.why(sub)}
