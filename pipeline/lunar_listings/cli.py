@@ -21,6 +21,9 @@ def main(argv=None) -> int:
     elif a.stage == "fetch":
         from .fetch import run
         run.fetch_all()
+    elif a.stage == "validate":
+        from . import validate
+        return validate.main()
     else:
         print(f"stage '{a.stage}' not implemented yet", file=sys.stderr)
         return 2
