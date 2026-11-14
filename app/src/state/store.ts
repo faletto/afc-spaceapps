@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 import type { OverlayName } from '../data/loader';
 import type { Tier } from '../data/types';
+import type { HomeType } from '../results/homeTypes';
 import type { Results } from '../results/query';
 
-export type SortKey = 'price_asc' | 'price_desc' | 'viability_desc' | 'sun_score_desc' | 'signal_score_desc';
+export type SortKey = 'price_asc' | 'price_desc' | 'viability_desc' | 'sun_score_desc' | 'signal_score_desc' | 'best_match';
 export type Rect = [number, number, number, number];
 
 /** Filters (FIL-1..3). Prices are USD; null = unbounded. landTypes = indices into cols.meta.land_types ([] = all). */
-export interface Filters { priceMin: number | null; priceMax: number | null; landTypes: number[]; hideOff: boolean }
-export const NO_FILTERS: Filters = { priceMin: null, priceMax: null, landTypes: [], hideOff: false };
+export interface Filters { priceMin: number | null; priceMax: number | null; landTypes: number[]; hideOff: boolean; homeType: HomeType; minSun: number; minEarth: number }
+export const NO_FILTERS: Filters = { priceMin: null, priceMax: null, landTypes: [], hideOff: false, homeType: 'any', minSun: 0, minEarth: 0 };
 
 interface State {
   tab: 'buy' | 'rent';
@@ -30,6 +31,8 @@ interface State {
   setHover: (i: number | null) => void;
   setSort: (s: SortKey) => void;
   setFilters: (f: Partial<Filters>) => void;
+  /** FIL-4/FIL-7: choosing a type makes Best match the sort; going back to Any drops it. */
+  setHomeType: (h: HomeType) => void;
   resetFilters: () => void;
   setResults: (r: Results | null) => void;
   setOverlay: (o: OverlayName | null) => void;
@@ -44,7 +47,11 @@ export const useStore = create<State>((set) => ({
   setHover: (hover) => set({ hover }),
   setSort: (sort) => set({ sort }),
   setFilters: (f) => set((st) => ({ filters: { ...st.filters, ...f } })),
-  resetFilters: () => set({ filters: NO_FILTERS }),
+  setHomeType: (homeType) => set((st) => ({
+    filters: { ...st.filters, homeType },
+    sort: homeType !== 'any' ? 'best_match' : st.sort === 'best_match' ? 'viability_desc' : st.sort,
+  })),
+  resetFilters: () => set((st) => ({ filters: NO_FILTERS, sort: st.sort === 'best_match' ? 'viability_desc' : st.sort })),
   setResults: (results) => set({ results }),
   setOverlay: (overlay) => set({ overlay }),
   setOverlayOpacity: (overlayOpacity) => set({ overlayOpacity }),

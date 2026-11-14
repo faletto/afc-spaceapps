@@ -1,30 +1,32 @@
 import { useEffect, useRef, useState } from 'react';
 import { List, type RowComponentProps } from 'react-window';
 import type { Columns, Tier } from '../data/types';
-import { useStore, type SortKey } from '../state/store';
+import { NO_FILTERS, useStore, type SortKey } from '../state/store';
 import { ListingCard } from './ListingCard';
+import { PlotsForYou } from './PlotsForYou';
 import { RESULT_CAP } from './query';
 
 const SORTS: [SortKey, string][] = [
   ['price_desc', 'Price (high to low)'], ['price_asc', 'Price (low to high)'],
   ['viability_desc', 'Viability'], ['sun_score_desc', 'Sun Score'], ['signal_score_desc', 'Signal Score'],
 ];
+const BEST_MATCH: [SortKey, string] = ['best_match', 'Best match'];
 const EMPTY: number[] = [];
 const COLS = 2, ROW_H = 200;
 
 interface RowProps {
-  ids: number[]; cols: Columns; tier: Tier; basemapUrl: string | null;
+  ids: number[]; match: number[]; cols: Columns; tier: Tier; basemapUrl: string | null;
   hover: number | null; selection: number | null;
   setHover: (i: number | null) => void; select: (i: number | null) => void;
 }
 
-function Row({ index, style, ids, cols, tier, basemapUrl, hover, selection, setHover, select }: RowComponentProps<RowProps>) {
+function Row({ index, style, ids, match, cols, tier, basemapUrl, hover, selection, setHover, select }: RowComponentProps<RowProps>) {
   return (
     <div style={{ ...style, display: 'grid', gridTemplateColumns: `repeat(${COLS}, 1fr)`, gap: 10, padding: '0 12px', boxSizing: 'border-box' }}>
-      {ids.slice(index * COLS, index * COLS + COLS).map((i) => (
+      {ids.slice(index * COLS, index * COLS + COLS).map((i, k) => (
         <ListingCard
           key={i} cols={cols} tier={tier} i={i} basemapUrl={basemapUrl}
-          highlighted={hover === i} selected={selection === i} onHover={setHover} onOpen={select}
+          highlighted={hover === i} selected={selection === i} onHover={setHover} onOpen={select} match={match[index * COLS + k]}
         />
       ))}
     </div>
@@ -34,7 +36,9 @@ function Row({ index, style, ids, cols, tier, basemapUrl, hover, selection, setH
 export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: Tier; basemapUrl: string | null }) {
   const { sort, setSort, hover, selection, setHover, select } = useStore();
   const results = useStore((s) => s.results);
-  const ids = results?.ids ?? EMPTY, total = results?.total ?? 0;
+  const homeType = useStore((s) => s.filters.homeType);
+  const quiet = useStore((s) => s.filters === NO_FILTERS);
+  const ids = results?.ids ?? EMPTY, match = results?.match ?? EMPTY, total = results?.total ?? 0;
   const box = useRef<HTMLDivElement>(null);
   const [h, setH] = useState(400);
   useEffect(() => {
@@ -55,15 +59,16 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
           <label>
             Sort:{' '}
             <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
-              {SORTS.map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+              {(homeType !== 'any' ? [BEST_MATCH, ...SORTS] : SORTS).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
             </select>
           </label>
         </div>
       </header>
+      {quiet && <PlotsForYou cols={cols} tier={tier} onOpen={select} />}
       <div ref={box} style={{ flex: 1, minHeight: 0 }}>
         <List
           style={{ height: h }} rowComponent={Row} rowCount={rows} rowHeight={ROW_H} overscanCount={2}
-          rowProps={{ ids, cols, tier, basemapUrl, hover, selection, setHover, select }}
+          rowProps={{ ids, match, cols, tier, basemapUrl, hover, selection, setHover, select }}
         />
       </div>
     </section>

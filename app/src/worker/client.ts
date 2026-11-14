@@ -2,6 +2,7 @@ import type { Columns, Tier } from '../data/types';
 import type { Filters, Rect, SortKey } from '../state/store';
 import type { Req, Res } from './compute';
 import type { Results } from '../results/query';
+import type { HomeCfg } from '../results/homeTypes';
 
 /** Promise wrapper over the compute worker. Each tier's columns are copied in once. */
 class ComputeClient {
@@ -23,7 +24,7 @@ class ComputeClient {
       if (!p) return;
       this.pending.delete(e.data.id);
       if (e.data.type === 'error') p.fail(new Error(e.data.message));
-      else p.ok({ ids: e.data.ids, total: e.data.total, passing: e.data.passing });
+      else p.ok({ ids: e.data.ids, total: e.data.total, passing: e.data.passing, match: e.data.match });
     };
   }
 
@@ -34,12 +35,12 @@ class ComputeClient {
     this.w.postMessage(msg);
   }
 
-  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey, filters: Filters): Promise<Results> {
+  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey, filters: Filters, home: HomeCfg | null = null): Promise<Results> {
     this.init(tier, c);
     const id = ++this.seq;
     return new Promise((ok, fail) => {
       this.pending.set(id, { ok, fail });
-      this.w.postMessage({ type: 'query', id, tier, rect, sort, filters } satisfies Req);
+      this.w.postMessage({ type: 'query', id, tier, rect, sort, filters, home } satisfies Req);
     });
   }
 }

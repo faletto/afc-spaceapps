@@ -1,7 +1,9 @@
 import { memo } from 'react';
 import type { Columns, Tier } from '../data/types';
 import { formatPrice } from '../map/markers';
+import { Badges } from '../listing/Badges';
 import { factsLine } from './format';
+import { plotName } from './homeTypes';
 
 /** Thumbnail = basemap crop centred on the plot; zoom = how many card-widths of basemap (small basemap is ~2048 px wide, so keep this modest). */
 export const THUMB = { aspect: 2.4, zoom: 10 };
@@ -10,9 +12,11 @@ interface Props {
   cols: Columns; tier: Tier; i: number; basemapUrl: string | null;
   highlighted: boolean; selected: boolean;
   onHover: (i: number | null) => void; onOpen: (i: number) => void;
+  /** Home-type match % (FIL-4); undefined when no type is chosen. */
+  match?: number;
 }
 
-export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl, highlighted, selected, onHover, onOpen }: Props) {
+export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl, highlighted, selected, onHover, onOpen, match }: Props) {
   const [b0, b1, b2, b3] = cols.meta.bounds;
   const u = (cols.col.x[i]! - b0) / (b2 - b0), v = 1 - (cols.col.y[i]! - b1) / (b3 - b1);
   const aspect = (b2 - b0) / (b3 - b1);
@@ -37,11 +41,15 @@ export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl
         }}
       />
       <div style={{ padding: '6px 8px' }}>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>{formatPrice(cols.col.price[i]!)}</div>
+        <div style={{ fontSize: 18, fontWeight: 700 }}>
+          {formatPrice(cols.col.price[i]!)}
+          {match != null && <span data-testid="match" style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: '#8fd19e' }}>{Math.round(match)}% match</span>}
+        </div>
         <div style={{ fontSize: 12, opacity: 0.85 }}>{factsLine(cols, i)}</div>
         <div style={{ fontSize: 11, opacity: 0.6 }}>
-          Plot #{i} · {tier === 'polar' ? 'South Pole District' : 'Moon-wide'}
+          {plotName(tier, cols.col.x[i]!, cols.col.y[i]!)} · {tier === 'polar' ? 'South Pole District' : 'Moon-wide'}
         </div>
+        <Badges cols={cols} i={i} max={2} />
       </div>
     </button>
   );

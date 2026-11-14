@@ -5,7 +5,10 @@
 - Done (A4, mostly): `geo/geometry.ts`, `geo/projections.ts` (polar inverse), `science/visibility.ts` (series, stats, runs, best_window, countdown helpers) with **exact golden parity** (`science/visibility.test.ts`: angles 1e-6, stats 1e-9, runs/windows exact); **3D Tour** (`tour/*`, listing `Gallery` Photos | 3D Tour tab, polar only; canvas panorama, Sun/Earth 30-day paths, hollow = behind terrain, countdowns, own time slider until A6). e2e `tour.spec.ts`.
 - R-A6 and R-A7 RESOLVED by Pipeline 8070ebc (real ephemeris.bin; quantisation golden fixed). Merged origin/main (6a7e75f); parity still exact; golden quantisation test un-skipped; new test checks ephemeris.bin vs CSV. vitest 34, e2e 14.
 - Reviewer pass on A4 done (no blocking; fixed: tour waits for detail.best_cell_xy, primitive effect deps, hollow dots use series flags, wrap-around tests). DEFERRED: TIME-2 — Tour uses its own time slider; A6 must wire it to the global slider (owner: App, A6). Not done: memoising the series per plot, axis clip above 15°.
-- Next: South Pole tier polish (not started); countdown golden (none exists; countdown is derived from masks that ARE golden-tested); then merge app→main at M4; A5 (home type, More filters, badges, real ids on cards).
+- A5 (in progress, on `app-a4`/`app`, NOT merged to main): Home type filter (gates via bw_lander_h/bw_habitat_h/sunlit/ice; polar-only ice depot hint), match % on cards, Best match sort (default when a type is chosen), More panel (min sunlight/Earth), real plot ids on cards (G-lat-lon / SP-row-col derived from x,y), badges (max 2 on cards: Hot property, Earth view, Peak of light, Off market), "Plots for you" strip (featured flag: best, cheapest, next best). vitest 38, e2e 17 (3 new in a5.spec.ts).
+- ASSUMED: solar-farm gate = sunlit ≥ 60% only (safe_area_frac isn't a column, R-A8); match % uses only the weights listed per type in config (Σw·s/Σw); `Any` match = viability.
+- Left for A5/A6: OV-11 Solar power overlay (needs R-A8 overlay PNG), Price cut badge (Rent tab, A6), named-score tooltips already done, FIL-6 URL state (P2), Tour↔global slider (TIME-2, A6), South Pole tier polish, tour memoisation.
+- Next: reviewer on A5 (end of package), then merge to main at M5 on human OK; then A6 (Rent).
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 
@@ -17,7 +20,7 @@
 | A2 | ✅ (OV-7 comm window deferred) | see git log | no | worker + overlays + tooltips |
 | A3 | ✅ | see Done log | M3 | real data, filters, D-6 e2e, reviewer pass |
 | A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | M4 (94204b7) |
-| A5 | ⬜ | | | |
+| A5 | 🟡 home type/match/badges/ids/Plots for you ✅; OV-11 pending R-A8 | see git log | no | |
 | A6 | ⬜ | | | |
 | A7 | ⬜ | | | |
 
@@ -33,6 +36,7 @@ Q-A1: human granted App Claude permission to write the app CI workflow → `.git
 <!-- Q-A#: answer · source · date -->
 
 ## Requests to Pipeline Claude
+R-A8 (14 Nov): (a) add a `safe_area_pct` (0–100) column to both tiers so the Solar-farm gate (safe_area_frac ≥ 0.4) can run client-side; today only sunlit ≥ 60% is applied. (b) OV-11: add a `power` overlay (PNG+JSON legend, energy Wh/m²/day) for both tiers; `OVERLAY_NAMES` would gain `power`.
 R-A6 (RESOLVED 8070ebc; was: blocks real 3D Tour): `app/public/data/ephemeris.bin` is still the v1 stub from `stub.py _ephemeris` (sun at t=0 = (0.9996,0,0.0269)). Please write the real one (float32 LE: sun_xyz[8784×3], earth_xyz[8784×3], earth_dist_m[8784], tsi[8784] from `ephemeris.load()`) in the real export and update manifest sha.
 R-A7 (RESOLVED 8070ebc): `golden.py` `horizon_quantisation.cases` call `horizons.quantize(m)` with its default offset −3.0, but the file declares offset_deg −6 (and data uses −6). Pass `0.16, -6.0` so the cases match; I have the test skipped until then.
 R-A4 (14 Nov, after H3): `app/public/data/manifest.json` still says `contract_version: 1` + `stub: true` (tiers: global real, polar stub) while CONTRACT.md says v2. Please bump the manifest field with the data (I built against v2; loader warns on mismatch; my loader test only asserts ≥ 1 until fixed).
@@ -46,6 +50,7 @@ R-A1 (RESOLVED: names are s_safety,s_power,s_comms,s_thermal,s_landmark,s_ice; c
 <!-- reply to R-P#: … -->
 
 ## Done log
+- 14 Nov · A5 (part) · home type + match %, Best match sort, More filters, plot ids, badges, Plots for you · vitest 38, e2e 17
 - 14 Nov · A4 · science mirror + golden parity (exact), 3D Tour (canvas, paths, countdown, tab), loadConfig · vitest 30, e2e tour 1
 - 14 Nov · A3 follow-up 2 · adopted P6: glossary.json via store (fallback), small-basemap-first + thumbnails from small, full basemap background, listing nearest feature · vitest 17, e2e 13
 - 14 Nov · A3 follow-up · merged H4+H6 (real polar tier, why/blurb); listing shows why + blurb; loader test pins contract v2 · vitest 17, e2e 12 ×2
