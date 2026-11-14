@@ -23,6 +23,7 @@ def fetch_all() -> None:
     spec = yaml.safe_load(SOURCES.read_text())
     for f in spec["files"]:
         dest = RAW / f["name"]
+        dest.parent.mkdir(parents=True, exist_ok=True)
         if not dest.exists() or dest.stat().st_size != f["bytes"]:
             subprocess.run(["curl", "-fL", "-C", "-", "--retry", "5", "-o", str(dest), f["url"]], check=True)
         if dest.stat().st_size != f["bytes"]:

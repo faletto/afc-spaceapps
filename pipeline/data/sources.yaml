@@ -16,3 +16,31 @@ files:
   url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDEM_80S_20MPP_ADJ.TIF
   bytes: 2696082051
   sha256: 09b7ca80f9e6a146f970225d18af72fc02787669b3ef51b888e347d2b6845649
+- name: illum/AVGVISIB_85S_060M_201608.TIF
+  url: https://pgda.gsfc.nasa.gov/data/MoonIllumination/AVGVISIB_85S_060M_201608.TIF
+  bytes: 33994464
+  sha256: ccf67d4f39e0a970c111196da7d6551ffcf50d075470b93067fb3904c0b05806
+- name: illum/AVGVISIB_85S_060M_201608_EARTH.TIF
+  url: https://pgda.gsfc.nasa.gov/data/MoonIllumination/AVGVISIB_85S_060M_201608_EARTH.TIF
+  bytes: 24862958
+  sha256: d71dc5adfff653e0e924e0a4cbf03795b996caa30b4ace3d5843a70a5ab2f3d2
+- name: illum/LPSR_85S_060M_201608.TIF
+  url: https://pgda.gsfc.nasa.gov/data/MoonIllumination/LPSR_85S_060M_201608.TIF
+  bytes: 656183
+  sha256: e9544c081dd4e36f079e92bc3a376d0913857a61a4a53c209175c081762de43c
+- name: diviner/pcp_avg_tbol_pols_sum_ltim12_240.tab
+  url: https://pds-geosciences.wustl.edu/lro/urn-nasa-pds-lro_diviner_derived1/data_derived_pcp/diurnal/ltim/pols/pcp_avg_tbol_pols_sum_ltim12_240.tab
+  bytes: 206252967
+  sha256: c72b7f8c04caa7403e0acb75236f92742b9f9e6d5355257a785656083180255f
+- name: diviner/pcp_avg_tbol_pols_win_ltim12_240.tab
+  url: https://pds-geosciences.wustl.edu/lro/urn-nasa-pds-lro_diviner_derived1/data_derived_pcp/diurnal/ltim/pols/pcp_avg_tbol_pols_win_ltim12_240.tab
+  bytes: 187559230
+  sha256: 8d099ef4e0089de89aa537fce41a7ef3e2c97f8656a7674b235831f5b07eab3a
+- name: diviner/pcp_avg_tbol_pols_sum_ltim03_240.tab
+  url: https://pds-geosciences.wustl.edu/lro/urn-nasa-pds-lro_diviner_derived1/data_derived_pcp/diurnal/ltim/pols/pcp_avg_tbol_pols_sum_ltim03_240.tab
+  bytes: 201343577
+  sha256: e1a219cd7df504c1cb4c430f5ebebdabe053b6b6c4793832655157438542ec38
+- name: diviner/pcp_avg_tbol_pols_win_ltim03_240.tab
+  url: https://pds-geosciences.wustl.edu/lro/urn-nasa-pds-lro_diviner_derived1/data_derived_pcp/diurnal/ltim/pols/pcp_avg_tbol_pols_win_ltim03_240.tab
+  bytes: 178193452
+  sha256: 8a9800c7797d4f0f3573e6ee9d844a64ac9c134e6b3671328b87154c7eedf547
