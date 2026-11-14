@@ -15,8 +15,8 @@ RHO_1AU_DEG = 0.2666
 MONTH_OF_HOUR_DEFAULT_YEAR = 2028
 
 
-def month_of_hour(year: int, n: int) -> np.ndarray:
-    t = np.datetime64(f"{year}-01-01T00") + np.arange(n).astype("timedelta64[h]")
+def month_of_hour(year: int, n: int, start_hour: int = 0) -> np.ndarray:
+    t = np.datetime64(f"{year}-01-01T00") + (start_hour + np.arange(n)).astype("timedelta64[h]")
     return (t.astype("datetime64[M]").astype(int) % 12).astype(np.int64)
 
 
@@ -180,7 +180,7 @@ KEYS = ["sunlit_frac", "longest_dark_h", "longest_light_h", "energy_wh_m2_day", 
         "longest_blackout_h", "mean_earth_el", "temp_min_k", "temp_mean_k", "temp_max_k"]
 
 
-def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0):
+def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0, start_hour=0):
     """Numba kernel over many sites. eph: dict with sun_xyz, earth_xyz, earth_dist_m, tsi, r_sun_km."""
     lat, lon = np.ascontiguousarray(lat, float), np.ascontiguousarray(lon, float)
     hz = np.ascontiguousarray(horizon_deg, float)
@@ -190,7 +190,7 @@ def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0):
     ms, me = np.zeros((len(lat), 12)), np.zeros((len(lat), 12))
     _kernel(lat, lon, hz, np.ascontiguousarray(eph["sun_xyz"]), np.ascontiguousarray(eph["earth_xyz"]),
             np.ascontiguousarray(eph["earth_dist_m"]), np.ascontiguousarray(eph["tsi"]),
-            np.ascontiguousarray(eph["r_sun_km"]), month_of_hour(year, nt), pw["panel"] == "vertical_tracking",
+            np.ascontiguousarray(eph["r_sun_km"]), month_of_hour(year, nt, start_hour), pw["panel"] == "vertical_tracking",
             pw["sunlit_threshold"], cm["mode"] == "terrain_margin", cm["margin_deg"], cm["cutoff_deg"],
             th["albedo"], th["emissivity"], th["floor_k"], th["psr_floor_k"], R, out, ms, me)
     res = {k: out[:, j] for j, k in enumerate(KEYS)}

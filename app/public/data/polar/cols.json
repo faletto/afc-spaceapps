@@ -1,5 +1,5 @@
 {
- "rows": 78384,
+ "rows": 78464,
  "columns": [
   {
    "name": "x",
@@ -10,185 +10,186 @@
   {
    "name": "y",
    "dtype": "float32",
-   "offset": 313536,
+   "offset": 313856,
    "scale": 1
   },
   {
    "name": "lat",
    "dtype": "float32",
-   "offset": 627072,
+   "offset": 627712,
    "scale": 1
   },
   {
    "name": "lon",
    "dtype": "float32",
-   "offset": 940608,
+   "offset": 941568,
    "scale": 1
   },
   {
    "name": "area_km2",
    "dtype": "float32",
-   "offset": 1254144,
+   "offset": 1255424,
    "scale": 1
   },
   {
    "name": "price",
    "dtype": "float32",
-   "offset": 1567680,
+   "offset": 1569280,
    "scale": 1
   },
   {
    "name": "rent_avg",
    "dtype": "float32",
-   "offset": 1881216,
+   "offset": 1883136,
    "scale": 1
   },
   {
    "name": "viability",
    "dtype": "uint8",
-   "offset": 2194752,
+   "offset": 2196992,
    "scale": 1
   },
   {
    "name": "s_safety",
    "dtype": "uint8",
-   "offset": 2273136,
+   "offset": 2275456,
    "scale": 1
   },
   {
    "name": "s_power",
    "dtype": "uint8",
-   "offset": 2351520,
+   "offset": 2353920,
    "scale": 1
   },
   {
    "name": "s_comms",
    "dtype": "uint8",
-   "offset": 2429904,
+   "offset": 2432384,
    "scale": 1
   },
   {
    "name": "s_thermal",
    "dtype": "uint8",
-   "offset": 2508288,
+   "offset": 2510848,
    "scale": 1
   },
   {
    "name": "s_landmark",
    "dtype": "uint8",
-   "offset": 2586672,
+   "offset": 2589312,
    "scale": 1
   },
   {
    "name": "s_ice",
    "dtype": "uint8",
-   "offset": 2665056,
+   "offset": 2667776,
    "scale": 1
   },
   {
    "name": "sunlit_pct",
    "dtype": "uint8",
-   "offset": 2743440,
+   "offset": 2746240,
    "scale": 1
   },
   {
    "name": "earth_pct",
    "dtype": "uint8",
-   "offset": 2821824,
+   "offset": 2824704,
    "scale": 1
   },
   {
    "name": "slope_mean_ddeg",
    "dtype": "uint16",
-   "offset": 2900208,
+   "offset": 2903168,
    "scale": 0.1
   },
   {
    "name": "longest_dark_h",
    "dtype": "uint16",
-   "offset": 3056976,
+   "offset": 3060096,
    "scale": 1
   },
   {
    "name": "longest_blackout_h",
    "dtype": "uint16",
-   "offset": 3213744,
+   "offset": 3217024,
    "scale": 1
   },
   {
    "name": "temp_min_k",
    "dtype": "uint16",
-   "offset": 3370512,
+   "offset": 3373952,
    "scale": 1
   },
   {
    "name": "temp_max_k",
    "dtype": "uint16",
-   "offset": 3527280,
+   "offset": 3530880,
    "scale": 1
   },
   {
    "name": "ice_km10",
    "dtype": "uint16",
-   "offset": 3684048,
+   "offset": 3687808,
    "scale": 0.1
   },
   {
    "name": "land_type",
    "dtype": "uint8",
-   "offset": 3840816,
+   "offset": 3844736,
    "scale": 1
   },
   {
    "name": "flags",
    "dtype": "uint16",
-   "offset": 3919200,
+   "offset": 3923200,
    "scale": 1
   },
   {
    "name": "bw_lander_h",
    "dtype": "uint16",
-   "offset": 4075968,
+   "offset": 4080128,
    "scale": 1
   },
   {
    "name": "bw_habitat_h",
    "dtype": "uint16",
-   "offset": 4232736,
+   "offset": 4237056,
    "scale": 1
   },
   {
    "name": "bw_lander_start",
    "dtype": "uint16",
-   "offset": 4389504,
+   "offset": 4393984,
    "scale": 1
   },
   {
    "name": "bw_habitat_start",
    "dtype": "uint16",
-   "offset": 4546272,
+   "offset": 4550912,
    "scale": 1
   },
   {
    "name": "tile",
    "dtype": "uint16",
-   "offset": 4703040,
+   "offset": 4707840,
    "scale": 1
   },
   {
    "name": "row_in_tile",
    "dtype": "uint16",
-   "offset": 4859808,
+   "offset": 4864768,
    "scale": 1
   }
  ],
  "land_types": [
+  "highlands",
   "mare",
-  "highland",
+  "far_side",
+  "crater_rim",
   "crater_floor",
-  "rim",
-  "ridge",
-  "psr_edge"
+  "psr",
+  "peak_of_light"
  ],
  "flags": {
   "off_market": 0,
@@ -200,15 +201,18 @@
  },
  "tiles_per_axis": 16,
  "projection": {
-  "type": "azimuthal_equidistant_south",
+  "type": "polar_stereographic_south",
   "lat0": -90,
+  "lon0": 0,
   "R": 1737400.0,
-  "stub": true
+  "k0": 1.0,
+  "forward": "x = rho*sin(lon), y = rho*cos(lon), rho = 2R*tan(45deg + lat/2); lon east-positive",
+  "azimuth": "bearing a (0=local N, 90=E) -> map direction (sin(lon+a), cos(lon+a))"
  },
  "bounds": [
-  -151616.7521207474,
-  -151616.7521207474,
-  151616.7521207474,
-  151616.7521207474
+  -153600.0,
+  -153600.0,
+  153600.0,
+  153600.0
  ]
 }

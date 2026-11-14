@@ -36,11 +36,11 @@ CURATED = [
     ("Artemis III: Connecting Ridge Extension", "artemis", -88.8, -122.0, "apollo_artemis"),
     ("Artemis III: de Gerlache Rim 2", "artemis", -88.5, -87.0, "apollo_artemis"),
     ("Artemis III: Leibnitz Beta Plateau", "artemis", -85.4, 36.0, "apollo_artemis"),
-    ("Artemis III: Malapert Massif", "artemis", -85.9, 12.9, "apollo_artemis"),
+    ("Artemis III: Malapert Massif", "artemis", -86.0, 0.1, "apollo_artemis"),
     ("Artemis III: Faustini Rim A", "artemis", -87.3, 77.0, "apollo_artemis"),
     ("Artemis III: Haworth", "artemis", -87.5, -5.0, "apollo_artemis"),
     ("Artemis III: Nobile Rim 1", "artemis", -85.4, 37.0, "apollo_artemis"),
-    ("Shackleton (crater)", "crater", -89.9, 0.0, "major_crater"),
+    ("Shackleton (crater)", "crater", -89.9, 129.8, "major_crater"),
 ]
 
 
