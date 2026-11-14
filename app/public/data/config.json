@@ -15,7 +15,7 @@
   "mode": "terrain_margin"
  },
  "computed": {
-  "scarcity_viability_cutoff": 57.26663746232401
+  "scarcity_viability_cutoff": 62.292452767387445
  },
  "grid": {
   "global": {
@@ -120,7 +120,11 @@
  },
  "power": {
   "area_m2": 10,
+  "battery_ref_kg": 2000,
+  "battery_wh_per_kg": 150,
   "efficiency": 0.3,
+  "load_w": 500,
+  "net_ref_w": 3000,
   "panel": "vertical_tracking",
   "sunlit_threshold": 0.5
  },

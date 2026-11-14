@@ -48,7 +48,7 @@ detail ≈ 3 MB lazy; basemaps ≈ 12 MB. Raw on disk ≈ 130 MB (most of it JSO
 - Earth contact = Earth ≥ 1° above local terrain (`terrain_margin`); Moon-wide plots use zero terrain (Q-P5).
 - Roughness/relief normalisation ranges widened for 1° plots (Q-P3); slope computed from the 20 m DEM, not LDSM (Q-P4).
 - Horizon tiles: `elevation = v × 0.16° − 6°` (spec −3°; real skylines reach −5.8°).
-- Dark/blackout penalty uses the spec's `h50 = 120 h`; this makes the power sub-score small almost everywhere (Q-P6, open).
+- Sun score = net energy over the duration (panel harvest minus a 500 W continuous load, discounted by the battery mass needed for the longest night), human-chosen to replace the spec's night penalty, which flattened it (Q-P6). The blackout penalty (`h50 = 120 h`) still applies to the Signal score.
 - Home-type gates calibrated and human-approved on the polar tier (habitat 168 h, ice 2 km).
 - Independent NASA cross-checks run in `make validate` (report in `docs/validation.md`): LOLA-derived average Sun/Earth
   visibility (PGDA; Sun r = 0.99) as the HOR-2 check, and LRO Diviner polar maps (PDS) for TEMP-4 (PSRs agree; lit-site

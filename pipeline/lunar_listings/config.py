@@ -30,6 +30,9 @@ def validate(c: dict) -> dict:
     _need(c["moon"]["radius_m"] > 1e6, "moon.radius_m implausible")
     _need(-90 < c["grid"]["polar"]["lat_min"] < 0, "grid.polar.lat_min in (-90, 0)")
     _need(c["grid"]["polar"]["plot_m"] % c["grid"]["polar"]["cell_m"] == 0, "plot_m must be a multiple of cell_m")
+    pw = c["power"]
+    _need(all(pw[k] > 0 for k in ("area_m2", "efficiency", "load_w", "net_ref_w", "battery_wh_per_kg", "battery_ref_kg")),
+          "power.area_m2/efficiency/load_w/net_ref_w/battery_* must be > 0")
     _need(c["comms"]["mode"] in ("terrain_margin", "absolute"), "comms.mode: terrain_margin|absolute")
     _need(c["comms"]["margin_deg"] >= 0 and c["comms"]["cutoff_deg"] >= 0, "comms angles >= 0")
     for r in ("cold_range_k", "swing_range_k"):
