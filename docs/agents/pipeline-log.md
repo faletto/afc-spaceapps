@@ -1,10 +1,11 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` · Contract: **v1** (stub, H0) · P0 done @ 86cc05e + contract-hardening commit
-- Env: `make setup` (uv venv py3.11 at repo-root `.venv`), `make stub`, `make test`; stub ≈ 41 MB in `app/public/data/` (committed once; avoid regenerating/committing churn)
-- P1: ephemeris, geometry, global terrain done (data/work/terrain_global.npz, gitignored). DEM fetch resumable: `make fetch` (log data/work/fetch2.log). Next: polar crop + 240 m cells (80 m + 20 m DEMs, LDSM slope), spec §3.4.
-- Blockers: none. Note: system python is 3.15; always use `.venv` (3.11).
+- Branch: `pipeline` (pushed) · Contract: v1 (stub) · WP: P1 nearly done, P2 started
+- Done: ephemeris CSV, geometry, global terrain (real DEM), polar terrain code (validated on 80 m), `visibility.py` (ref + Numba kernel, parity-tested; whole Moon 64,800 sites × 8784 h in ~10 s, flat horizon).
+- In progress: 20 m polar DEM download (`curl -C -` resumable; check `ls -l data/raw`; final size 2696082051). When complete: `make fetch` (records sha256; LDSM dropped, Q-P4), then `build_polar_stats('data/raw','data/work',cfg)` auto-uses the 20 m DEM.
+- Next: P2 rest — global plots/SAFE export glue, `validate.py` (EPH-3 Horizons site comparison, ≤1°/≤0.1°), sanity suite, docs/validation.md; then P3 (land, scoring, pricing).
+- Env: `.venv` py3.11; `make test` (28 tests); intermediates in gitignored `data/work/`.
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
@@ -39,6 +40,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P1/P2 · polar terrain code, visibility.py + tests (28 pass) · see git log
 - 14 Nov · P1 · global terrain (resample 1/32°, slope, plot stats) on real DEM; Q-P3 ranges applied; DEM fetch in progress (20 m DEM + slope remaining) · see git log
 - 14 Nov · P1 (part 1) · Horizons fetch+parser, ephemeris_2028.csv (8784 rows, 0.7 MB), ephemeris.py, geometry.py + tests · see git log
 - 14 Nov · P0 · scaffold + config + stub, contract v1 · 86cc05e (+ hardening commit) · 10 passed
