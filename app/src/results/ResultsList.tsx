@@ -7,13 +7,13 @@ import { RESULT_CAP } from './query';
 
 const SORTS: [SortKey, string][] = [
   ['price_desc', 'Price (high to low)'], ['price_asc', 'Price (low to high)'],
-  ['viability_desc', 'Viability'], ['sunlit_desc', 'Sunlight'],
+  ['viability_desc', 'Viability'], ['sun_score_desc', 'Sun Score'], ['signal_score_desc', 'Signal Score'],
 ];
 const EMPTY: number[] = [];
 const COLS = 2, ROW_H = 200;
 
 interface RowProps {
-  ids: number[]; cols: Columns; tier: Tier; basemapUrl: string;
+  ids: number[]; cols: Columns; tier: Tier; basemapUrl: string | null;
   hover: number | null; selection: number | null;
   setHover: (i: number | null) => void; select: (i: number | null) => void;
 }
@@ -31,7 +31,7 @@ function Row({ index, style, ids, cols, tier, basemapUrl, hover, selection, setH
   );
 }
 
-export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: Tier; basemapUrl: string }) {
+export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: Tier; basemapUrl: string | null }) {
   const { sort, setSort, hover, selection, setHover, select } = useStore();
   const results = useStore((s) => s.results);
   const ids = results?.ids ?? EMPTY, total = results?.total ?? 0;

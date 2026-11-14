@@ -7,7 +7,7 @@ import { factsLine } from './format';
 export const THUMB = { aspect: 2.4, zoom: 14 };
 
 interface Props {
-  cols: Columns; tier: Tier; i: number; basemapUrl: string;
+  cols: Columns; tier: Tier; i: number; basemapUrl: string | null;
   highlighted: boolean; selected: boolean;
   onHover: (i: number | null) => void; onOpen: (i: number) => void;
 }
@@ -32,7 +32,7 @@ export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl
       <div
         aria-hidden
         style={{
-          aspectRatio: String(THUMB.aspect), backgroundImage: `url(${basemapUrl})`, backgroundRepeat: 'no-repeat',
+          aspectRatio: String(THUMB.aspect), backgroundImage: basemapUrl ? `url(${basemapUrl})` : undefined, backgroundColor: '#222a3a', backgroundRepeat: 'no-repeat',
           backgroundSize: `${Z * 100}% auto`, backgroundPosition: `${px}% ${py}%`,
         }}
       />

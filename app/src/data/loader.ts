@@ -1,7 +1,7 @@
 import type { OverlayLegend, ColArray, ColsJson, Columns, ColumnName, Manifest, Tier } from './types';
 import { COLUMN_DTYPES } from './types';
 
-export const EXPECTED_CONTRACT = 1;
+export const EXPECTED_CONTRACT = 2;
 
 /** Injectable I/O so tests can run in Node and the app can run in the browser. */
 export interface Source { json<T>(path: string): Promise<T>; bin(path: string): Promise<ArrayBuffer> }
@@ -65,7 +65,28 @@ export function loadEphemeris(src: Source, steps: number): Promise<Ephemeris> {
   });
 }
 
-export interface DetailRecord { row: number; name: string; blurb: string; sunlit_monthly: number[]; [k: string]: unknown }
+/** Per-plot detail (contract v2, global tier). Polar/stub tiers may carry only a subset, so most fields are optional. */
+export interface DetailRecord {
+  row: number;
+  id?: string;
+  land_type?: string;
+  slope_p90_deg?: number;
+  roughness_m?: number;
+  relief_m?: number;
+  safe_area_frac?: number;
+  landing_safe?: boolean;
+  energy_wh_m2_day?: number;
+  longest_light_h?: number;
+  mean_earth_el_deg?: number;
+  temp_mean_k?: number;
+  monthly_sunlit_pct?: number[];
+  monthly_earth_pct?: number[];
+  nearby?: string[];
+  /** stub-only (v1) */
+  name?: string;
+  blurb?: string;
+  sunlit_monthly?: number[];
+}
 export const tileName = (tile: number, tilesPerAxis: number) => `${tile % tilesPerAxis}_${Math.floor(tile / tilesPerAxis)}`;
 
 /** Lazy per-tile detail; tiles with no file (empty polar corners) resolve to []. */

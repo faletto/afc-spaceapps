@@ -36,7 +36,8 @@ export function queryResults(c: Columns, rect: Rect | null, sort: SortKey, filte
     if (rect && (x[i]! < rect[0] || x[i]! > rect[2] || y[i]! < rect[1] || y[i]! > rect[3])) continue;
     hit.push(i);
   }
-  const key = sort.startsWith('price') ? c.col.price : sort === 'viability_desc' ? c.col.viability : c.col.sunlit_pct;
+  const key = sort.startsWith('price') ? c.col.price : sort === 'viability_desc' ? c.col.viability
+    : sort === 'sun_score_desc' ? c.col.s_power : c.col.s_comms;
   const dir = sort.endsWith('asc') ? 1 : -1;
   hit.sort((a, b) => dir * (key[a]! - key[b]!) || a - b);
   return { ids: hit.slice(0, cap), total: hit.length, passing };

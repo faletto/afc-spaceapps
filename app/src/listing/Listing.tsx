@@ -32,10 +32,11 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
       <button type="button" onClick={onBack} style={{ justifySelf: 'start' }}>← Back to results</button>
       <header style={{ display: 'grid', gap: 4 }}>
         <Badges cols={cols} i={i} />
-        <h2 data-testid="listing-title" style={{ margin: 0, fontSize: 22 }}>{detail?.name ?? `Plot #${i}`}</h2>
+        <h2 data-testid="listing-title" style={{ margin: 0, fontSize: 22 }}>{detail?.id ? `Plot ${detail.id}` : detail?.name ?? `Plot #${i}`}</h2>
         <div style={{ fontSize: 12, opacity: 0.7 }}>
           {Math.abs(lat).toFixed(2)}°{lat < 0 ? 'S' : 'N'}, {Math.abs(lon).toFixed(2)}°{lon < 0 ? 'W' : 'E'} · {tier === 'polar' ? 'Detailed survey' : 'Moon-wide estimate'}
         </div>
+        {detail?.nearby?.length ? <div data-testid="nearby" style={{ fontSize: 12, opacity: 0.8 }}>Near {detail.nearby.slice(0, 3).join(', ')}</div> : null}
       </header>
       <section>
         <div data-testid="listing-price" style={{ fontSize: 32, fontWeight: 800 }}>
@@ -43,11 +44,11 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         </div>
         <div style={{ fontSize: 14 }}>{factsLine(cols, i)}</div>
         <div style={{ marginTop: 4 }}><FinePrint compact /></div>
-        {/* TODO(R-A2): one-line "why" comes from the pipeline (DET-2); blurb is placeholder from detail tile. */}
+        {/* TODO(R-A2): one-line "why" (DET-2) and blurb (DET-6, P5) are not in contract v2 yet. */}
         {detail?.blurb && <p style={{ margin: '8px 0 0', fontStyle: 'italic', opacity: 0.85 }}>{detail.blurb}</p>}
       </section>
       <Scores cols={cols} i={i} tier={tier} />
-      <section><h3 style={{ margin: '0 0 6px', fontSize: 14 }}>Facts &amp; features</h3><Facts cols={cols} i={i} /></section>
+      <section><h3 style={{ margin: '0 0 6px', fontSize: 14 }}>Facts &amp; features</h3><Facts cols={cols} i={i} detail={detail} /></section>
     </article>
   );
 }

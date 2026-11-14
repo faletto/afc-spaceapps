@@ -3,7 +3,7 @@ import type { OverlayName } from '../data/loader';
 import type { Tier } from '../data/types';
 import type { Results } from '../results/query';
 
-export type SortKey = 'price_asc' | 'price_desc' | 'viability_desc' | 'sunlit_desc';
+export type SortKey = 'price_asc' | 'price_desc' | 'viability_desc' | 'sun_score_desc' | 'signal_score_desc';
 export type Rect = [number, number, number, number];
 
 /** Filters (FIL-1..3). Prices are USD; null = unbounded. landTypes = indices into cols.meta.land_types ([] = all). */

@@ -7,6 +7,7 @@ import { OverlayControl } from './map/OverlayControl';
 import { Notice } from './listing/Notice';
 import { Listing } from './listing/Listing';
 import type { Columns, Tier } from './data/types';
+import { useBasemap } from './map/useBasemap';
 import { MapView } from './map/MapView';
 import { useResultsQuery } from './results/useResults';
 import { ResultsList } from './results/ResultsList';
@@ -23,12 +24,14 @@ export function App() {
 
   const cols = data[tier];
   useResultsQuery(tier, cols);
-  const basemapUrl = `${base}${tier}/basemap.jpg`;
+  const basemapUrl = useBasemap(tier, base);
+  const results = useStore((s) => s.results);
   return (
     <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
       <div style={{ gridColumn: '1 / -1' }}><Filters cols={cols} /></div>
       <div style={{ position: 'relative' }}>
-        {cols && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemapUrl} />}
+        {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
+        {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemapUrl} />}
         {cols && <OverlayControl tier={tier} />}
         <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
           {(['global', 'polar'] as const).map((t) => (

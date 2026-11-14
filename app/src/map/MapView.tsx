@@ -11,7 +11,7 @@ import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, tierBoun
 const VIEW = new OrthographicView({ id: 'map', flipY: false });
 interface VS { target: [number, number, number]; zoom: number }
 
-export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns; basemapUrl: string }) {
+export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns; basemapUrl: string | null }) {
   const box = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [vs, setVs] = useState<VS>({ target: [0, 0, 0], zoom: 0 });
@@ -60,7 +60,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     i == null ? [] : [{ i, poly: plotSquare(cols.col.x[i]!, cols.col.y[i]!, tier) }];
 
   const layers = [
-    new BitmapLayer({ id: 'basemap', image: basemapUrl, bounds }),
+    basemapUrl ? new BitmapLayer({ id: 'basemap', image: basemapUrl, bounds }) : null,
     overlay && new BitmapLayer({
       id: 'overlay', opacity: overlayOpacity, bounds, image: `${dataBase}${tier}/overlay/${overlay}.png`,
     }),
