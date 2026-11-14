@@ -1,0 +1,169 @@
+{
+ "analysis": {
+  "step_hours": 1,
+  "year": 2028
+ },
+ "badges": {
+  "earth_view_frac": 0.95,
+  "hot_property_pct": 95,
+  "max_per_card": 2,
+  "price_cut_frac": 0.1
+ },
+ "comms": {
+  "cutoff_deg": 5.0,
+  "margin_deg": 1.0,
+  "mode": "terrain_margin"
+ },
+ "computed": {
+  "scarcity_viability_cutoff": 85
+ },
+ "grid": {
+  "global": {
+   "plot_deg": 1.0,
+   "terrain_res_deg": 0.03125
+  },
+  "polar": {
+   "cell_m": 240,
+   "lat_min": -85.0,
+   "plot_m": 960,
+   "refine": false
+  }
+ },
+ "home_types": {
+  "habitat": {
+   "gates": {
+    "longest_blackout_h": 72
+   },
+   "ref_stay_days": 90,
+   "weights": {
+    "comms": 0.35,
+    "thermal": 0.25
+   }
+  },
+  "ice_depot": {
+   "gates": {
+    "ice_km": 10
+   },
+   "polar_only": true,
+   "ref_stay_days": 366,
+   "weights": {
+    "ice": 0.45,
+    "power": 0.25
+   }
+  },
+  "lander_pad": {
+   "gates": {
+    "longest_night_h": 48
+   },
+   "ref_stay_days": 14,
+   "weights": {
+    "power": 0.35,
+    "safety": 0.4
+   }
+  },
+  "min_results": 50,
+  "solar_farm": {
+   "gates": {
+    "safe_area_frac": 0.4,
+    "sunlit_frac": 0.6
+   },
+   "ref_stay_days": 366,
+   "weights": {
+    "power": 0.6
+   }
+  }
+ },
+ "horizon": {
+  "az_step_deg": 2,
+  "d_max_m": 150000,
+  "mast_m": 2.0,
+  "near_dem_radius_m": 5000,
+  "step_growth": 0.01
+ },
+ "moon": {
+  "radius_m": 1737400
+ },
+ "norm": {
+  "energy_wh_m2_day": [
+   0,
+   30000
+  ]
+ },
+ "penalty": {
+  "blackout": {
+   "h50": 120,
+   "k": 2
+  },
+  "dark": {
+   "h50": 120,
+   "k": 2
+  }
+ },
+ "power": {
+  "area_m2": 10,
+  "efficiency": 0.3,
+  "panel": "vertical_tracking",
+  "sunlit_threshold": 0.5
+ },
+ "price": {
+  "apollo_premium": 0.25,
+  "apollo_radius_km": 50,
+  "base_usd": 5000,
+  "k": 6.9,
+  "peak_light_premium": 0.5,
+  "range": {
+   "global": 0.25,
+   "polar": 0.1
+  },
+  "rent_ratio": 0.006,
+  "scarcity_mult": 1.3,
+  "scarcity_top_pct": 2
+ },
+ "results": {
+  "max_cards": 200
+ },
+ "safety": {
+  "max_slope_deg": 8.0,
+  "min_safe_frac": 0.25,
+  "relief_range_m": [
+   0,
+   2000
+  ],
+  "roughness_range_m": [
+   0,
+   50
+  ],
+  "slope_p90_range": [
+   0,
+   30
+  ]
+ },
+ "stays": [
+  14,
+  30,
+  90,
+  366
+ ],
+ "thermal": {
+  "albedo": 0.12,
+  "cold_range_k": [
+   40,
+   120
+  ],
+  "emissivity": 0.95,
+  "floor_k": 95,
+  "psr_floor_k": 40,
+  "swing_range_k": [
+   100,
+   300
+  ]
+ },
+ "weights": {
+  "comms": 0.2,
+  "ice": 0.0,
+  "landmark": 0.1,
+  "power": 0.25,
+  "safety": 0.3,
+  "thermal": 0.15
+ }
+}

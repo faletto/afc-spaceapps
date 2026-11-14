@@ -1,0 +1,33 @@
+# Lunar Listings — every tunable (spec §4). Defaults; tune in M0/M3.
+analysis: { year: 2028, step_hours: 1 }
+moon: { radius_m: 1737400 }
+grid:
+  global: { plot_deg: 1.0, terrain_res_deg: 0.03125 }
+  polar:  { lat_min: -85.0, cell_m: 240, plot_m: 960, refine: false }
+horizon: { az_step_deg: 2, d_max_m: 150000, step_growth: 0.01, mast_m: 2.0, near_dem_radius_m: 5000 }
+power:  { panel: vertical_tracking, area_m2: 10, efficiency: 0.30, sunlit_threshold: 0.5 }
+comms:  { mode: terrain_margin, cutoff_deg: 5.0, margin_deg: 1.0 }
+thermal: { albedo: 0.12, emissivity: 0.95, floor_k: 95, psr_floor_k: 40, cold_range_k: [40, 120], swing_range_k: [100, 300] }
+safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], roughness_range_m: [0, 50], relief_range_m: [0, 2000] }
+norm:   { energy_wh_m2_day: [0, 30000] }
+penalty: { dark: { h50: 120, k: 2 }, blackout: { h50: 120, k: 2 } }
+weights: { safety: 0.30, power: 0.25, comms: 0.20, thermal: 0.15, landmark: 0.10, ice: 0.0 }
+home_types:
+  lander_pad: { weights: { safety: 0.4, power: 0.35 }, ref_stay_days: 14, gates: { longest_night_h: 48 } }
+  habitat:    { weights: { comms: 0.35, thermal: 0.25 }, ref_stay_days: 90, gates: { longest_blackout_h: 72 } }
+  solar_farm: { weights: { power: 0.6 }, ref_stay_days: 366, gates: { safe_area_frac: 0.4, sunlit_frac: 0.6 } }
+  ice_depot:  { weights: { ice: 0.45, power: 0.25 }, ref_stay_days: 366, gates: { ice_km: 10 }, polar_only: true }
+  min_results: 50
+price:
+  base_usd: 5000
+  k: 6.9
+  scarcity_top_pct: 2
+  scarcity_mult: 1.3
+  apollo_premium: 0.25
+  apollo_radius_km: 50
+  peak_light_premium: 0.5
+  range: { global: 0.25, polar: 0.10 }
+  rent_ratio: 0.006
+badges: { hot_property_pct: 95, earth_view_frac: 0.95, price_cut_frac: 0.10, max_per_card: 2 }
+results: { max_cards: 200 }
+stays: [14, 30, 90, 366]
