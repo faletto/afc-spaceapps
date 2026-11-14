@@ -26,6 +26,7 @@ v2.2 keeps everything in v2.1 and fixes the problems found when reviewing it. Ch
 | **F6** | **Results list is virtualized and capped** (render at most **[TBD, e.g. 200]** cards; sorted; "Showing 200 of 1,284"). | RES-1 | The Moon-wide grid alone has ~65,000 plots; rendering every card would break the 200 ms target (NFR-2). |
 | **F7** | **Terrain horizons ship for every South Pole District plot**, lazy-loaded by map tile, so any plot's 3D Tour works. Size budgeted in NFR-4. | §10, NFR-4 | v2.1 shipped horizons only for featured and selected plots, but "selected" can be any plot. |
 | **F8** | Small consistency fixes: the price-range example now matches ±10% ($3.8M–$4.6M); "360° Tour" is the fallback name if "3D Tour" is challenged; doc locations resolved (former open question 12). | §5.1, glossary, §13 | — |
+| **F9** | **Price scale fixed:** BASE ≈ $5,000, k ≈ 6.9. | §6.8 | With BASE ≈ $50,000 the formula's minimum is $50K, so the worst plots could never cost "in the low thousands" as intended. |
 
 ---
 
@@ -574,7 +575,7 @@ match_type = 100 · Σ w_type,i · sᵢ / Σ w_type,i     (only for plots that p
 price = BASE · exp(k · viability/100) · (1 + landmark_premium) · scarcity_multiplier
 ```
 
-- BASE ≈ $50,000; k tuned so the top plots reach the low millions and the worst the low thousands.
+- **[v2.2]** BASE ≈ $5,000 and k ≈ 6.9, so viability 0 ≈ $5K, 50 ≈ $160K and 100 ≈ $5M (≈ $10M with premiums). (v2.1's BASE ≈ $50,000 made the cheapest possible plot $50K, which can't reach "the low thousands".)
 - Premiums: e.g. +25% within 50 km of an Apollo site; +50% for Peak-of-light rim plots.
 - Rounded to real-estate numbers ($1.25M, $340K).
 - **[v2.2]** `scarcity_multiplier` uses a cutoff stored in config (`scarcity_viability_cutoff`, the viability of the top-N% plot, written by the pipeline), so the browser can apply the same price function for rent.
