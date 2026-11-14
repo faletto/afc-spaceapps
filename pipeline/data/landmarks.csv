@@ -1,0 +1,1455 @@
+name,type,lat,lon,diameter_km,fame_class
+Sinus Lunicus,sinus,32.3641,-1.8511,119.2,other
+Vallis Krishna,vallis,24.5023,11.2632,2.9,other
+Montanari,crater,-45.8282,-20.7551,77.1,major_crater
+Zeeman,crater,-75.0682,-135.0613,186.6,major_crater
+Burg,crater,45.0734,28.2081,41.0,other
+Calippus,crater,38.9249,10.7175,34.0,other
+Daniell,crater,35.4201,31.1645,28.2,other
+De Vico,crater,-19.7114,-60.3189,22.1,other
+Dorsa Harker,dorsum,13.7895,63.6520,213.1,other
+Dorsa Cato,dorsum,0.2131,47.7005,128.6,other
+Eudoxus,crater,44.2656,16.2257,70.2,major_crater
+Florensky,crater,25.4517,131.8508,69.0,major_crater
+Franklin,crater,38.7288,47.6397,55.9,major_crater
+Gagarin,crater,-19.6576,149.3541,261.8,major_crater
+Harding,crater,43.5401,-71.6562,22.6,other
+Hermite,crater,86.1659,-93.3152,108.6,major_crater
+Harkhebi,crater,40.8705,98.7449,337.1,major_crater
+Heron  Hero,crater,0.6525,119.8771,28.1,other
+Hertzsprung,crater,1.3651,-128.6561,536.4,major_crater
+Hind,crater,-7.9180,7.3058,28.5,other
+Joliot,crater,25.7883,93.3896,172.8,major_crater
+Kearons,crater,-11.5877,-112.9184,28.0,other
+Lacus Spei,lacus,43.4610,65.2035,76.7,other
+Lacchini,crater,41.2944,-107.8300,57.9,major_crater
+Mach,crater,18.1279,-149.2365,175.0,major_crater
+Lacus Bonitatis,lacus,23.1830,44.3158,122.1,other
+Lorentz,crater,34.5886,-97.1870,378.4,major_crater
+Lacus Gaudii,lacus,16.3319,12.2745,88.5,other
+Lacus Hiemalis,lacus,15.0080,13.9744,48.0,other
+Lacus Lenitatis,lacus,14.3165,12.0549,78.3,other
+Lacus Luxuriae,lacus,19.4083,175.5042,50.6,other
+Le Verrier,crater,40.3266,-20.6098,20.5,other
+Mons Ampere,mons,19.3239,-3.7095,30.0,other
+Mons Dilip,mons,5.5826,120.8666,1.4,other
+Nansen,crater,81.1708,95.3805,116.9,major_crater
+Lundmark,crater,-38.8699,152.5579,103.4,major_crater
+Mandel shtam,crater,5.6977,162.3877,181.9,major_crater
+Mare Australe,mare,-47.7705,91.9854,996.8,other
+Mare Spumans,mare,1.3023,65.3033,143.1,other
+Mons Gruithuisen Delta,mons,36.0678,-39.5899,27.2,other
+Mons Gruithuisen Gamma,mons,36.5585,-40.7213,19.7,other
+Mons Usov,mons,11.9080,63.2636,13.2,other
+Mons Vinogradov,mons,22.3497,-32.5190,28.7,other
+Montes Haemus,mons,17.1071,12.0308,384.7,other
+Montes Harbinger,mons,26.8923,-41.2901,92.7,other
+Montes Pyrenaeus,mons,-14.0480,41.5097,251.3,other
+Poincare,crater,-56.8623,163.9945,346.0,major_crater
+Promontorium Deville,promontorium,43.3087,1.1352,16.6,other
+Promontorium Agassiz,promontorium,42.3979,1.7687,18.8,other
+Sinus Aestuum,sinus,12.0976,-8.3396,316.5,other
+Schickard,crater,-44.3793,-55.1052,212.2,major_crater
+Sinus Roris,sinus,50.2613,-50.8588,195.0,other
+Sinus Successus,sinus,1.1242,58.5198,126.7,other
+Tikhomirov,crater,24.1988,161.3329,86.4,major_crater
+Van de Graaff,crater,-27.0413,172.0080,240.5,major_crater
+Vertregt,crater,-19.2999,171.1203,172.8,major_crater
+Plaskett,crater,81.6332,176.7147,114.3,major_crater
+Rozhdestvenskiy,crater,84.9943,-157.8924,181.2,major_crater
+Von Karman,crater,-44.4505,176.2451,186.3,major_crater
+W  Bond,crater,65.4052,3.5195,170.5,major_crater
+Dorsum Oppel,dorsum,19.3139,52.0869,297.6,other
+Dorsum Owen,dorsum,25.1394,11.0943,33.5,other
+Dorsa Stille,dorsum,26.9079,-18.8545,66.3,other
+Dorsum Scilla,dorsum,32.3442,-59.9958,107.5,other
+Dorsa Smirnov,dorsum,26.4082,25.5294,221.8,other
+Dorsum Thera,dorsum,24.4029,-31.4225,7.2,other
+Montes Jura,mons,47.4935,-36.1110,420.8,other
+Montes Secchi,mons,2.7172,43.1728,52.5,other
+Vallis Rheita,vallis,-42.5126,51.6540,509.1,other
+Dorsa Sorby,dorsum,18.6475,13.6993,76.0,other
+Vallis Schrodinger,vallis,-66.5185,104.8808,301.7,other
+Dorsum Buckland,dorsum,19.4329,14.2995,369.1,other
+Dorsum Cushman,dorsum,1.4171,49.1935,85.7,other
+Dorsum Gast,dorsum,24.3753,8.7068,64.9,other
+Dorsa Tetyaev,dorsum,20.0250,64.0640,187.5,other
+Dorsum Cayeux,dorsum,0.7628,51.2204,95.1,other
+Dorsum Cloos,dorsum,1.1495,90.4100,103.1,other
+Dorsum Heim,dorsum,32.1961,-29.8335,146.8,other
+Dorsum Higazy,dorsum,27.9314,-17.4655,63.1,other
+Vallis Alpes,vallis,49.2088,3.6314,155.4,other
+Vallis Baade,vallis,-45.5533,-77.2298,206.8,other
+Vallis Bohr,vallis,10.2489,-88.8619,95.3,other
+Vallis Bouvard,vallis,-38.4497,-82.3204,287.9,other
+Vallis Capella,vallis,-7.3918,35.0385,106.3,other
+Vallis Inghirami,vallis,-43.9470,-72.5897,145.1,other
+Vallis Palitzsch,vallis,-26.1635,64.6374,110.5,other
+Vallis Planck,vallis,-57.2649,126.1559,502.9,other
+Vallis Christel,vallis,24.5441,11.0814,2.1,other
+Mons Andre,mons,5.1827,120.5603,10.5,other
+Dorsa Barlow,dorsum,14.0439,30.5673,112.6,other
+Mons Agnes,mons,18.6571,5.3331,0.0,other
+Dorsum Bucher,dorsum,30.7633,-39.5503,84.7,other
+Dorsum Arduino,dorsum,24.7734,-36.2652,99.7,other
+Dorsum Azara,dorsum,26.8606,19.1664,103.2,other
+Abel,crater,-34.6257,85.7762,137.3,major_crater
+Dorsa Dana,dorsum,2.2623,89.5952,82.3,other
+Dorsum Nicol,dorsum,18.3217,22.6624,43.7,other
+Bi Sheng,crater,78.3450,148.4587,55.3,major_crater
+Dorsa Ewing,dorsum,-11.0610,-38.3148,261.6,other
+Dorsum Niggli,dorsum,29.0056,-52.2779,47.8,other
+Dorsa Aldrovandi,dorsum,23.6059,28.6537,126.8,other
+Abenezra,crater,-20.9936,11.8907,43.2,other
+Dorsum Grabau,dorsum,29.7580,-14.1912,123.7,other
+Dorsa Argand,dorsum,28.2916,-40.3360,91.9,other
+Cai Lun,crater,80.1166,113.6639,44.9,other
+Zhang Yuzhe,crater,-69.0699,-137.8205,38.0,other
+Abbe,crater,-57.5755,174.7750,64.0,major_crater
+Abul Wafa,crater,0.9626,116.6306,54.2,major_crater
+Dorsa Geikie,dorsum,-4.2057,52.8285,218.4,other
+Dorsum Zirkel,dorsum,29.5468,-24.8187,195.2,other
+Dorsum Guettard,dorsum,-9.9175,-18.2640,40.5,other
+Vallis Schroteri,vallis,26.1555,-51.5805,185.3,other
+Vallis Snellius,vallis,-30.9262,57.8382,640.0,other
+Dorsum Termier,dorsum,11.6251,57.1532,89.6,other
+Dorsum Von Cotta,dorsum,23.5988,11.9527,183.1,other
+Rupes Altai,rupes,-24.3176,23.1240,545.2,other
+Alfraganus,crater,-5.4217,18.9706,20.5,other
+Dorsa Lister,dorsum,19.7625,23.5192,180.1,other
+Dorsa Mawson,dorsum,-7.7748,52.4834,142.7,other
+Dorsa Rubey,dorsum,-9.8791,-42.3624,100.6,other
+Rupes Liebig,rupes,-25.1370,-45.9233,144.8,other
+Rupes Mercator,rupes,-30.2075,-22.8425,132.4,other
+Rupes Recta,rupes,-21.6748,-7.7019,115.9,other
+Alhazen,crater,15.9148,71.8279,34.6,other
+Promontorium Kelvin,promontorium,-26.9482,-33.4453,45.0,other
+Aliacensis,crater,-30.5952,5.1308,79.6,major_crater
+Rupes Boris,rupes,30.6738,-33.5994,8.6,other
+Rupes Cauchy,rupes,9.3109,37.0759,169.8,other
+Almanon,crater,-16.8450,15.1351,47.8,other
+Alpetragius,crater,-16.0480,-4.5104,40.0,other
+Alphonsus,crater,-13.3879,-2.8463,110.5,major_crater
+Rupes Kelvin,rupes,-28.0281,-33.1738,85.9,other
+Alter,crater,18.7401,-107.7969,64.7,major_crater
+Artem ev,crater,10.3953,-145.2222,66.4,major_crater
+Rupes Toscanelli,rupes,26.9708,-47.5346,50.1,other
+Mons Ardeshir,mons,5.0259,121.0417,7.1,other
+Amici,crater,-10.0620,-172.2270,52.0,major_crater
+Barkla,crater,-10.6680,67.2187,40.9,other
+Ball,crater,-35.9228,-8.3942,40.3,other
+Balmer,crater,-20.2715,70.2247,136.3,major_crater
+Banachiewicz,crater,5.2770,80.0097,99.1,major_crater
+Barbier,crater,-23.8503,157.9337,65.4,major_crater
+Louville,crater,44.1248,-46.0395,34.8,other
+Arago,crater,6.1487,21.4261,25.5,other
+Archimedes,crater,29.7172,-3.9931,81.0,major_crater
+Archytas,crater,58.8662,4.9925,31.9,other
+Barnard,crater,-29.7883,85.9489,115.7,major_crater
+Barocius,crater,-44.9791,16.8058,82.7,major_crater
+Barringer,crater,-28.2181,-150.4306,66.9,major_crater
+Mare Humboldtianum,mare,56.9221,81.5428,230.8,other
+Bartels,crater,24.5065,-89.8452,55.0,major_crater
+Bouguer,crater,52.3224,-35.8228,22.2,other
+Mons Vitruvius,mons,19.3335,30.7353,44.3,other
+Barrow,crater,71.2844,7.5860,93.8,major_crater
+Bonpland,crater,-8.3755,-17.3341,59.2,major_crater
+Mare Marginis,mare,12.7019,86.5153,357.6,other
+Mons Argaeus,mons,19.3309,29.0068,61.5,other
+Boss,crater,45.7480,88.6799,50.2,major_crater
+Argelander,crater,-16.5493,5.8011,33.7,other
+Aristarchus,crater,23.7299,-47.4901,40.0,other
+Mare Fecunditatis,mare,-7.8350,53.6691,840.4,other
+Aristoteles,crater,50.2430,17.3200,87.6,major_crater
+Aristillus,crater,33.8808,1.2075,54.4,major_crater
+Arminski,crater,-16.3628,154.2162,26.8,other
+Alekhin,crater,-67.9440,-131.8524,74.8,major_crater
+Alexander,crater,40.2515,13.6932,94.8,major_crater
+Abulfeda,crater,-13.8651,13.9103,62.2,major_crater
+Adams,crater,-31.8916,68.3869,63.3,major_crater
+Agatharchides,crater,-19.8537,-31.1146,52.0,major_crater
+Agrippa,crater,4.0964,10.4741,43.7,other
+Airy,crater,-18.1416,5.6149,38.9,other
+Mare Humorum,mare,-24.4785,-38.5716,419.7,other
+Albategnius,crater,-11.2400,4.0092,130.8,major_crater
+Aitken,crater,-16.4430,172.9583,129.7,major_crater
+Al Khwarizmi,crater,7.0219,107.0062,56.3,major_crater
+Al Biruni,crater,18.0713,92.6162,80.4,major_crater
+Alden,crater,-23.5084,111.1141,111.4,major_crater
+Arnold,crater,66.9846,35.8286,93.1,major_crater
+Arrhenius,crater,-55.5837,-91.4537,40.9,other
+Alder,crater,-48.6255,-177.8837,82.1,major_crater
+Mons Hadley Delta,mons,25.7230,3.7065,17.2,other
+Artamonov,crater,25.4387,103.7853,62.4,major_crater
+Amundsen,crater,-84.4398,83.0691,103.4,major_crater
+Anaximander,crater,66.9671,-51.4417,68.7,major_crater
+Mare Moscoviense,mare,27.2816,148.1225,275.6,other
+Anaxagoras,crater,73.4810,-10.1712,51.9,major_crater
+Anaximenes,crater,72.4850,-44.9825,81.1,major_crater
+Anders,crater,-41.3146,-143.3010,41.3,other
+Mare Nectaris,mare,-15.1852,34.6021,339.4,other
+Anderson,crater,15.4993,170.7942,105.3,major_crater
+Mare Serenitatis,mare,27.2879,18.3596,674.3,other
+Andel,crater,-10.4141,12.3835,32.9,other
+Mare Smythii,mare,-1.7088,87.0495,374.0,other
+Mons Wolff,mons,16.8791,-6.8014,32.9,other
+Mont Blanc,mons,45.4130,0.4403,21.6,other
+Ansgarius,crater,-12.9235,79.7231,91.4,major_crater
+Antoniadi,crater,-69.3026,-173.0585,137.9,major_crater
+Apianus,crater,-26.9625,7.8682,63.4,major_crater
+Apollo,crater,-35.6874,-151.4777,524.2,major_crater
+Anuchin,crater,-48.8530,101.6597,62.1,major_crater
+Apollonius,crater,4.5053,60.9648,50.7,major_crater
+Appleton,crater,37.0465,158.1689,64.6,major_crater
+Montes Recti,mons,48.2957,-19.7239,83.2,other
+Aryabhata,crater,6.2028,35.1733,21.9,other
+Arzachel,crater,-18.2643,-1.9304,97.0,major_crater
+Montes Carpatus,mons,14.5677,-23.6245,333.6,other
+Asclepi,crater,-55.1899,25.5231,40.6,other
+Ashbrook,crater,-81.1043,-110.5750,157.7,major_crater
+Montes Caucasus,mons,37.5188,9.9311,443.5,other
+Aston,crater,32.7658,-87.6848,44.5,other
+Atlas,crater,46.7403,44.3816,88.1,major_crater
+Atwood,crater,-5.8770,57.7750,28.6,other
+Autolycus,crater,30.6757,1.4858,38.9,other
+Auzout,crater,10.2078,64.0092,32.9,other
+Avicenna,crater,39.6254,-97.2768,73.0,major_crater
+Avogadro,crater,63.2138,165.3645,129.8,major_crater
+Azophi,crater,-22.1930,12.6958,47.5,other
+Baade,crater,-44.7496,-82.0346,57.9,major_crater
+Babbage,crater,59.5623,-57.3831,146.6,major_crater
+Babcock,crater,4.1343,94.1357,95.3,major_crater
+Back,crater,1.1964,80.6680,34.6,other
+Backlund,crater,-16.2170,103.3466,75.5,major_crater
+Baco,crater,-51.0441,19.0964,65.3,major_crater
+Baillaud,crater,74.6078,37.3517,89.4,major_crater
+Bailly,crater,-66.8215,-68.8954,300.6,major_crater
+Baily,crater,49.7798,30.5582,25.7,other
+Balboa,crater,19.2367,-83.3080,69.2,major_crater
+Baldet,crater,-53.3199,-151.9598,55.8,major_crater
+Boole,crater,63.7885,-87.2854,61.3,major_crater
+Borda,crater,-25.1952,46.5226,45.4,other
+Borman,crater,-39.0627,-148.2516,50.7,major_crater
+Golitsyn,crater,-25.1987,-105.1962,35.5,other
+Boscovich,crater,9.7109,11.0111,41.5,other
+Bayer,crater,-51.6207,-35.1447,48.5,other
+Beals,crater,37.1090,86.5785,52.6,major_crater
+Bose,crater,-53.9530,-169.3606,92.6,major_crater
+Beaumont,crater,-18.0807,28.8229,50.7,major_crater
+Behaim,crater,-16.6056,79.4051,56.2,major_crater
+Becquerel,crater,40.7945,129.5013,62.9,major_crater
+Beijerinck,crater,-13.4016,151.8375,76.8,major_crater
+Das,crater,-26.4904,-137.0499,35.9,other
+Bell,crater,21.9782,-96.5318,86.3,major_crater
+Chadwick,crater,-52.8520,-101.3424,29.7,other
+Bellinsgauzen  Bellingshausen,crater,-60.7163,-164.8493,63.2,major_crater
+Belopol skiy,crater,-17.2508,-128.2340,61.9,major_crater
+Belkovich,crater,61.5278,90.1470,215.1,major_crater
+Belyaev,crater,23.0964,143.1111,55.9,major_crater
+Bergman,crater,6.9731,137.4896,22.5,other
+Bergstrand,crater,-18.7246,176.4405,43.0,other
+Berkner,crater,25.1259,-105.2357,87.6,major_crater
+Berlage,crater,-63.0414,-163.6083,93.7,major_crater
+Bernoulli,crater,34.9295,60.6124,47.3,other
+Berosus,crater,33.4956,69.9922,75.2,major_crater
+Bettinus,crater,-63.3969,-45.1602,71.8,major_crater
+Berzelius,crater,36.5518,50.9548,48.5,other
+Becvar,crater,-2.5740,125.0733,66.6,major_crater
+Bianchini,crater,48.7814,-34.3739,37.6,other
+Bhabha,crater,-55.4971,-165.3118,70.3,major_crater
+Bingham,crater,8.0163,115.0543,35.0,other
+Biela,crater,-54.9915,51.6285,77.0,major_crater
+Bilharz,crater,-5.8278,56.3438,44.6,other
+Billy,crater,-13.8324,-50.2382,45.6,other
+Birkhoff,crater,58.4541,-145.6519,329.8,major_crater
+Birkeland,crater,-30.1661,174.0097,81.6,major_crater
+Lick,crater,12.3559,52.8434,31.6,other
+Birmingham,crater,65.1238,-10.6979,89.9,major_crater
+Bjerknes,crater,-38.4952,113.6885,48.2,other
+Blackett,crater,-37.5493,-115.8357,145.3,major_crater
+Blancanus,crater,-63.7697,-21.6299,105.8,major_crater
+Blanchard,crater,-58.2480,-93.4958,37.5,other
+Blanchinus,crater,-25.3156,2.4439,59.9,major_crater
+Blazhko,crater,31.3685,-147.8634,51.1,major_crater
+Bliss,crater,53.0433,-13.7793,22.8,other
+Burbidge,crater,-86.3500,48.6000,21.0,other
+Bobone,crater,26.7014,-132.1165,32.1,other
+Boguslawsky,crater,-72.9012,43.2572,94.6,major_crater
+Bohnenberger,crater,-16.2377,40.0556,31.7,other
+Bohr,crater,12.7063,-86.5241,70.1,major_crater
+Bok,crater,-20.2596,-171.5829,43.0,other
+Boltzmann,crater,-74.8229,-90.4069,72.3,major_crater
+Bolyai,crater,-33.8519,126.1210,102.2,major_crater
+Bondarenko,crater,-17.2443,136.8896,28.3,other
+Boussingault,crater,-70.2063,53.7342,127.6,major_crater
+Bowditch,crater,-24.9662,103.0660,43.0,other
+Boyle,crater,-53.2882,177.8935,57.1,major_crater
+Bragg,crater,42.3266,-103.4381,77.2,major_crater
+Brashear,crater,-73.5362,-171.5742,60.2,major_crater
+Faye,crater,-21.3938,3.8116,38.0,other
+Bredikhin,crater,17.2547,-158.3714,61.7,major_crater
+Breislak,crater,-48.3075,18.3096,48.6,other
+Brenner,crater,-39.0936,39.1078,90.0,major_crater
+Brianchon,crater,74.7512,-88.3642,137.3,major_crater
+Bridgman,crater,43.3859,136.9796,81.9,major_crater
+Briggs,crater,26.4528,-69.1873,36.8,other
+Brisbane,crater,-49.1997,68.7569,44.3,other
+Bronk,crater,25.9000,-134.6706,66.2,major_crater
+Condon,crater,1.8731,60.3601,34.9,other
+Brouwer,crater,-35.8245,-124.7481,119.6,major_crater
+Brown,crater,-46.5279,-17.9881,34.0,other
+Brunner,crater,-9.8574,90.9126,50.7,major_crater
+Buch,crater,-38.8990,17.6786,51.3,major_crater
+Buffon,crater,-40.6442,-133.5339,105.8,major_crater
+Bullialdus,crater,-20.7477,-22.2632,60.7,major_crater
+Buisson,crater,-1.4671,112.9508,61.3,major_crater
+Coblentz,crater,-38.0932,126.6513,32.7,other
+Bunsen,crater,41.4036,-85.4596,55.2,major_crater
+Burnham,crater,-13.9208,7.2513,24.1,other
+Burckhardt,crater,31.1072,56.3876,54.4,major_crater
+Butlerov,crater,12.0500,-108.8052,38.8,other
+Chretien,crater,-46.1145,162.9911,98.6,major_crater
+Cichus,crater,-33.2877,-21.1825,39.2,other
+Clairaut,crater,-47.8361,13.8618,76.9,major_crater
+Buys Ballot,crater,20.8573,174.8224,66.4,major_crater
+Byrgius,crater,-24.7311,-65.3799,84.5,major_crater
+Busching,crater,-38.0425,19.9551,53.5,major_crater
+C  Mayer,crater,63.2562,17.3072,37.5,other
+Cabannes,crater,-61.2401,-170.2064,81.3,major_crater
+Cabeus,crater,-85.3303,-42.1327,100.6,major_crater
+Cailleux,crater,-60.4115,153.4987,52.9,major_crater
+Cepheus,crater,40.6810,45.7806,39.4,other
+Chacornac,crater,29.8840,31.6669,50.4,major_crater
+Chaffee,crater,-39.0650,-154.6287,51.8,major_crater
+Challis,crater,79.5799,9.0856,53.2,major_crater
+Chalonge,crater,-20.4391,-116.3493,25.1,other
+Chamberlin,crater,-58.8339,96.0379,60.4,major_crater
+Champollion,crater,37.3917,175.0292,49.0,other
+Chandler,crater,43.6460,171.7597,88.6,major_crater
+Cajori,crater,-47.6680,168.6972,74.6,major_crater
+Campanus,crater,-28.0426,-27.8979,46.4,other
+Campbell,crater,45.5738,152.9073,222.5,major_crater
+Cannizzaro,crater,55.5049,-99.7295,54.5,major_crater
+Cannon,crater,19.8752,81.3641,57.6,major_crater
+Cantor,crater,38.0397,118.6878,75.7,major_crater
+Capella,crater,-7.6476,34.9164,48.1,other
+Capuanus,crater,-34.0926,-26.7316,59.7,major_crater
+Cardanus,crater,13.2716,-72.4983,49.6,other
+Carnot,crater,52.0938,-144.2026,126.1,major_crater
+Clark,crater,-38.6746,119.3478,52.1,major_crater
+Clausius,crater,-36.9030,-43.9347,24.2,other
+Clavius,crater,-58.6228,-14.7275,230.8,major_crater
+Cleomedes,crater,27.6005,55.5005,130.8,major_crater
+Cleostratus,crater,60.3196,-77.3970,63.2,major_crater
+Cockcroft,crater,31.0913,-162.9081,92.2,major_crater
+Carpenter,crater,69.5156,-51.2336,59.1,major_crater
+Promontorium Taenarium,promontorium,-18.6301,-7.3422,70.0,other
+Carrington,crater,43.9674,62.0366,27.8,other
+Carver,crater,-43.4559,127.5978,62.5,major_crater
+Casatus,crater,-72.6964,-30.7476,102.8,major_crater
+Cassegrain,crater,-51.9529,113.2981,56.7,major_crater
+Cassini,crater,40.2503,4.6437,56.9,major_crater
+Catalan,crater,-45.6955,-87.3716,26.8,other
+Catharina,crater,-17.9802,23.5521,98.8,major_crater
+Cavalerius,crater,5.0973,-66.9280,59.3,major_crater
+Cavendish,crater,-24.6251,-53.7833,52.6,major_crater
+Celsius,crater,-34.0980,20.0456,39.0,other
+Chang Heng,crater,18.9038,112.2149,42.7,other
+Conon,crater,21.6571,1.9504,21.0,other
+Chant,crater,-40.1352,-109.4585,33.6,other
+Chaplygin,crater,-5.7649,150.2374,123.4,major_crater
+Chapman,crater,50.0915,-100.4708,76.8,major_crater
+Chappe,crater,-61.2913,-91.2403,55.8,major_crater
+Chappell,crater,54.5317,-176.7704,73.9,major_crater
+Charlier,crater,36.2197,-131.6909,109.9,major_crater
+Chaucer,crater,3.3860,-140.7072,45.5,other
+Chauvenet,crater,-11.6360,137.1979,77.7,major_crater
+Chebyshev,crater,-34.0106,-132.8833,179.1,major_crater
+Chernyshev,crater,47.0115,174.4078,59.3,major_crater
+Chevallier,crater,45.0093,51.5726,51.8,major_crater
+Sinus Viscositatis,sinus,35.2500,-40.9900,68.0,other
+Colombo,crater,-15.2550,46.0218,79.0,major_crater
+Compton,crater,55.8622,104.0548,164.6,major_crater
+Lacus Tenebrarum,lacus,-86.7100,-87.6700,85.0,other
+Comrie,crater,23.3932,-113.1694,59.3,major_crater
+Comstock,crater,21.5916,-122.0502,73.2,major_crater
+Condorcet,crater,12.0996,69.5832,74.9,major_crater
+Congreve,crater,-0.2801,-167.8415,57.6,major_crater
+Cook,crater,-17.4975,48.8072,45.2,other
+Cooper,crater,52.6816,175.9201,51.9,major_crater
+Copernicus,crater,9.6209,-20.0786,96.1,major_crater
+Cori,crater,-50.4802,-152.9052,67.2,major_crater
+Coriolis,crater,0.5643,171.7954,78.6,major_crater
+Coulomb,crater,54.4620,-115.0013,89.7,major_crater
+Cremona,crater,67.2352,-90.8571,85.1,major_crater
+Crocco,crater,-46.9804,150.5058,67.5,major_crater
+Crommelin,crater,-67.4614,-147.9515,93.5,major_crater
+Crookes,crater,-10.3961,-165.1024,48.3,other
+Crozier,crater,-13.5595,50.7177,22.5,other
+Cruger,crater,-16.6769,-66.9602,45.9,other
+Ctesibius,crater,0.8348,118.7510,32.1,other
+Curie,crater,-23.0455,92.2793,138.9,major_crater
+Curtius,crater,-67.0794,4.4049,99.3,major_crater
+Cusanus,crater,71.8208,69.4004,60.9,major_crater
+Cuvier,crater,-50.2927,9.6921,77.3,major_crater
+Cyrano,crater,-20.3653,157.3738,79.6,major_crater
+Cyrillus,crater,-13.2913,24.0655,98.1,major_crater
+Cysatus,crater,-66.2082,-6.3382,47.8,other
+da Vinci,crater,9.1048,44.9548,37.5,other
+Daguerre,crater,-11.9067,33.6135,45.8,other
+Dale,crater,-9.5581,82.9299,23.4,other
+Dalton,crater,17.0655,-84.4518,60.7,major_crater
+Damoiseau,crater,-4.8514,-61.2500,36.7,other
+Danjon,crater,-11.4209,123.9033,69.3,major_crater
+Darwin,crater,-19.9279,-69.2051,122.2,major_crater
+Davisson,crater,-37.9272,-174.9653,92.5,major_crater
+Henson,crater,-88.5700,-130.6300,43.0,other
+Davy,crater,-11.8470,-8.1491,33.9,other
+Dawson,crater,-66.9897,-135.0484,44.3,other
+De Forest,crater,-76.9356,-163.3333,56.3,major_crater
+Promontorium Laplace,promontorium,46.8449,-25.5077,50.0,other
+de Gasparis,crater,-25.8331,-50.8264,30.9,other
+De La Rue,crater,59.0179,52.8409,135.2,major_crater
+de Gerlache,crater,-88.4849,-88.3447,32.7,other
+De Moraes,crater,49.3821,142.9964,54.4,major_crater
+De Roy,crater,-55.2351,-98.9863,43.5,other
+De Sitter,crater,79.8123,38.5701,63.8,major_crater
+De Vries,crater,-19.6813,-176.7847,57.5,major_crater
+Debes,crater,29.4739,51.6240,31.9,other
+Debye,crater,49.4260,-176.0269,127.0,major_crater
+Delambre,crater,-1.9391,17.3940,51.5,major_crater
+Delaunay,crater,-22.2577,2.6187,44.6,other
+Delisle,crater,29.9831,-34.6772,24.8,other
+Dellinger,crater,-6.8685,140.6955,82.0,major_crater
+Delmotte,crater,27.1615,60.2048,32.2,other
+Delporte,crater,-15.8938,121.5544,42.5,other
+Democritus,crater,62.3076,34.9905,37.8,other
+Deluc,crater,-55.0165,-2.9754,45.7,other
+Dembowski,crater,2.8779,7.2743,26.1,other
+Demonax,crater,-78.0864,59.3552,121.9,major_crater
+Denning,crater,-16.2616,142.7552,44.2,other
+Desargues,crater,70.2482,-73.4236,84.8,major_crater
+Descartes,crater,-11.7428,15.6667,47.7,other
+Deslandres,crater,-32.5540,-5.5716,227.0,major_crater
+Diderot,crater,-20.4174,121.5438,20.0,other
+Deutsch,crater,24.3486,110.9088,73.3,major_crater
+Fox,crater,0.4715,98.1444,24.0,other
+Dewar,crater,-2.6123,165.6226,46.3,other
+Dirichlet,crater,10.5800,-152.0520,47.2,other
+Dobrovol skiy,crater,-12.8347,129.6762,38.4,other
+Donati,crater,-20.6941,5.1007,35.8,other
+Doerfel,crater,-68.9688,-108.5275,68.6,major_crater
+Eijkman,crater,-63.2133,-142.5148,56.4,major_crater
+D Arrest,crater,2.2648,14.6041,29.7,other
+Eichstadt,crater,-22.6281,-78.4182,49.6,other
+Dorsa Whiston,dorsum,29.7664,-56.9618,138.9,other
+Douglass,crater,35.4985,-122.7214,50.9,major_crater
+Eimmart,crater,23.9676,64.8039,45.0,other
+Einstein,crater,16.6030,-88.6545,181.5,major_crater
+Einthoven,crater,-5.0597,110.0643,73.9,major_crater
+Elger,crater,-35.4004,-29.8110,21.5,other
+Donner,crater,-31.3545,97.9945,55.1,major_crater
+Doppelmayer,crater,-28.4779,-41.5070,65.1,major_crater
+Doppler,crater,-12.5828,-159.8416,101.8,major_crater
+Dorsa Andrusov,dorsum,-1.5593,56.7699,81.0,other
+Dorsa Burnet,dorsum,26.1781,-56.7812,195.0,other
+Dove,crater,-46.8322,31.4242,30.4,other
+Drebbel,crater,-40.9343,-49.1219,30.2,other
+Drygalski,crater,-79.5738,-87.1770,162.5,major_crater
+Dreyer,crater,10.2372,97.0948,63.8,major_crater
+Drude,crater,-38.5644,-91.8888,27.1,other
+Dryden,crater,-33.2147,-156.1507,54.5,major_crater
+D Arsonval,crater,-10.3139,124.5874,30.4,other
+Dubyago,crater,4.3831,69.9490,48.1,other
+Dufay,crater,5.5666,169.5397,36.1,other
+Dugan,crater,64.1213,103.1059,49.7,other
+Dyson,crater,60.8742,-121.7086,63.1,major_crater
+d Alembert,crater,51.0723,164.8907,233.6,major_crater
+Dziewulski,crater,20.9850,99.0151,68.9,major_crater
+Eddington,crater,21.5025,-72.0175,120.1,major_crater
+Edison,crater,24.8805,99.2680,62.7,major_crater
+Egede,crater,48.7173,10.6359,34.2,other
+Ehrlich,crater,40.8161,-172.2685,33.6,other
+Ellerman,crater,-25.4384,-120.3931,46.2,other
+Ellison,crater,54.9332,-108.0460,37.0,other
+Elvey,crater,9.0085,-100.6443,80.2,major_crater
+Encke,crater,4.5707,-36.6830,28.3,other
+Endymion,crater,53.6067,56.4832,122.1,major_crater
+Engel gardt  Engelhardt,crater,5.3890,-159.4685,43.5,other
+Epigenes,crater,67.4974,-4.6221,54.5,major_crater
+Epimenides,crater,-40.9172,-30.3312,22.6,other
+Eratosthenes,crater,14.4737,-11.3162,58.8,major_crater
+Erro,crater,5.6829,98.5400,63.8,major_crater
+Esnault Pelterie,crater,47.4149,-141.8257,76.8,major_crater
+Espin,crater,28.1455,109.3385,70.0,major_crater
+Euctemon,crater,76.2590,30.5691,62.7,major_crater
+Euler,crater,23.2627,-29.1810,26.0,other
+Evans,crater,-9.6266,-133.7782,69.4,major_crater
+Evdokimov,crater,34.5738,-153.0427,48.9,other
+Evershed,crater,35.3008,-159.5059,65.3,major_crater
+Maskelyne,crater,2.1558,30.0437,22.4,other
+Eotvos,crater,-35.6097,134.4272,101.8,major_crater
+Fabricius,crater,-42.7509,41.8421,78.9,major_crater
+Fabry,crater,43.0734,100.6844,179.4,major_crater
+Faraday,crater,-42.4461,8.7475,69.0,major_crater
+Faustini,crater,-87.1832,84.3099,42.5,other
+Fechner,crater,-58.2462,125.0314,59.3,major_crater
+Mons Song,mons,-43.6400,-153.3700,114.0,other
+Feoktistov,crater,30.7347,140.5014,22.1,other
+Fermat,crater,-22.7113,19.7923,37.8,other
+Fermi,crater,-19.6097,123.2414,241.4,major_crater
+Fernelius,crater,-38.1783,4.8588,68.4,major_crater
+Fersman,crater,17.9029,-126.0623,148.1,major_crater
+Fesenkov,crater,-23.1590,135.1414,36.1,other
+Finsen,crater,-42.2914,-177.7205,73.0,major_crater
+Firsov,crater,4.2043,112.6973,51.0,major_crater
+Firmicus,crater,7.2455,63.4259,56.8,major_crater
+Fischer,crater,7.9899,142.4391,30.5,other
+Fitzgerald,crater,26.6744,-172.1362,104.2,major_crater
+Foucault,crater,50.4589,-39.8618,25.1,other
+Fizeau,crater,-58.1864,-134.1148,107.1,major_crater
+Grachev,crater,-3.8350,-108.4211,35.0,other
+Flammarion,crater,-3.3286,-3.7325,76.2,major_crater
+Fleming,crater,14.9098,109.2776,126.4,major_crater
+Halley,crater,-8.0492,5.7298,34.6,other
+Huggins,crater,-41.0687,-1.5192,65.8,major_crater
+Humboldt,crater,-27.0212,80.9636,199.5,major_crater
+Hume,crater,-4.6769,90.4737,22.3,other
+Focas,crater,-33.7046,-93.9111,22.0,other
+Fontana,crater,-16.0394,-56.7905,31.5,other
+Fontenelle,crater,63.4192,-18.9561,37.7,other
+Foster,crater,23.5877,-141.4935,37.0,other
+Fourier,crater,-30.3131,-53.1046,51.6,major_crater
+Fowler,crater,42.5862,-145.2654,139.5,major_crater
+Fra Mauro,crater,-6.0610,-16.9738,96.8,major_crater
+Fracastorius,crater,-21.3587,33.0703,120.6,major_crater
+Franz,crater,16.5686,40.2445,25.5,other
+Fraunhofer,crater,-39.5155,59.0634,57.8,major_crater
+Godin,crater,1.8235,10.1583,34.2,other
+Glazenap,crater,-1.8512,137.7565,39.0,other
+Glushko,crater,8.1124,-77.6678,40.1,other
+Goclenius,crater,-10.0504,45.0310,73.0,major_crater
+Goddard,crater,15.1545,89.1275,93.2,major_crater
+Freundlich,crater,25.0026,170.8940,83.2,major_crater
+Fridman  Friedmann,crater,-12.4812,-126.8788,101.5,major_crater
+Frost,crater,37.4072,-118.9010,78.3,major_crater
+Froelich,crater,80.0014,-111.6316,56.7,major_crater
+Furnerius,crater,-36.0038,60.5383,135.0,major_crater
+Fenyi,crater,-44.9406,-105.0586,43.3,other
+Gadomski,crater,36.2108,-147.3579,65.7,major_crater
+Galle,crater,55.8733,22.3286,21.0,other
+Galois,crater,-13.9394,-152.9932,232.0,major_crater
+Galvani,crater,49.5121,-84.5618,76.8,major_crater
+Gambart,crater,0.9236,-15.2389,24.7,other
+Gamow,crater,65.2869,144.6454,113.9,major_crater
+Gaudibert,crater,-10.9294,37.8232,33.1,other
+Ganskiy  Hansky,crater,-9.6406,97.0029,42.1,other
+Ganswindt,crater,-79.4155,111.1673,77.5,major_crater
+Garavito,crater,-47.2132,156.7810,81.0,major_crater
+Gassendi,crater,-17.5546,-39.9637,111.4,major_crater
+Gauricus,crater,-33.9066,-12.7420,79.6,major_crater
+Gauss,crater,36.0063,79.0767,170.7,major_crater
+Gavrilov,crater,17.4084,131.2222,61.6,major_crater
+Gay Lussac,crater,13.8750,-20.7928,25.4,other
+Geber,crater,-19.4614,13.8479,44.7,other
+Geiger,crater,-14.3877,158.4092,36.6,other
+Geminus,crater,34.4197,56.6607,82.0,major_crater
+Hansen,crater,14.0438,72.5423,41.2,other
+Gemma Frisius,crater,-34.3285,13.3685,88.5,major_crater
+Haret,crater,-58.7710,-176.1854,29.8,other
+Gerard,crater,44.5353,-80.5063,98.8,major_crater
+Gibbs,crater,-18.3659,84.2675,78.8,major_crater
+Gerasimovich,crater,-22.9519,-123.4191,90.2,major_crater
+Helmert,crater,-7.5640,87.6719,26.7,other
+Gernsback,crater,-36.5261,99.5261,47.2,other
+Holetschek,crater,-27.6129,151.1463,37.8,other
+Gilbert,crater,-3.1950,76.1598,100.2,major_crater
+Gill,crater,-63.7652,75.9457,63.9,major_crater
+Galimov,crater,-64.3000,-126.5300,33.0,other
+Nam Byeong-Cheol,crater,-14.6600,-123.4100,132.0,major_crater
+Ginzel,crater,14.2496,97.4003,53.2,major_crater
+Giordano Bruno,crater,35.9686,102.8933,22.1,other
+Golovin,crater,39.7528,161.2442,37.9,other
+Goodacre,crater,-32.6746,14.0755,44.1,other
+Gould,crater,-19.2580,-17.2478,33.0,other
+Graff,crater,-42.3032,-88.7097,36.2,other
+Grave,crater,-17.0433,150.2304,36.9,other
+Hilbert,crater,-17.8732,108.3205,173.2,major_crater
+Green,crater,3.6852,133.1161,68.3,major_crater
+Gregory,crater,1.7586,127.2797,63.9,major_crater
+Grigg,crater,12.5030,-130.1314,36.7,other
+Grotrian,crater,-66.1517,128.2830,36.8,other
+Grove,crater,40.3030,32.9834,28.5,other
+Grissom,crater,-46.9237,-147.9765,59.8,major_crater
+Gruemberger,crater,-67.0413,-10.3021,91.5,major_crater
+Guericke,crater,-11.5663,-14.1872,60.8,major_crater
+Guillaume,crater,45.1577,-173.3834,56.7,major_crater
+Gullstrand,crater,44.9535,-129.6666,45.1,other
+Gum,crater,-40.3370,88.9088,54.5,major_crater
+Gartner,crater,59.2433,34.7579,101.8,major_crater
+H  G  Wells,crater,40.8412,122.6287,108.9,major_crater
+Hagecius,crater,-59.9168,46.6293,79.5,major_crater
+Gutenberg,crater,-8.6137,41.2490,70.6,major_crater
+Guthnick,crater,-47.7590,-94.0356,37.0,other
+Guyot,crater,11.6256,117.1220,98.3,major_crater
+Hagen,crater,-48.3205,135.9478,57.5,major_crater
+Hahn,crater,31.2160,73.5490,87.5,major_crater
+Haidinger,crater,-39.1763,-25.1389,21.3,other
+Hainzel,crater,-41.2315,-33.5207,70.6,major_crater
+Haldane,crater,-1.6590,84.1054,40.3,other
+Hall,crater,33.8093,36.7501,31.8,other
+Hamilton,crater,-42.7748,84.4127,57.5,major_crater
+Hanno,crater,-56.4637,71.3841,59.5,major_crater
+Hale,crater,-74.1261,91.7125,84.4,major_crater
+Hansteen,crater,-11.5307,-52.0592,45.0,other
+Horrocks,crater,-3.9887,5.8491,29.7,other
+Houtermans,crater,-9.4194,87.3760,42.7,other
+Houzeau,crater,-17.2492,-123.8923,76.8,major_crater
+Harlan,crater,-38.3073,79.6475,63.5,major_crater
+Hubble,crater,22.2896,86.9076,81.8,major_crater
+Harpalus,crater,52.7316,-43.4938,39.8,other
+Hartwig,crater,-6.1356,-80.4694,78.5,major_crater
+Harriot,crater,33.1985,114.3960,52.8,major_crater
+Hatanaka,crater,29.3335,-121.9238,30.1,other
+Hartmann,crater,2.7138,135.4507,63.3,major_crater
+Hell,crater,-32.4149,-7.7982,33.3,other
+Harvey,crater,19.3458,-146.5142,60.0,major_crater
+Hase,crater,-29.3708,62.6828,82.1,major_crater
+Hausen,crater,-65.1105,-88.4905,163.2,major_crater
+Hayford,crater,12.6823,-176.4490,28.2,other
+Hayn,crater,64.5577,83.8675,86.2,major_crater
+Healy,crater,32.4954,-110.9953,38.0,other
+Heaviside,crater,-10.4421,166.7736,164.5,major_crater
+Hecataeus,crater,-22.0613,79.6754,133.7,major_crater
+Hedin,crater,2.8746,-76.5738,157.4,major_crater
+Helberg,crater,22.6282,-102.4586,61.9,major_crater
+Heinsius,crater,-39.4810,-17.8249,64.9,major_crater
+Helicon,crater,40.4306,-23.1082,23.7,other
+Henderson,crater,4.7616,152.0042,43.5,other
+Helmholtz,crater,-68.6423,65.3421,110.2,major_crater
+Herodotus,crater,23.2537,-49.8353,35.9,other
+Henry,crater,-23.9732,-57.0132,39.1,other
+Ingalls,crater,26.1565,-153.3355,37.2,other
+Henry Freres,crater,-23.5221,-59.0160,41.7,other
+Henyey,crater,12.6985,-152.3253,68.7,major_crater
+Hypatia,crater,-4.2502,22.5814,38.8,other
+Heraclitus,crater,-49.3051,6.4202,85.7,major_crater
+Hooke,crater,41.1373,54.8588,34.3,other
+Hercules,crater,46.8219,39.2135,68.3,major_crater
+J  Herschel,crater,62.3139,-41.8586,154.4,major_crater
+Herschel,crater,-5.6860,-2.0854,39.1,other
+Hesiodus,crater,-29.4195,-16.4185,43.2,other
+Hess,crater,-54.4692,174.1868,90.4,major_crater
+Hertz,crater,13.3228,104.5617,82.9,major_crater
+Hippalus,crater,-24.9186,-30.4173,57.4,major_crater
+Hipparchus,crater,-5.3565,4.9133,143.9,major_crater
+Hevelius,crater,2.1952,-67.4626,113.9,major_crater
+Hogg,crater,33.5140,121.9575,38.4,other
+Heymans,crater,74.7553,-144.9393,46.4,other
+Hippocrates,crater,70.2610,-146.5396,59.2,major_crater
+Hirayama,crater,-6.0127,93.6295,145.2,major_crater
+Hoffmeister,crater,15.0438,136.8373,44.5,other
+Holden,crater,-19.1873,62.5297,47.6,other
+Hommel,crater,-54.7383,32.9253,113.6,major_crater
+Hopmann,crater,-51.0085,159.2346,87.8,major_crater
+Horrebow,crater,58.8016,-40.9313,25.0,other
+Hedervari,crater,-81.7719,85.6005,74.1,major_crater
+Lacus Veris,lacus,-16.4844,-85.9086,382.9,other
+Hutton,crater,37.2234,168.6829,45.2,other
+Kimura,crater,-56.8157,118.3822,27.4,other
+Mons La Hire,mons,27.6612,-25.5053,21.7,other
+Kinau,crater,-60.7473,14.9354,41.9,other
+Nasmyth,crater,-50.4863,-56.3943,78.4,major_crater
+King,crater,4.9617,120.4943,76.2,major_crater
+Izsak,crater,-23.3212,117.5913,30.8,other
+Nassau,crater,-24.9137,177.3370,75.8,major_crater
+Ibn Firnas,crater,6.8340,122.3042,88.3,major_crater
+Ibn Yunus,crater,14.1382,91.1362,59.7,major_crater
+Ibn Rushd,crater,-11.6868,21.7132,31.1,other
+Icarus,crater,-5.4912,-173.2585,93.7,major_crater
+Ideler,crater,-49.3197,22.2430,37.8,other
+Inghirami,crater,-47.4946,-68.9471,94.6,major_crater
+Innes,crater,27.8499,119.3075,42.8,other
+Idel son,crater,-81.3478,112.6939,59.8,major_crater
+Ioffe,crater,-14.3802,-129.1552,83.9,major_crater
+Isidorus,crater,-7.9629,33.5008,41.4,other
+Isaev,crater,-17.5659,147.4910,94.1,major_crater
+Julius Caesar,crater,9.1665,15.2105,84.7,major_crater
+Jules Verne,crater,-34.8456,147.2755,145.5,major_crater
+Kaiser,crater,-36.4853,6.4786,53.1,major_crater
+Jacobi,crater,-56.8152,11.3037,66.3,major_crater
+Jansen,crater,13.5521,28.6414,24.2,other
+Jackson,crater,22.0500,-163.3186,71.4,major_crater
+Jansky,crater,8.6279,89.5047,73.8,major_crater
+Janssen,crater,-44.9595,40.8221,200.7,major_crater
+Jarvis,crater,-35.1345,-148.2062,41.2,other
+Jeans,crater,-55.5795,91.5134,81.1,major_crater
+Jenkins,crater,0.3717,78.0405,37.8,other
+Jenner,crater,-42.0100,95.9837,73.7,major_crater
+Joule,crater,27.1509,-144.1359,97.5,major_crater
+Kane,crater,62.9949,25.8433,55.0,major_crater
+Kamerlingh Onnes,crater,14.7186,-116.2863,70.0,major_crater
+Keldysh,crater,51.2253,43.6466,32.8,other
+Kant,crater,-10.6235,20.1979,30.9,other
+Kao,crater,-6.7122,87.8103,34.5,other
+Kapteyn,crater,-10.7896,70.5944,48.7,other
+Karpinskiy,crater,72.6094,166.8014,91.4,major_crater
+Katchalsky,crater,5.9060,116.0746,32.3,other
+Lacus Somniorum,lacus,37.5622,30.8046,424.8,other
+Karrer,crater,-52.0645,-142.2796,55.6,major_crater
+Keeler,crater,-9.7798,161.7761,158.1,major_crater
+Kepler,crater,8.1210,-38.0087,29.5,other
+Kekule,crater,16.3094,-138.4661,94.2,major_crater
+Kepinski,crater,28.6282,126.7176,31.7,other
+Khvol son,crater,-14.1259,111.8709,55.9,major_crater
+Kibal chich,crater,2.7213,-147.1787,91.7,major_crater
+Kircher,crater,-67.0075,-45.4818,71.2,major_crater
+Kidinnu,crater,35.7926,122.9454,55.1,major_crater
+Lassell,crater,-15.4866,-7.9034,21.8,other
+Kies,crater,-26.3072,-22.6253,45.5,other
+Kuo Shou Ching,crater,8.1044,-134.6565,33.5,other
+Kiess,crater,-6.4092,84.1108,67.8,major_crater
+Liebig,crater,-24.3541,-48.2990,39.0,other
+Kirchhoff,crater,30.3018,38.8444,24.4,other
+Kirkwood,crater,68.3398,-156.6629,68.1,major_crater
+Klaproth,crater,-69.8529,-26.2614,121.4,major_crater
+Klein,crater,-11.9864,2.5264,43.5,other
+Klute,crater,36.9253,-141.7628,77.5,major_crater
+Kleymenov,crater,-32.4775,-140.3555,56.0,major_crater
+Taylor,crater,-5.2823,16.6479,36.4,other
+Koch,crater,-42.1311,150.3306,94.7,major_crater
+Kolhorster,crater,10.7875,-115.0115,78.8,major_crater
+Konoplev,crater,-28.1616,-124.3701,27.7,other
+Kohlschutter,crater,14.2426,153.9455,56.3,major_crater
+Kopff,crater,-17.3903,-89.6800,40.5,other
+Lacus Timoris,lacus,-39.4215,-27.9522,153.6,other
+Komarov,crater,24.5868,152.2480,80.4,major_crater
+Lacus Perseverantiae,lacus,7.8377,61.9349,70.6,other
+Lacus Solitudinis,lacus,-27.5230,103.8764,122.7,other
+Kondratyuk,crater,-15.3349,115.8029,98.0,major_crater
+Tebbutt,crater,9.4591,53.5189,34.0,other
+Korolev,crater,-4.1913,-157.4082,423.4,major_crater
+Kovalevskaya,crater,30.8613,-129.4350,113.7,major_crater
+Konstantinov,crater,19.5572,158.3415,68.1,major_crater
+Kramarov,crater,-2.2946,-98.8918,21.0,other
+Kostinskiy,crater,14.4332,118.8534,67.9,major_crater
+Krieger,crater,29.0236,-45.6091,22.9,other
+Koval skiy,crater,-21.8916,101.0344,45.0,other
+Kozyrev,crater,-46.6419,129.5944,59.4,major_crater
+Krafft,crater,16.5576,-72.7216,51.1,major_crater
+Kramers,crater,53.2804,-127.9792,61.6,major_crater
+Krasnov,crater,-29.9335,-79.8220,41.2,other
+Kreiken,crater,-9.0481,84.5522,29.4,other
+Krasovskiy,crater,3.7902,-175.6335,61.7,major_crater
+Krusenstern,crater,-26.3000,5.7578,46.4,other
+La Condamine,crater,53.5371,-28.2180,37.8,other
+Krylov,crater,35.2638,-166.1129,49.8,other
+Maclear,crater,10.5221,20.1049,20.3,other
+Kugler,crater,-53.4409,104.0994,65.9,major_crater
+Kulik,crater,41.9770,-154.6286,60.5,major_crater
+Lents  Lenz,crater,2.7234,-102.2999,22.0,other
+Kurchatov,crater,38.2953,141.7354,111.0,major_crater
+Kastner,crater,-6.9019,78.9367,116.1,major_crater
+Konig,crater,-24.2276,-24.6792,22.9,other
+La Perouse,crater,-10.6690,76.2809,80.4,major_crater
+Maclaurin,crater,-1.9235,67.9894,54.3,major_crater
+Lacroix,crater,-37.9337,-59.2000,36.1,other
+Lacus Aestatis,lacus,-14.8338,-68.5697,86.4,other
+Lacus Autumni,lacus,-11.8150,-83.1724,195.6,other
+Leonov,crater,19.0652,148.3628,34.0,other
+Letronne,crater,-10.5006,-42.4879,117.6,major_crater
+Lacus Doloris,lacus,16.8013,8.6149,102.9,other
+Lacus Excellentiae,lacus,-35.6548,-43.5766,197.7,other
+Lacus Felicitatis,lacus,18.5200,5.3588,98.5,other
+Longomontanus,crater,-49.5516,-21.8793,145.5,major_crater
+Love,crater,-6.3328,129.1712,90.1,major_crater
+Littrow,crater,21.5037,31.3941,28.5,other
+Neander,crater,-31.3527,39.8850,49.2,other
+Lacus Mortis,lacus,45.1348,27.3191,158.8,other
+Leucippus,crater,29.2410,-116.4138,57.0,major_crater
+Leuschner,crater,1.6657,-109.0508,50.1,major_crater
+Lacus Oblivionis,lacus,-20.3881,-168.5242,49.0,other
+Lacus Odii,lacus,19.2180,7.2729,72.7,other
+Nearch,crater,-58.5806,39.0130,72.8,major_crater
+Piccolomini,crater,-29.6998,32.1986,87.6,major_crater
+Pictet,crater,-43.5636,-7.4924,59.9,major_crater
+Lacus Temporis,lacus,46.7728,56.2053,205.3,other
+Lade,crater,-1.3262,9.9901,58.1,major_crater
+Lalande,crater,-4.4556,-8.6467,23.5,other
+Lamb,crater,-42.6735,100.9418,103.6,major_crater
+Lagalla,crater,-44.4847,-22.3599,88.8,major_crater
+Lagrange,crater,-32.6026,-71.4474,162.2,major_crater
+Lamarck,crater,-23.1205,-70.0577,114.7,major_crater
+Lambert,crater,25.7717,-20.9864,30.1,other
+Lampland,crater,-31.1678,131.5097,63.0,major_crater
+Lamont,crater,5.1381,23.3164,83.2,major_crater
+Lansberg,crater,-0.3118,-26.6273,38.7,other
+Lame,crater,-14.7553,64.5590,84.3,major_crater
+Landau,crater,42.1629,-119.3397,218.1,major_crater
+Lander,crater,-15.3371,131.8068,40.1,other
+Lane,crater,-9.5010,132.3648,53.8,major_crater
+Langemak,crater,-9.9336,119.4531,104.8,major_crater
+Langevin,crater,44.1662,162.6912,57.8,major_crater
+Langley,crater,51.1662,-86.0499,59.2,major_crater
+Langmuir,crater,-35.8461,-128.8949,91.5,major_crater
+Langrenus,crater,-8.8604,61.0380,132.0,major_crater
+Laue,crater,28.2904,-97.0512,89.2,major_crater
+Lauritsen,crater,-27.5443,96.3090,51.2,major_crater
+Lavoisier,crater,38.1694,-81.2530,71.0,major_crater
+Lawrence,crater,7.3519,43.2965,24.0,other
+Le Gentil,crater,-74.2739,-76.0199,125.4,major_crater
+Le Monnier,crater,26.6560,30.5015,68.4,major_crater
+Petermann,crater,74.3468,67.8923,76.9,major_crater
+Leavitt,crater,-44.8561,-139.8922,69.3,major_crater
+Lee,crater,-30.6574,-40.7590,41.2,other
+Lebedev,crater,-46.8039,107.8856,121.8,major_crater
+Lebedinskiy,crater,7.8440,-164.8876,63.4,major_crater
+Legendre,crater,-28.9220,70.0193,78.1,major_crater
+Monge,crater,-19.2410,47.5443,36.6,other
+Lehmann,crater,-39.9555,-56.1674,53.8,major_crater
+Lemaitre,crater,-61.3620,-149.9778,93.7,major_crater
+Levi Civita,crater,-23.3438,143.1389,108.2,major_crater
+Lewis,crater,-18.5073,-114.2293,40.3,other
+Lexell,crater,-35.7753,-4.2651,63.7,major_crater
+Ley,crater,42.1056,154.8391,81.0,major_crater
+Licetus,crater,-47.1896,6.5435,75.4,major_crater
+Lilius,crater,-54.6018,6.0936,61.2,major_crater
+Lindblad,crater,70.0336,-99.2224,59.4,major_crater
+Lindenau,crater,-32.3488,24.7742,53.1,major_crater
+Lindsay,crater,-6.9975,13.0101,32.2,other
+Lippmann,crater,-55.4274,-114.3173,160.1,major_crater
+Litke  Lutke,crater,-16.7606,123.1229,38.2,other
+Lobachevskiy,crater,9.7565,113.0733,87.3,major_crater
+Lockyer,crater,-46.2733,36.5950,35.1,other
+Loewy,crater,-22.6931,-32.8523,22.5,other
+Lodygin,crater,-17.4239,-146.7780,56.1,major_crater
+Lohrmann,crater,-0.4399,-67.3826,31.3,other
+Lohse,crater,-13.7621,60.3079,43.3,other
+Lomonosov,crater,27.3501,98.2786,90.7,major_crater
+Mairan,crater,41.5965,-43.4979,39.5,other
+Lovelace,crater,82.0804,-109.5096,57.1,major_crater
+Lovell,crater,-36.7419,-142.4723,35.1,other
+Lowell,crater,-12.9655,-103.4179,62.6,major_crater
+Mons Pico,mons,45.8200,-8.8700,24.4,other
+Lubiniezky,crater,-17.8816,-23.8941,43.0,other
+Lucretius,crater,-8.2224,-121.2438,64.6,major_crater
+Marco Polo,crater,15.5234,-2.0484,28.3,other
+Ludwig,crater,-7.7216,97.4529,23.3,other
+Lyapunov,crater,26.4290,89.3639,67.6,major_crater
+Lyell,crater,13.6282,40.5564,31.2,other
+Lyman,crater,-64.9584,162.4700,83.3,major_crater
+Macrobius,crater,21.2556,45.9702,62.8,major_crater
+Lyot,crater,-50.4658,84.8040,150.6,major_crater
+Magelhaens,crater,-11.9758,44.0740,37.2,other
+Main,crater,80.8694,10.4085,47.4,other
+Maginus,crater,-50.0337,-5.9837,155.6,major_crater
+Maksutov,crater,-40.7470,-168.6529,83.8,major_crater
+Malapert,crater,-84.9998,11.4031,72.4,major_crater
+Mallet,crater,-45.4129,54.0546,58.9,major_crater
+Malyy,crater,22.0294,105.5584,41.3,other
+Manilius,crater,14.4520,9.0737,38.3,other
+Manzinus,crater,-67.5100,26.3736,96.0,major_crater
+Maraldi,crater,19.3606,34.7972,39.6,other
+Marci,crater,22.2283,-167.5721,24.5,other
+Marconi,crater,-9.4812,145.2025,72.9,major_crater
+Mare Anguis,mare,22.4268,67.5753,146.0,other
+Mare Ingenii,mare,-33.2458,164.8268,282.2,other
+Mare Insularum,mare,7.7920,-30.6402,511.9,other
+Mare Cognitum,mare,-10.5308,-22.3144,350.0,other
+Mare Crisium,mare,16.1774,59.1037,555.9,other
+Petrov,crater,-61.3618,88.1752,55.4,major_crater
+Markov,crater,53.4333,-62.8405,39.9,other
+Moulton,crater,-60.9081,97.5678,54.7,major_crater
+Mohorovicic,crater,-18.7305,-164.8317,50.0,other
+Menelaus,crater,16.2593,15.9294,27.1,other
+Moigno,crater,66.2667,28.7952,36.8,other
+Murakami,crater,-23.3826,-140.9703,44.5,other
+Moiseev,crater,9.4412,103.2562,61.6,major_crater
+Moissan,crater,4.7708,137.4486,22.4,other
+Petrie,crater,45.1422,108.4660,32.9,other
+Mare Tranquillitatis,mare,8.3487,30.8346,875.7,other
+Mare Undarum,mare,7.4912,68.6589,244.8,other
+Petropavlovskiy,crater,36.9242,-115.2757,64.1,major_crater
+Mare Nubium,mare,-20.5894,-17.2872,714.5,other
+Mare Orientale,mare,-19.8655,-94.6703,294.2,other
+Marinus,crater,-39.3759,76.5739,56.6,major_crater
+Mariotte,crater,-28.4567,-139.0639,70.3,major_crater
+Marius,crater,11.8968,-50.8355,40.1,other
+McClure,crater,-15.3192,50.2369,24.0,other
+Mason,crater,42.6996,30.5087,33.3,other
+Maunder,crater,-14.5250,-93.8755,53.8,major_crater
+Montes Teneriffe,mons,47.8908,-13.1872,112.0,other
+Maupertuis,crater,49.6968,-27.2829,45.5,other
+Maurolycus,crater,-41.7719,13.9201,115.3,major_crater
+Maxwell,crater,29.9048,98.5256,109.2,major_crater
+McAdie,crater,2.1097,92.2182,41.0,other
+Mons Piton,mons,40.7167,-0.9227,22.5,other
+McKellar,crater,-15.7181,-170.8618,50.2,major_crater
+Plinius,crater,15.3569,23.6067,41.3,other
+McLaughlin,crater,47.0081,-92.8277,75.3,major_crater
+Montes Spitzbergen,mons,34.4724,-5.2135,59.2,other
+Montes Taurus,mons,27.3232,40.3355,166.2,other
+McMath,crater,16.6303,-166.0918,88.6,major_crater
+McNair,crater,-35.9301,-147.9519,32.0,other
+McNally,crater,22.4959,-127.6515,47.0,other
+Mechnikov,crater,-10.4740,-148.9851,58.8,major_crater
+Mee,crater,-43.6253,-35.1872,134.1,major_crater
+Mees,crater,13.5700,-96.1803,51.6,major_crater
+Meggers,crater,24.3006,122.9411,51.2,major_crater
+Meitner,crater,-10.8715,113.1040,87.3,major_crater
+Mendel,crater,-48.8282,-109.8613,139.7,major_crater
+Mendeleev,crater,5.3754,141.1676,325.1,major_crater
+Mercator,crater,-29.2535,-26.1104,46.3,other
+Mercurius,crater,46.6634,66.0703,64.3,major_crater
+Merrill,crater,74.8300,-117.4478,57.0,major_crater
+Mersenius,crater,-21.4928,-49.3362,84.5,major_crater
+Meshcherskiy,crater,12.1061,125.5264,65.9,major_crater
+Messala,crater,39.3079,60.0591,122.4,major_crater
+Mons Hadley,mons,26.6948,4.1183,26.4,other
+Metius,crater,-40.4244,43.3727,83.8,major_crater
+Wallace,crater,20.2571,-8.7491,25.7,other
+Madler,crater,-11.0415,29.7590,27.6,other
+Meton,crater,73.5673,19.6262,124.7,major_crater
+Mezentsev,crater,71.7712,-129.6361,84.5,major_crater
+Milne,crater,-31.0030,112.7821,260.0,major_crater
+Michelson,crater,6.7246,-121.5460,123.1,major_crater
+Mons Maraldi,mons,20.3388,35.5012,15.9,other
+Mons Moro,mons,-11.8387,-19.8437,13.7,other
+Mons Penck,mons,-10.0038,21.7448,37.6,other
+Milankovic,crater,76.5263,171.3514,94.2,major_crater
+Millikan,crater,46.7599,121.5152,94.0,major_crater
+Mills,crater,8.5447,155.7409,35.7,other
+Mineur,crater,24.6656,-161.7298,72.3,major_crater
+Mons Rumker,mons,40.7607,-58.3775,73.2,other
+Minkowski,crater,-56.1291,-145.8011,107.5,major_crater
+Mitchell,crater,49.7696,20.1710,32.1,other
+Mutus,crater,-63.6479,29.9254,76.3,major_crater
+Mitra,crater,17.7644,-154.6514,97.1,major_crater
+Popov,crater,16.9336,99.3759,71.4,major_crater
+Muller,crater,-7.6391,2.0386,23.4,other
+Porter,crater,-56.1468,-10.1829,51.5,major_crater
+Mons Delisle,mons,29.4249,-35.7883,32.4,other
+Mons Dieter,mons,4.9967,120.2977,20.4,other
+Mons Esam,mons,14.6081,35.7057,7.9,other
+Mons Ganau,mons,4.7919,120.5888,13.5,other
+Mobius,crater,15.6323,101.1308,49.0,other
+Mosting,crater,-0.7009,-5.8808,24.4,other
+Mons Hansteen,mons,-12.1948,-50.2148,30.6,other
+Mons Herodotus,mons,27.5015,-52.9357,6.8,other
+Mons Huygens,mons,19.9188,-2.8571,42.0,other
+Nagaoka,crater,19.5066,154.0477,50.5,major_crater
+Naonobu,crater,-4.7002,57.9303,33.0,other
+Posidonius,crater,31.8783,29.9913,95.1,major_crater
+Montes Agricola,mons,29.0593,-54.0715,159.8,other
+Montes Archimedes,mons,25.3939,-5.2498,146.5,other
+Montgolfier,crater,47.0560,-160.0817,83.7,major_crater
+Moore,crater,37.2515,-177.5498,52.7,major_crater
+Moretus,crater,-70.6346,-5.9470,114.4,major_crater
+Plante,crater,-10.2181,163.2562,36.8,other
+Plummer,crater,-24.6233,-154.8569,75.7,major_crater
+Reiner,crater,6.9200,-54.9830,29.8,other
+Plutarch,crater,24.1768,79.0519,69.6,major_crater
+Poczobutt,crater,57.2678,-99.2332,212.4,major_crater
+Pogson,crater,-42.3785,111.1137,40.9,other
+Poinsot,crater,78.9020,-146.2150,65.1,major_crater
+Poisson,crater,-30.3393,10.5648,41.4,other
+Polybius,crater,-22.4634,25.6274,40.8,other
+Montes Riphaeus,mons,-7.4829,-27.6025,190.1,other
+Morozov,crater,4.6188,127.3264,41.0,other
+Palmieri,crater,-28.6407,-47.7974,39.8,other
+Morse,crater,21.8967,-175.2906,72.8,major_crater
+Mouchez,crater,78.3787,-26.8245,82.8,major_crater
+Necho,crater,-5.2483,123.2445,36.9,other
+Neison,crater,68.2055,25.0233,51.0,major_crater
+Moseley,crater,20.9543,-90.2008,88.9,major_crater
+Protagoras,crater,56.0177,7.3407,21.1,other
+Neper,crater,8.7649,84.5820,144.3,major_crater
+Nernst,crater,35.5702,-94.6362,121.5,major_crater
+Neujmin,crater,-26.6795,125.1745,97.0,major_crater
+Puiseux,crater,-27.8179,-39.1870,25.0,other
+Neumayer,crater,-71.1614,70.9231,84.4,major_crater
+Newcomb,crater,29.7623,43.6666,39.8,other
+Nicholson,crater,-26.2160,-85.2107,38.1,other
+Newton,crater,-76.5207,-17.4414,83.9,major_crater
+Nicolai,crater,-42.4710,25.8715,40.5,other
+Niepce,crater,72.1984,-120.1468,59.7,major_crater
+Nijland,crater,33.1944,134.1682,35.5,other
+Nikolaev,crater,35.0799,151.2802,42.7,other
+Nishina,crater,-44.5739,-170.7978,62.1,major_crater
+Nobel,crater,14.7330,-101.3895,50.9,major_crater
+Nobile,crater,-85.2752,53.2725,79.3,major_crater
+Nobili,crater,0.1661,75.9486,41.8,other
+Nonius,crater,-34.9024,3.7889,70.6,major_crater
+Polzunov,crater,25.5675,115.0082,66.5,major_crater
+Pomortsev,crater,0.7366,66.9105,25.5,other
+Poncelet,crater,75.9094,-54.5718,67.6,major_crater
+Pons,crater,-25.4347,21.5520,39.7,other
+Pontanus,crater,-28.4223,14.3562,55.7,major_crater
+Numerov,crater,-70.5180,-162.2003,105.4,major_crater
+Nusl,crater,32.1935,167.4506,60.6,major_crater
+Noggerath,crater,-48.8200,-45.8418,32.1,other
+Nother  Noether,crater,66.3453,-114.1767,64.8,major_crater
+Oberth,crater,62.4926,154.8380,49.5,other
+Mare Vaporum,mare,13.2000,4.0900,242.5,other
+Obruchev,crater,-38.6671,162.4297,72.2,major_crater
+Oenopides,crater,57.1253,-64.2028,73.5,major_crater
+Oersted,crater,43.0857,47.2547,42.3,other
+Ohm,crater,18.3205,-113.7758,61.8,major_crater
+Ramsden,crater,-32.9564,-31.8750,25.1,other
+Oken,crater,-43.7556,76.0914,78.7,major_crater
+Olbers,crater,7.2986,-76.1433,73.0,major_crater
+Olcott,crater,20.5730,117.7883,79.9,major_crater
+Olivier,crater,58.7227,138.4434,78.5,major_crater
+Omar Khayyam,crater,58.2098,-102.2166,68.6,major_crater
+Onizuka,crater,-36.3773,-149.7884,26.9,other
+Opelt,crater,-16.3155,-17.6401,48.7,other
+Oppenheimer,crater,-35.3187,-166.0349,201.2,major_crater
+Sinus Medii,sinus,1.6300,1.0300,286.7,other
+Pettit,crater,-27.5205,-86.7536,36.7,other
+Petzval,crater,-62.7290,-110.8305,93.5,major_crater
+Oresme,crater,-42.6145,169.2236,82.1,major_crater
+Orlov,crater,-25.7685,-175.0807,72.9,major_crater
+Orontius,crater,-40.3691,-3.9599,121.0,major_crater
+Phillips,crater,-26.5745,75.6706,104.2,major_crater
+Phocylides,crater,-52.7918,-57.3125,115.2,major_crater
+Philolaus,crater,72.2221,-32.8845,71.4,major_crater
+Picard,crater,14.5663,54.7240,22.3,other
+Piazzi,crater,-36.1571,-68.0088,102.6,major_crater
+Ostwald,crater,10.2351,121.9478,108.1,major_crater
+Stearns,crater,34.6828,162.6047,38.9,other
+Palisa,crater,-9.4668,-7.1886,33.5,other
+Palitzsch,crater,-28.0239,64.3896,41.9,other
+O Day,crater,-30.4238,157.2934,70.4,major_crater
+Paneth,crater,62.5963,-94.6342,60.9,major_crater
+Pontecoulant,crater,-58.7788,66.0673,91.4,major_crater
+Pallas,crater,5.4764,-1.6533,49.5,other
+Swasey,crater,-5.4575,89.6704,24.8,other
+Pannekoek,crater,-4.1987,140.6937,67.5,major_crater
+Parenago,crater,25.8774,-108.9111,94.6,major_crater
+Papaleksi,crater,10.1451,163.9473,92.0,major_crater
+Paracelsus,crater,-22.9226,163.4434,85.9,major_crater
+Paraskevopoulos,crater,50.0931,-150.3448,98.9,major_crater
+Parsons,crater,37.2467,-171.1594,41.1,other
+Pascal,crater,74.3570,-70.6301,108.2,major_crater
+Parkhurst,crater,-33.2851,103.6935,93.1,major_crater
+Sporer,crater,-4.3025,-1.7745,25.6,other
+Parrot,crater,-14.5731,3.2921,70.7,major_crater
+Parry,crater,-7.8834,-15.7794,47.3,other
+Paschen,crater,-14.0579,-140.5280,127.4,major_crater
+Pasteur,crater,-11.5769,104.9078,232.8,major_crater
+Pawsey,crater,44.2383,145.2939,60.0,major_crater
+Regnault,crater,54.0438,-87.8805,51.3,major_crater
+Pease,crater,12.5120,-106.3046,40.8,other
+Reichenbach,crater,-30.4773,47.9545,64.8,major_crater
+Patsaev,crater,-16.7738,133.5983,55.3,major_crater
+Pauli,crater,-44.7588,137.3501,95.3,major_crater
+Pavlov,crater,-28.2842,142.4010,143.1,major_crater
+Peirescius,crater,-46.4050,67.7976,61.5,major_crater
+Pentland,crater,-64.5699,11.3425,56.4,major_crater
+Perel man,crater,-24.0522,106.0122,48.9,other
+Perrine,crater,42.1112,-127.9453,87.4,major_crater
+Perepelkin,crater,-9.9891,128.8002,88.7,major_crater
+Virtanen,crater,15.6430,176.7368,39.6,other
+Perkin,crater,47.0170,-175.7270,62.5,major_crater
+Petavius,crater,-25.3914,60.7776,184.1,major_crater
+Pingre,crater,-58.6378,-73.9522,88.4,major_crater
+Pikel ner,crater,-48.3682,124.2473,41.0,other
+Plana,crater,42.2544,28.2215,43.0,other
+Pilatre,crater,-60.1702,-86.6951,64.4,major_crater
+Pirquet,crater,-20.3443,139.9254,62.1,major_crater
+Pitatus,crater,-29.8816,-13.5269,100.6,major_crater
+Pizzetti,crater,-35.0633,119.2891,53.5,major_crater
+Pitiscus,crater,-50.6112,30.5661,79.8,major_crater
+Planck,crater,-57.2721,135.3374,319.5,major_crater
+Plato,crater,51.6192,-9.3825,100.7,major_crater
+Priestley,crater,-56.7100,108.4724,54.9,major_crater
+Playfair,crater,-23.5604,8.4452,49.9,other
+Poynting,crater,17.5016,-133.3755,127.5,major_crater
+Prager,crater,-3.9909,130.7815,53.9,major_crater
+Schonfeld,crater,44.7601,-98.0009,24.6,other
+Prinz,crater,25.4878,-44.1415,46.1,other
+Prandtl,crater,-59.6193,141.5415,87.5,major_crater
+Proclus,crater,16.0878,46.8943,26.9,other
+Reimarus,crater,-47.6917,60.4213,47.6,other
+Promontorium Fresnel,promontorium,28.6288,4.7473,20.0,other
+Proctor,crater,-46.4292,-5.0440,47.6,other
+Promontorium Agarum,promontorium,13.8717,65.7342,62.5,other
+Promontorium Archerusia,promontorium,16.8043,21.9434,11.2,other
+Promontorium Heraclides,promontorium,40.5986,-34.0972,50.0,other
+Tralles,crater,28.3181,52.8496,44.2,other
+Triesnecker,crater,4.1810,3.5988,25.0,other
+Purkyne,crater,-1.5355,94.8606,50.3,major_crater
+Steklov,crater,-36.7313,-105.0504,36.6,other
+Pythagoras,crater,63.6814,-62.9759,144.6,major_crater
+Quetelet,crater,42.6578,-135.3022,54.8,major_crater
+Steno,crater,32.6069,161.7772,32.3,other
+Rabbi Levi,crater,-34.7815,23.4565,82.4,major_crater
+Rayet,crater,44.6517,114.5036,27.8,other
+Raimond,crater,14.7791,-159.6294,68.4,major_crater
+Rothmann,crater,-30.8134,27.6981,41.7,other
+Ramsay,crater,-40.0202,145.0416,61.3,major_crater
+Raspletin,crater,-22.4061,151.7510,45.5,other
+Rayleigh,crater,29.1194,89.4467,113.8,major_crater
+Razumov,crater,38.9498,-114.6297,75.1,major_crater
+Reinhold,crater,3.2815,-22.8625,43.3,other
+Repsold,crater,51.3072,-78.4103,108.7,major_crater
+Resnik,crater,-34.1502,-150.8357,22.2,other
+Rhaeticus,crater,0.0318,4.9241,44.4,other
+Thiel,crater,40.1710,-134.5614,35.7,other
+Ritter,crater,1.9580,19.1713,29.5,other
+Rheita,crater,-37.1000,47.1708,70.8,major_crater
+Riccioli,crater,-2.9004,-74.4155,155.7,major_crater
+Riccius,crater,-37.0250,26.4255,71.8,major_crater
+Richardson,crater,30.9257,99.8919,162.6,major_crater
+Riedel,crater,-48.8881,-140.0474,49.1,other
+Riemann,crater,39.3804,87.1776,117.9,major_crater
+Ritchey,crater,-11.1285,8.4767,24.1,other
+Rittenhouse,crater,-74.2482,107.0668,27.5,other
+Ritz,crater,-15.3701,92.3848,53.8,major_crater
+Roberts,crater,70.6621,-174.2455,89.4,major_crater
+Robertson,crater,21.8408,-105.3650,89.9,major_crater
+Robinson,crater,59.0645,-46.0292,24.1,other
+Rocca,crater,-12.8877,-72.8943,84.1,major_crater
+Roche,crater,-42.3652,136.5413,152.7,major_crater
+Rosenberger,crater,-55.4924,43.1489,91.6,major_crater
+Ross,crater,11.6690,21.7375,24.5,other
+Rosseland,crater,-40.8198,130.6831,67.7,major_crater
+Rost,crater,-56.4237,-33.8434,46.8,other
+Rowland,crater,56.9821,-162.4829,166.1,major_crater
+Rumford,crater,-28.8113,-169.8015,60.8,major_crater
+Runge,crater,-2.4290,86.8060,39.0,other
+Russell,crater,26.5116,-75.5478,103.4,major_crater
+Rutherfurd,crater,-61.1458,-12.2468,50.0,other
+Rydberg,crater,-46.4310,-96.4270,48.0,other
+Rynin,crater,46.7841,-103.7314,77.9,major_crater
+Romer,crater,25.4258,36.4051,43.7,other
+Rontgen,crater,32.8791,-91.4245,128.4,major_crater
+Sabine,crater,1.3769,20.0660,29.8,other
+Sacrobosco,crater,-23.7522,16.6401,97.7,major_crater
+Saenger,crater,4.4851,102.8024,74.6,major_crater
+Saha,crater,-1.6865,103.0407,103.3,major_crater
+Sanford,crater,32.3769,-139.2057,55.1,major_crater
+Santbech,crater,-20.9883,44.0602,62.2,major_crater
+Sarton,crater,49.1204,-121.1409,71.3,major_crater
+Sasserides,crater,-39.2776,-9.4444,81.7,major_crater
+Saunder,crater,-4.2601,8.7179,44.4,other
+Saussure,crater,-43.3776,-3.8849,54.6,major_crater
+Scaliger,crater,-27.2551,109.1445,86.4,major_crater
+Vitello,crater,-30.4194,-37.5506,42.5,other
+Schaeberle,crater,-26.3252,117.7081,56.7,major_crater
+Scheiner,crater,-60.3532,-27.8091,110.1,major_crater
+Schiaparelli,crater,23.3788,-58.8207,24.2,other
+Schiller,crater,-51.7244,-39.7840,179.4,major_crater
+Schjellerup,crater,69.0378,158.2447,62.8,major_crater
+Schlesinger,crater,47.1209,-138.9807,97.3,major_crater
+Schliemann,crater,-1.9900,155.1232,77.4,major_crater
+Schluter,crater,-5.9335,-83.3890,87.6,major_crater
+Schneller,crater,41.3353,-163.7270,56.9,major_crater
+Spallanzani,crater,-46.3835,24.7277,30.9,other
+Schroter,crater,2.7384,-6.9837,36.7,other
+Schrodinger,crater,-74.7326,132.9252,316.4,major_crater
+Sommering,crater,0.1927,-7.5263,28.0,other
+Schomberger,crater,-76.6392,24.6912,85.8,major_crater
+Sinus Amoris,sinus,19.9203,37.2893,189.1,other
+Schorr,crater,-19.4539,89.7962,52.1,major_crater
+Schubert,crater,2.7836,81.0143,51.9,major_crater
+Schumacher,crater,42.4210,60.8092,61.3,major_crater
+Schwabe,crater,65.1032,45.4808,25.5,other
+Schwarzschild,crater,70.0802,121.5672,211.4,major_crater
+Schuster,crater,4.4433,146.4243,100.1,major_crater
+Scobee,crater,-31.3580,-149.6437,41.5,other
+Secchi,crater,2.4039,43.5585,22.1,other
+Scoresby,crater,77.7298,14.1334,54.9,major_crater
+Scott,crater,-82.3532,48.5154,107.8,major_crater
+Seares,crater,73.7382,147.2338,99.5,major_crater
+Sechenov,crater,-6.9731,-143.0887,63.8,major_crater
+Segner,crater,-58.9597,-48.6752,67.8,major_crater
+Seidel,crater,-32.6543,152.4703,55.4,major_crater
+Shatalov,crater,24.2609,140.4775,24.0,other
+Seleucus,crater,21.0908,-66.6608,45.0,other
+Seneca,crater,26.7111,79.8062,47.6,other
+Seyfert,crater,29.2637,114.3350,102.6,major_crater
+T  Mayer,crater,15.5370,-29.1670,33.1,other
+Shaler,crater,-32.8919,-85.2705,48.5,other
+Shapley,crater,9.3543,56.8341,24.8,other
+Sharonov,crater,12.3728,173.0995,75.1,major_crater
+Sharp,crater,45.7513,-40.2166,37.6,other
+Shayn,crater,32.5158,172.4160,92.9,major_crater
+Sheepshanks,crater,59.2419,17.0386,23.7,other
+Shi Shen,crater,75.7847,104.1348,46.5,other
+Short,crater,-74.5370,-7.6840,67.9,major_crater
+Shirakatsi,crater,-12.1836,128.5590,48.1,other
+Shoemaker,crater,-88.1370,45.9110,51.8,major_crater
+Shternberg  Sternberg,crater,19.3773,-116.8186,74.4,major_crater
+Shuckburgh,crater,42.6481,52.7127,37.7,other
+Siedentopf,crater,22.0475,135.0841,62.7,major_crater
+Sikorsky,crater,-65.8870,103.6462,97.7,major_crater
+Sierpinski,crater,-26.9349,154.8096,66.9,major_crater
+Simpelius,crater,-72.6125,14.7430,68.9,major_crater
+Sumner,crater,37.6176,108.7621,52.9,major_crater
+Sundman,crater,10.7554,-91.6933,41.0,other
+Sinus Asperitatis,sinus,-5.4119,27.4885,219.1,other
+Sinus Concordiae,sinus,10.9790,42.4723,159.0,other
+Sinus Fidei,sinus,17.9921,2.0379,70.7,other
+Smoluchowski,crater,60.2219,-96.9076,84.3,major_crater
+Snellius,crater,-29.3332,55.7048,86.0,major_crater
+Sniadecki,crater,-22.2873,-168.8407,41.1,other
+Soddy,crater,0.4483,121.7653,40.8,other
+Sinus Honoris,sinus,11.7195,17.8658,111.6,other
+Sinus Iridum,sinus,45.0101,-31.6653,249.3,other
+Sirsalis,crater,-12.4922,-60.5065,44.2,other
+Sisakyan,crater,41.0738,109.1275,35.6,other
+Timocharis,crater,26.7172,-13.1002,34.1,other
+Tisserand,crater,21.4131,48.1666,34.6,other
+Tiselius,crater,6.8928,176.7031,53.7,major_crater
+Smith,crater,-31.7878,-151.0077,32.9,other
+Sklodowska,crater,-18.0352,96.1496,125.6,major_crater
+Slipher,crater,49.2790,160.2683,74.6,major_crater
+Sommerfeld,crater,64.8298,-161.5450,150.9,major_crater
+Oberbeck,crater,-83.5500,68.1400,58.0,major_crater
+Spencer Jones,crater,13.0588,165.8397,88.2,major_crater
+South,crater,57.5807,-50.9415,119.0,major_crater
+Volkov,crater,-13.6189,131.6652,40.8,other
+St  John,crater,10.0716,149.9823,66.7,major_crater
+Stadius,crater,10.4758,-13.7737,68.5,major_crater
+Stebbins,crater,64.3627,-142.6406,129.7,major_crater
+Stefan,crater,46.3319,-108.7744,112.2,major_crater
+Stein,crater,6.9952,179.1068,30.7,other
+Steinheil,crater,-48.7091,46.6562,63.3,major_crater
+Sternfeld,crater,-19.7506,-142.2673,109.8,major_crater
+Stevinus,crater,-32.4902,54.1372,71.5,major_crater
+Stetson,crater,-39.5793,-118.1956,63.1,major_crater
+Theaetetus,crater,37.0106,6.0554,24.6,other
+Stiborius,crater,-34.4930,31.9908,43.8,other
+Stokes,crater,52.3639,-88.1059,53.9,major_crater
+Stoletov,crater,44.8207,-155.5016,42.4,other
+Strabo,crater,61.9382,54.4249,54.7,major_crater
+Stoney,crater,-55.5755,-156.3785,47.5,other
+Stratton,crater,-5.6036,164.7021,69.8,major_crater
+Street,crater,-46.5784,-10.7364,58.5,major_crater
+Struve,crater,23.4132,-76.6523,164.3,major_crater
+Stromgren,crater,-21.7398,-132.3677,62.2,major_crater
+Stofler,crater,-41.2416,5.9265,129.9,major_crater
+Subbotin,crater,-29.3249,135.7052,71.7,major_crater
+Sverdrup,crater,-88.3209,-153.3875,32.8,other
+Swann,crater,51.9571,112.5212,42.2,other
+Stormer,crater,57.1387,146.6485,68.6,major_crater
+Sylvester,crater,82.6492,-81.2181,59.3,major_crater
+Szilard,crater,33.7051,105.7832,127.2,major_crater
+Taruntius,crater,5.5022,46.5426,57.3,major_crater
+Tacitus,crater,-16.2049,18.9495,39.8,other
+Tacchini,crater,5.0843,85.8245,42.6,other
+Vitruvius,crater,17.6627,31.2797,30.9,other
+Tamm,crater,-4.3201,146.3816,40.5,other
+Mons Kocher,mons,-85.4600,-118.0600,67.0,other
+Von Zeipel,crater,42.1924,-141.9254,83.4,major_crater
+Tannerus,crater,-56.4376,21.9220,28.1,other
+Teisserenc,crater,31.9629,-136.2752,62.3,major_crater
+Tempel,crater,3.7612,11.8574,43.2,other
+Tereshkova,crater,28.2107,143.8439,31.3,other
+Whitaker,crater,-84.6700,0.6900,20.0,other
+Ten Bruggencate,crater,-9.5765,134.6649,60.0,major_crater
+Viviani,crater,5.1622,117.1518,26.9,other
+Tesla,crater,38.3641,124.7251,41.1,other
+Thales,crater,61.7351,50.2675,30.7,other
+Mons Cabeus,mons,-83.6700,-36.1600,43.0,other
+Thebit,crater,-22.0111,-4.0157,54.6,major_crater
+Theophilus,crater,-11.4524,26.2847,98.6,major_crater
+Mons Amundsen,mons,-82.5700,75.7100,38.0,other
+Thiessen,crater,74.8576,-169.5041,66.4,major_crater
+Thomson,crater,-32.3183,166.0417,117.3,major_crater
+Tikhov,crater,61.6626,172.2935,84.0,major_crater
+Warner,crater,-3.9814,87.3484,34.5,other
+Tiling,crater,-52.8549,-133.1111,38.2,other
+Timiryazev,crater,-5.0866,-147.1467,52.2,major_crater
+Titius,crater,-26.7475,100.6634,68.4,major_crater
+Titov,crater,28.5505,150.2852,29.6,other
+Torricelli,crater,-4.7197,28.4037,30.9,other
+Trumpler,crater,29.3264,167.1351,76.2,major_crater
+Tsander  Zander,crater,5.3935,-149.6931,159.9,major_crater
+Tseraskiy  Ceraski,crater,-48.6599,142.6355,65.6,major_crater
+Tsiolkovskiy,crater,-20.3789,128.9715,184.4,major_crater
+Tyndall,crater,-35.2009,117.6442,20.9,other
+Tsinger  Zinger,crater,56.5363,175.7100,44.2,other
+Tsu Chung Chi,crater,17.1647,145.1593,28.5,other
+Tycho,crater,-43.2958,-11.2153,85.3,major_crater
+Ukert,crater,7.7084,1.3660,21.7,other
+Ulugh Beigh,crater,32.6682,-81.9565,57.0,major_crater
+Urey,crater,27.9335,87.4286,39.3,other
+Valier,crater,6.6548,174.2643,65.1,major_crater
+van Albada,crater,9.3607,64.3545,22.9,other
+Van den Bergh,crater,30.9096,-159.2081,43.4,other
+van den Bos,crater,-5.2602,145.9537,25.2,other
+Van der Waals,crater,-43.5564,119.9806,113.4,major_crater
+Van Gent,crater,15.4217,160.2707,44.4,other
+Van Maanen,crater,36.0319,128.1776,46.4,other
+van Rhijn,crater,52.4668,146.3678,46.2,other
+Van Vleck,crater,-1.7738,78.2015,33.5,other
+Van Wijk,crater,-62.4955,119.0565,31.1,other
+van t Hoff,crater,61.7493,-132.6822,107.3,major_crater
+Vasco da Gama,crater,13.7807,-83.9386,93.5,major_crater
+Vashakidze,crater,43.6533,93.0137,45.0,other
+Vega,crater,-45.4061,63.2659,73.5,major_crater
+Vernadskiy,crater,23.1139,130.4256,92.0,major_crater
+Vavilov,crater,-0.8701,-138.7731,98.2,major_crater
+Vening Meinesz,crater,-0.1020,162.5078,88.7,major_crater
+Vendelinus,crater,-16.4576,61.5456,141.2,major_crater
+Vesalius,crater,-3.2312,114.7936,64.6,major_crater
+Ventris,crater,-4.7736,157.9669,100.7,major_crater
+Vestine,crater,33.8710,93.6785,97.8,major_crater
+Vetchinkin,crater,9.7685,131.0751,94.3,major_crater
+Vil ev,crater,-5.7561,144.3924,45.8,other
+Vogel,crater,-15.1071,5.8307,26.3,other
+Vieta,crater,-29.3106,-56.5269,87.2,major_crater
+Vlacq,crater,-53.3894,38.6902,89.2,major_crater
+Volta,crater,53.9005,-84.7656,117.1,major_crater
+Volterra,crater,56.5541,131.6432,55.1,major_crater
+von Behring,crater,-7.7496,71.7222,37.6,other
+von Bekesy,crater,51.9230,126.7339,96.2,major_crater
+von Braun,crater,41.0431,-78.0845,61.8,major_crater
+Von der Pahlen,crater,-24.8361,-133.0094,53.9,major_crater
+Voskresenskiy,crater,27.9059,-88.1201,49.4,other
+Von Neumann,crater,40.2846,153.2494,74.8,major_crater
+Walker,crater,-25.8190,-161.9210,32.9,other
+Wan Hoo  Van Gu,crater,-9.9632,-138.9062,53.3,major_crater
+Waterman,crater,-25.7021,128.1769,74.9,major_crater
+Wargentin,crater,-49.5313,-60.4386,84.7,major_crater
+Watson,crater,-62.5929,-124.0469,59.4,major_crater
+Webb,crater,-0.9819,59.9993,21.4,other
+Watt,crater,-49.5972,48.4773,66.5,major_crater
+Weierstrass,crater,-1.2580,77.1472,31.3,other
+Weber,crater,50.0618,-123.7932,43.9,other
+Wegener,crater,45.2055,-113.8107,95.8,major_crater
+Weigel,crater,-58.3850,-39.3361,34.8,other
+Weinek,crater,-27.5651,37.0614,32.0,other
+Weiss,crater,-31.7618,-19.5873,66.6,major_crater
+Werner,crater,-28.0263,3.2927,70.6,major_crater
+Wexler,crater,-68.8843,90.7106,52.4,major_crater
+Weyl,crater,15.9696,-120.5341,122.8,major_crater
+White,crater,-44.7954,-159.0354,42.3,other
+Widmannstatten,crater,-6.0929,85.4335,52.9,major_crater
+Wiechert,crater,-84.0334,164.7010,40.8,other
+Wiener,crater,40.9021,146.5137,113.4,major_crater
+Wilhelm,crater,-43.2127,-20.9406,100.8,major_crater
+Wilkins,crater,-29.5801,19.5767,59.4,major_crater
+Williams,crater,42.0203,37.3056,36.4,other
+Wilsing,crater,-20.9706,-155.0546,66.8,major_crater
+Wilson,crater,-69.3286,-42.8256,66.6,major_crater
+Winkler,crater,42.2285,-178.8083,22.8,other
+Winlock,crater,35.3971,-105.9241,63.9,major_crater
+Wolf,crater,-22.7856,-16.6258,25.7,other
+Woltjer,crater,44.8717,-159.8296,44.5,other
+Wohler,crater,-38.2518,31.3531,28.1,other
+Wright,crater,-31.5479,-86.7434,40.2,other
+Wrottesley,crater,-23.8964,56.6193,58.4,major_crater
+Wood,crater,43.6621,-121.8254,84.2,major_crater
+Wroblewski,crater,-24.0023,152.7955,21.8,other
+Wurzelbauer,crater,-34.0409,-16.0564,86.8,major_crater
+Wyld,crater,-1.4161,98.1009,103.4,major_crater
+Yerkes,crater,14.6039,51.6975,34.9,other
+Xenophanes,crater,57.4889,-82.0059,117.6,major_crater
+Xenophon,crater,-22.7937,122.0493,25.5,other
+Yablochkov,crater,60.7758,127.5758,101.5,major_crater
+Yakovkin,crater,-54.4180,-78.9288,35.9,other
+Yamamoto,crater,58.1593,161.8700,77.5,major_crater
+Young,crater,-41.5419,50.9763,71.4,major_crater
+Zagut,crater,-31.9412,21.8893,78.9,major_crater
+Zach,crater,-60.9183,5.2455,68.5,major_crater
+Zanstra,crater,2.9299,124.6897,39.5,other
+Zelinskiy,crater,-28.7385,166.8638,54.0,major_crater
+Zeno,crater,45.1488,72.9822,66.8,major_crater
+Zernike,crater,18.3379,168.4018,50.7,major_crater
+Zhiritskiy,crater,-24.8383,120.2591,33.4,other
+Zhukovskiy,crater,7.5519,-167.2766,82.1,major_crater
+Zucchius,crater,-61.3822,-50.6484,63.2,major_crater
+Zsigmondy,crater,59.5151,-105.2991,66.9,major_crater
+Zupus,crater,-17.1783,-52.3743,35.3,other
+Zwicky,crater,-16.1746,167.6443,126.1,major_crater
+Zollner,crater,-7.9668,18.8993,47.7,other
+Safarik,crater,10.4390,176.7038,31.4,other
+Mons Heng,mons,42.5600,-52.1200,10.6,other
+Mons Malapert,mons,-85.9800,-1.6700,67.0,other
+Duner,crater,44.6812,179.4555,65.1,major_crater
+Husband,crater,-40.3152,-147.8430,31.3,other
+McCool,crater,-41.2779,-146.2562,20.5,other
+Emden,crater,62.7624,-176.5120,114.6,major_crater
+Nefed ev,crater,-81.0719,135.7723,52.9,major_crater
+Larmor,crater,31.8463,-179.6721,99.5,major_crater
+Leeuwenhoek,crater,-29.2834,-178.8710,125.0,major_crater
+Montes Cordillera,mons,-19.4358,-94.9310,963.5,other
+Fibiger,crater,86.1396,37.1330,21.1,other
+Haber,crater,83.3997,-94.6276,56.8,major_crater
+Hevesy,crater,83.0850,149.1544,50.0,other
+Haskin,crater,81.5114,133.1589,66.6,major_crater
+Kocher,crater,-84.4671,-134.0244,24.0,other
+Houssay,crater,83.1148,98.5226,31.4,other
+Daedalus,crater,-5.8329,179.3983,93.6,major_crater
+Dante,crater,25.3552,179.9960,53.8,major_crater
+Leibnitz,crater,-38.2367,179.3490,236.7,major_crater
+Lipskiy,crater,-2.1518,-179.3752,91.1,major_crater
+Minnaert,crater,-67.5365,178.5686,137.3,major_crater
+Racah,crater,-13.5028,-179.8693,71.9,major_crater
+Ricco,crater,74.9180,177.0519,65.8,major_crater
+Shackleton,crater,-89.6700,129.7800,20.9,other
+Byrd,crater,85.4283,10.0699,97.5,major_crater
+Gioja,crater,83.3469,1.7595,42.5,other
+Gylden,crater,-5.3737,0.2323,48.2,other
+Peary,crater,88.6251,24.4024,78.7,major_crater
+Ptolemaeus,crater,-9.1605,-1.8373,153.7,major_crater
+Purbach,crater,-25.5120,-2.0304,115.0,major_crater
+Regiomontanus,crater,-28.2794,-1.0861,126.6,major_crater
+Mare Frigoris,mare,57.5923,-0.0064,1446.4,other
+Mare Imbrium,mare,34.7244,-14.9086,1145.5,other
+Walther,crater,-33.2485,0.6156,134.2,major_crater
+Miller,crater,-39.3719,0.7827,61.4,major_crater
+Mons Bradley,mons,21.7276,0.3814,76.5,other
+Montes Apenninus,mons,19.8714,0.0253,599.7,other
+Nasireddin,crater,-41.0387,0.1427,52.0,major_crater
+Goldschmidt,crater,73.0367,-3.3686,115.3,major_crater
+Montes Rook,mons,-19.4868,-94.9477,682.3,other
+La Caille,crater,-23.6763,1.0836,67.2,major_crater
+Florey,crater,87.0372,-19.7466,69.1,major_crater
+Slater,crater,-88.0792,111.2881,25.1,other
+Anders Earthrise,crater,-11.7297,100.4651,40.2,other
+Mons Tai,mons,-44.5600,175.8300,24.0,other
+Hildegard,crater,-51.6797,127.7446,122.0,major_crater
+Mons Latreille,mons,18.4700,61.9200,6.4,other
+Mons Mouton,mons,-84.6000,31.0000,130.0,other
+Grimaldi,crater,-5.3800,-68.3600,235.0,major_crater
+Montes Alpes,mons,48.3600,-0.5800,334.5,other
+Haworth,crater,-87.4500,-5.1700,51.4,major_crater
+Reaumur,crater,-2.4500,0.7300,51.3,major_crater
+Mons Hua,mons,45.7100,-52.2600,65.0,other
+Timaeus,crater,62.9100,-0.5500,32.8,other
+Murchison,crater,5.0700,-0.2100,57.8,major_crater
+Oppolzer,crater,-1.5200,-0.4500,40.9,other
+Apollo 11,apollo,0.6740,23.4730,0.0,apollo_artemis
+Apollo 12,apollo,-3.0120,-23.4220,0.0,apollo_artemis
+Apollo 14,apollo,-3.6450,-17.4710,0.0,apollo_artemis
+Apollo 15,apollo,26.1320,3.6340,0.0,apollo_artemis
+Apollo 16,apollo,-8.9730,15.5010,0.0,apollo_artemis
+Apollo 17,apollo,20.1910,30.7720,0.0,apollo_artemis
+Chang'e 4,robotic,-45.4600,177.5900,0.0,other
+Chang'e 3,robotic,44.1200,-19.5100,0.0,other
+Chang'e 5,robotic,43.0600,-51.9200,0.0,other
+Chandrayaan-3,robotic,-69.3700,32.3200,0.0,other
+Luna 9,robotic,7.0800,-64.3700,0.0,other
+Luna 16,robotic,-0.6800,56.3000,0.0,other
+Luna 17 / Lunokhod 1,robotic,38.2800,-35.0000,0.0,other
+Luna 21 / Lunokhod 2,robotic,25.9900,30.9000,0.0,other
+Luna 24,robotic,12.7500,62.2000,0.0,other
+Surveyor 1,robotic,-2.4700,-43.3400,0.0,other
+Surveyor 3,robotic,-3.0200,-23.4200,0.0,other
+Surveyor 5,robotic,1.4600,23.2000,0.0,other
+Surveyor 6,robotic,0.4700,-1.3700,0.0,other
+Surveyor 7,robotic,-40.8800,-11.5100,0.0,other
+Artemis III: Peak Near Shackleton,artemis,-89.5000,125.0000,0.0,apollo_artemis
+Artemis III: Connecting Ridge,artemis,-89.4500,-129.0000,0.0,apollo_artemis
+Artemis III: Connecting Ridge Extension,artemis,-88.8000,-122.0000,0.0,apollo_artemis
+Artemis III: de Gerlache Rim 2,artemis,-88.5000,-87.0000,0.0,apollo_artemis
+Artemis III: Leibnitz Beta Plateau,artemis,-85.4000,36.0000,0.0,apollo_artemis
+Artemis III: Malapert Massif,artemis,-85.9000,12.9000,0.0,apollo_artemis
+Artemis III: Faustini Rim A,artemis,-87.3000,77.0000,0.0,apollo_artemis
+Artemis III: Haworth,artemis,-87.5000,-5.0000,0.0,apollo_artemis
+Artemis III: Nobile Rim 1,artemis,-85.4000,37.0000,0.0,apollo_artemis
+Shackleton (crater),crater,-89.9000,0.0000,0.0,major_crater
