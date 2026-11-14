@@ -31,7 +31,6 @@ test('results list is capped, hover highlights, click selects', async ({ page })
   const n = await page.getByTestId('card').count();
   expect(n).toBeGreaterThan(0);
   expect(n).toBeLessThanOrEqual(200);
-  await page.screenshot({ path: '/private/tmp/claude-501/-Users-colinfaletto-ws-afc-spaceapps/96a95f50-a8b0-4ec3-a5e2-4a1b7fb64b8e/scratchpad/list.png' });
   const card = page.getByTestId('card').first();
   const plot = await card.getAttribute('data-plot');
   await card.click();
