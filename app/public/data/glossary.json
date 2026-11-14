@@ -1,17 +1,92 @@
 {
-  "sunlight": {"label": "Sunlight", "text": "Share of the year the Sun is more than half above the local horizon, including terrain. 50% is typical on the Moon; polar peaks of light exceed 70%.", "formula": "sunlit = visible fraction of the solar disk > 0.5, hourly over 2028", "source": "Horizons ephemeris + LOLA terrain"},
-  "longest_night": {"label": "Longest night", "text": "Longest continuous stretch without sunlight in 2028. Equatorial nights last about 355 hours (14.8 days).", "formula": "longest run of not-sunlit hours", "source": "Horizons + LOLA"},
-  "earth_contact": {"label": "Earth contact", "text": "Share of the year Earth is at least 1 degree above the local terrain horizon, so a direct radio link is possible.", "formula": "Earth elevation >= terrain horizon + 1 deg", "source": "Horizons + LOLA"},
-  "longest_blackout": {"label": "Longest blackout", "text": "Longest continuous stretch with no direct line of sight to Earth.", "formula": "longest run of hours without Earth contact", "source": "Horizons + LOLA"},
-  "temperature": {"label": "Temperature", "text": "Modelled surface temperature range (equilibrium model). Daytime highs reach about 390 K at the equator; permanently shadowed regions stay near 40 K.", "formula": "T = ((1-A) F / (eps sigma))^(1/4), floored at 95 K (40 K in shadow)", "source": "Simple radiative model (not Diviner)"},
-  "slope": {"label": "Slope", "text": "Mean ground slope across the plot. Plots with too little gentle ground are Off market for landing.", "formula": "landing_safe = share of area under 8 deg >= 25%", "source": "LRO LOLA DEM"},
-  "land_type": {"label": "Land type", "text": "Terrain category: Highlands, Mare, Crater rim, Crater floor, Far side, Permanently shadowed region (PSR) or Peak of light.", "formula": "rule-based on lighting, position and elevation", "source": "LOLA + lighting model"},
-  "ice": {"label": "Ice access", "text": "Distance to the nearest permanently shadowed region, where water ice can survive.", "formula": "distance to nearest cell with sunlit < 1%", "source": "Computed from the lighting model"},
-  "viability": {"label": "Viability", "text": "Overall 0-100 score combining landing safety, power, communications, comfort and views. It drives the Moonstimate.", "formula": "100 * weighted mean of sub-scores; capped at 10 if not landable", "source": "Lunar Listings model"},
-  "landing": {"label": "Landing Score", "text": "How gentle and smooth the ground is (slope, roughness, relief).", "formula": "1 - mean of normalised hazard terms", "source": "LRO LOLA DEM"},
-  "sun_score": {"label": "Sun Score", "text": "Solar energy available, reduced by long nights.", "formula": "norm(energy) x penalty(longest night)", "source": "Horizons + LOLA"},
-  "signal": {"label": "Signal Score", "text": "Earth contact, reduced by long blackouts.", "formula": "earth fraction x penalty(longest blackout)", "source": "Horizons + LOLA"},
-  "comfort": {"label": "Comfort Score", "text": "How mild the temperatures are (cold floor and day-night swing).", "formula": "1 - thermal hazard", "source": "Radiative model"},
-  "views": {"label": "Views Score", "text": "Closeness to famous landmarks (Apollo and Artemis sites, major craters).", "formula": "max of fame x exp(-distance / 100 km)", "source": "IAU/USGS nomenclature"},
-  "ice_score": {"label": "Ice Score", "text": "Proximity to permanently shadowed ice traps (polar plots only).", "formula": "1 - norm(ice distance, 0-50 km)", "source": "Computed from the lighting model"}
+  "sunlight": {
+    "label": "Sunlight",
+    "text": "Share of the year the Sun is more than half above the local horizon, including terrain. 50% is typical on the Moon; polar peaks of light exceed 70%.",
+    "formula": "sunlit = visible fraction of the solar disk > 0.5, hourly over 2028",
+    "source": "Horizons ephemeris + LOLA terrain"
+  },
+  "longest_night": {
+    "label": "Longest night",
+    "text": "Longest continuous stretch without sunlight in 2028. Equatorial nights last about 355 hours (14.8 days).",
+    "formula": "longest run of not-sunlit hours",
+    "source": "Horizons + LOLA"
+  },
+  "earth_contact": {
+    "label": "Earth contact",
+    "text": "Share of the year Earth is at least 1 degree above the local terrain horizon, so a direct radio link is possible.",
+    "formula": "Earth elevation >= terrain horizon + 1 deg",
+    "source": "Horizons + LOLA"
+  },
+  "longest_blackout": {
+    "label": "Longest blackout",
+    "text": "Longest continuous stretch with no direct line of sight to Earth.",
+    "formula": "longest run of hours without Earth contact",
+    "source": "Horizons + LOLA"
+  },
+  "temperature": {
+    "label": "Temperature",
+    "text": "Modelled surface temperature range (simple equilibrium model, not a measurement). Daytime highs reach about 390 K at the equator; permanently shadowed regions stay near 40 K. Polar lit-site maxima and nights are conservative versus LRO Diviner averages.",
+    "formula": "T = ((1-A) F / (eps sigma))^(1/4), floored at 95 K (40 K in shadow)",
+    "source": "Simple radiative model (not Diviner)"
+  },
+  "slope": {
+    "label": "Slope",
+    "text": "Mean ground slope across the plot. Plots with too little gentle ground are Off market for landing.",
+    "formula": "landing_safe = share of area under 8 deg >= 25%",
+    "source": "LRO LOLA DEM"
+  },
+  "land_type": {
+    "label": "Land type",
+    "text": "Terrain category: Highlands, Mare, Crater rim, Crater floor, Far side, Permanently shadowed region (PSR) or Peak of light.",
+    "formula": "rule-based on lighting, position and elevation",
+    "source": "LOLA + lighting model"
+  },
+  "ice": {
+    "label": "Ice access",
+    "text": "Distance to the nearest permanently shadowed region, where water ice can survive.",
+    "formula": "distance to nearest cell with sunlit < 1%",
+    "source": "Computed from the lighting model"
+  },
+  "viability": {
+    "label": "Viability",
+    "text": "Overall 0-100 score combining landing safety, power, communications, comfort and views. It drives the Moonstimate.",
+    "formula": "100 * weighted mean of sub-scores; capped at 10 if not landable",
+    "source": "Lunar Listings model"
+  },
+  "landing": {
+    "label": "Landing Score",
+    "text": "How gentle and smooth the ground is (slope, roughness, relief).",
+    "formula": "1 - mean of normalised hazard terms",
+    "source": "LRO LOLA DEM"
+  },
+  "sun_score": {
+    "label": "Sun Score",
+    "text": "Net solar energy over the period: what a 10 m\u00b2 panel harvests minus a 500 W continuous load, reduced by the battery mass needed to ride out the longest night.",
+    "formula": "norm(harvest - load, 0..3000 W) / (1 + battery_kg / 2000)",
+    "source": "Horizons + LOLA, Lunar Listings model"
+  },
+  "signal": {
+    "label": "Signal Score",
+    "text": "Earth contact, reduced by long blackouts.",
+    "formula": "earth fraction x penalty(longest blackout)",
+    "source": "Horizons + LOLA"
+  },
+  "comfort": {
+    "label": "Comfort Score",
+    "text": "How mild the temperatures are (cold floor and day-night swing).",
+    "formula": "1 - thermal hazard",
+    "source": "Radiative model"
+  },
+  "views": {
+    "label": "Views Score",
+    "text": "Closeness to famous landmarks (Apollo and Artemis sites, major craters).",
+    "formula": "max of fame x exp(-distance / 100 km)",
+    "source": "IAU/USGS nomenclature"
+  },
+  "ice_score": {
+    "label": "Ice Score",
+    "text": "Proximity to permanently shadowed ice traps (polar plots only).",
+    "formula": "1 - norm(ice distance, 0-50 km)",
+    "source": "Computed from the lighting model"
+  }
 }

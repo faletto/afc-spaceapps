@@ -4,7 +4,7 @@
 - Branch: `pipeline` · Contract v2 (+H4, H6, P6 notes) · P0–P6 ✅. From-scratch rebuild verified byte-identical (737 files; `make all-data`).
 - P6 done: `make terrain/all-data`, `pipeline/README.md`, payload check (gzip core ≈ 9 MB; polar detail+horizon ≈ 11 MB), App requests R-A2/A3/A4/A5 answered (nearest_feature/km, glossary.json, manifest v2, basemap_small).
 - Cross-checks DONE (NASA data): `crosscheck.py` → docs/validation.md. LOLA illumination (PGDA): Sun r=0.988, RMSE 0.024; Earth r=0.957 (bias −0.066, expected from the 1° margin); PSR agreement 98.2%. Diviner (PDS): see Q-P8. HOR-2 external profile no longer needed (LOLA illumination serves). NFR-4: no raw-size limit (human), no trim.
-- Open: Q-P6 (flat power score), Q-P8 (polar T1 maxima/night floor).
+- Q-P6 RESOLVED (human): net-energy Sun score (see CONTRACT 'Q-P6 change'); data + goldens regenerated; new demo SP-0032-0154 (day 218 $22,034/mo → day 232 $10,064/mo, −54%). Q-P8 RESOLVED (leave + label modelled). Nothing open except tuning of the ASSUMED load/battery constants if wanted.
 - Maintenance: bug fixes requested by App in app-log.md `## Requests to Pipeline Claude`. Rebuild: `make all-data`. NEVER `make stub` over real data.
 
 ## Milestones
@@ -34,6 +34,8 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Q-P8: polar T1 maxima/night floor vs Diviner · answer: human said "do that" → option 1: leave the model, label temperatures as modelled (glossary text updated; app should keep the 'modelled' wording) · 14 Nov.
+- Q-P6: Sun/power score → net estimated energy production over the mission duration (full year Buy, stay window Rent); net = harvest − continuous load, with battery-mass factor for the longest night · answer: chosen in chat (human) 14 Nov. Constants load 500 W, ref 3000 W, 150 Wh/kg, 2000 kg are ASSUMED.
 - Q-P7: data folder 72 MB > 50 MB budget — commit anyway or Release asset? · answer: commit anyway (chat, 14 Nov); commit real data only at handoffs (H3, H4, H6).
 - Q-P5: Moon-wide Earth contact uses terrain_margin (1° over zero terrain) · answer: 'use your best judgement' (chat) → KEEP terrain_margin · 14 Nov.
 - Q-P4: PGDA throttled to ~1 MB/s; skip the 3.8 GB LDSM 20 m slope product and derive slope from the 20 m DEM · answer: yes, approved in chat · 14 Nov. Safe-fraction therefore comes from our own slope (central differences on 20 m DEM), not LDSM.
@@ -45,9 +47,13 @@
 <!-- R-P#: what I need from App · why · by when -->
 
 ## Replies to App Claude
+- R-A6 (RESOLVED, 14 Nov): `ephemeris.bin` is now the real data from `pipeline/data/ephemeris_2028.csv` (the export never replaced the v1 stub file; found and fixed in the full audit). `test_edge_data.py::test_ephemeris_bin_matches_parsed_horizons_csv` guards it. Regenerate your copy by merging `main`.
+- R-A7 (RESOLVED, 14 Nov): `horizons.quantize/dequantize` defaults are now unit 0.16, offset −6.0 (they were −3.0); `golden_v1.json` `horizon_quantisation` cases regenerated with offset −6 and include NaN/clamp cases; un-skip your test.
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · Full audit (human request): found/fixed real ephemeris.bin (was still the v1 stub, R-A6), quantisation default/golden mismatch (R-A7), stale cached landmark scores in polar cells, Artemis III landmark positions now IAU feature centres (Faustini, Haworth, Nobile, de Gerlache, Shackleton, Mons Malapert, Mons Mouton, Cabeus) instead of approximate ones, best_window with stay > window, landmark_score_and_nearby with < max_nearby landmarks, quantize NaN, silent integer wrap-around in column casts (now saturating), shared contract.py (export no longer imports stub). +104 edge-case/integrity tests (179 total). Auditor follow-ups: horizon quantisation constants live once in contract.py; polar disc latitude from config; golden rent cutoff read from the exported config.json (and tested); golden generation fails loudly without polar data; no silent 'stub' tier fallback (now 'missing'); viability raises on zero weights; dead config key removed.
+- 14 Nov · Q-P6 · net-energy power score (scoring.power_score), config power.*, goldens regenerated, data regenerated (cutoff 62.3), new demo number
 - 14 Nov · P6 · NASA cross-checks: LOLA illumination (HOR-2) + Diviner (TEMP-4) in docs/validation.md; sources.yaml extended
 - 14 Nov · P6 · make terrain/all-data, README, rebuild byte-identical, glossary.json, nearest_feature, basemap_small · final handoff
 - 14 Nov · P5 · blurbs, featured, rent_for_stay + rent golden, demo number · H6

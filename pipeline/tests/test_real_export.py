@@ -26,3 +26,15 @@ def test_global_cols_real():
     near = (abs(g["lon"]) < 20) & (abs(g["lat"]) < 20)
     far = (abs(abs(g["lon"]) - 180) < 20) & (abs(g["lat"]) < 20)
     assert g["earth_pct"][near].mean() > 99 and g["earth_pct"][far].mean() < 1
+
+
+def test_ephemeris_bin_is_real_not_stub():
+    from lunar_listings import ephemeris
+
+    e = ephemeris.load()
+    a = np.fromfile(D / "ephemeris.bin", dtype="<f4")
+    n = len(e["tsi"])
+    assert a.size == n * 8
+    assert np.allclose(a[: n * 3].reshape(-1, 3), e["sun_xyz"], atol=1e-6)
+    assert np.allclose(a[n * 3 : n * 6].reshape(-1, 3), e["earth_xyz"], atol=1e-6)
+    assert np.allclose(a[n * 7 :], e["tsi"], rtol=1e-6) and 1300 < a[n * 7 :].min()

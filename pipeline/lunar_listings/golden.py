@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import config, ephemeris, geometry, horizons, pricing, scoring, visibility
+from . import config, contract, ephemeris, geometry, horizons, pricing, scoring, visibility
 
 OUT = Path(__file__).resolve().parents[1] / "tests" / "golden"
 SITES = [(0.0, 0.0), (30.0, 20.0), (-60.0, -150.0), (-85.0, -30.0), (-89.7, 45.0), (0.0, 180.0)]
@@ -46,7 +46,7 @@ def build() -> dict:
           "viability_unsafe": float(scoring.viability(sub, np.array([False]), cfg)[0])}
     return {"version": 1, "tolerances": {"angle_deg": 1e-6, "stat": 1e-9, "price_rel": 1e-9},
             "geometry": geo, "visibility": vis, "pricing": pr, "scoring": sc,
-            "horizon_quantisation": {"unit_deg": 0.16, "offset_deg": -6.0,
+            "horizon_quantisation": {"unit_deg": contract.HZ_UNIT_DEG, "offset_deg": contract.HZ_OFFSET_DEG,
                                      "cases": [{"deg": float(m), "q": int(horizons.quantize(np.array([m]))[0])} for m in (-7.0, -6.0, -2.5, 0.0, 1.234, 12.5, 34.8, 40.0)]}}
 
 
@@ -63,26 +63,30 @@ def _site(sid, lat, lon, hz, hazard, lscore, safe, prem, ice):
             "premium": float(prem), "ice_km": None if ice is None else float(ice)}
 
 
-def build_rent(work_dir=None) -> dict:
+def build_rent(work_dir=None, allow_partial: bool = False) -> dict:
     """Rent golden vectors: site inputs are embedded so the file is self-contained for the TS mirror."""
     from . import horizons, polar, pricing
 
     cfg, eph = config.load(), ephemeris.load()
-    cutoff = 57.3
+    cj = Path(__file__).resolve().parents[2] / "app" / "public" / "data" / "config.json"
+    cutoff = round(json.loads(cj.read_text())["computed"]["scarcity_viability_cutoff"], 4)  # the exported value
     sites = [_site("eq", 0.0, 0.0, np.zeros(180), 0.2, 0.1, True, 0.0, None),
              _site("midlat", 45.0, 100.0, np.zeros(180), 0.35, 0.3, True, 0.0, None),
              _site("farside", 0.0, 180.0, np.zeros(180), 0.25, 0.05, True, 0.0, None)]
     npz = Path(work_dir or Path(__file__).resolve().parents[2] / "data" / "work") / "polar_plots.npz"
+    if not npz.exists() and not allow_partial:
+        raise FileNotFoundError(f"{npz} missing: run `make polar` first (or pass allow_partial=True for a reduced golden set)")
     if npz.exists():
         o = np.load(npz)
         la, lo = polar.xy_to_lonlat(o["best_x"], o["best_y"])
-        for sid, i in (("SP-0172-0148", int(np.flatnonzero((o["plot_row"] == 172) & (o["plot_col"] == 148))[0])),
+        for sid, i in (("SP-0032-0154", int(np.flatnonzero((o["plot_row"] == 32) & (o["plot_col"] == 154))[0])),
+                       ("SP-0172-0148", int(np.flatnonzero((o["plot_row"] == 172) & (o["plot_col"] == 148))[0])),
                        ("top_viability", int(np.argmax(o["viability"]))), ("psr", int(np.argmin(o["sunlit_frac"])))):
-            sites.append(_site(sid, la[i], lo[i], horizons.dequantize(o["hzq"][i], 0.16, -6.0), o["hazard_score"][i],
+            sites.append(_site(sid, la[i], lo[i], horizons.dequantize(o["hzq"][i]), o["hazard_score"][i],
                                o["landmark_score"][i], o["landing_safe"][i], 0.0, o["ice_km"][i]))
     cases = []
     for s in sites:
-        for day in (1, 100, 274, 288, 330):
+        for day in (1, 100, 218, 232, 274, 288, 330, 366):
             for stay in (14, 30, 90, 366):
                 r = pricing.rent_for_stay(s, eph, cfg, cutoff, day, stay)
                 cases.append({"site": s["id"], "move_in_day": day, "stay_days": stay, **{k: float(v) for k, v in r.items()}})
