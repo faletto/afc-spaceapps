@@ -54,7 +54,7 @@ def run() -> list[dict]:
     return rows
 
 
-def write_report(rows, md: Path, png: Path) -> bool:
+def write_report(rows, md: Path, png: Path, extra=None, cc=None) -> bool:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -74,8 +74,10 @@ def write_report(rows, md: Path, png: Path) -> bool:
             mx = max(r["max_el_err"] for r in rr)
             azt = f"{max(az):.3f}" if az else "n/a (pole / below horizon)"
             lines.append(f"| {name} | {tgt} | {mx:.4f} | {azt} |")
-    md.write_text("\n".join(lines) + "\n")
-    fig, ax = plt.subplots(figsize=(8, 4))
+    md.write_text("\n".join(lines + (extra or [])) + "\n")
+    ncol = 3 if cc else 1
+    fig, axs = plt.subplots(1, ncol, figsize=(8 if ncol == 1 else 14, 4))
+    ax = axs[0] if ncol > 1 else axs
     names = list(SITES)
     for k, (tgt, c) in enumerate((("Sun", "#e69f00"), ("Earth", "#0072b2"))):
         v = [max(r["max_el_err"] for r in rows if r["site"] == s and r["target"] == tgt) for s in names]
@@ -85,6 +87,12 @@ def write_report(rows, md: Path, png: Path) -> bool:
     ax.set_ylabel("max elevation error (°)")
     ax.set_title("Lunar Listings ephemeris vs JPL Horizons")
     ax.legend(fontsize=8)
+    if cc:
+        a = cc["_arrays"]
+        for axx, (xk, yk, ttl) in zip(axs[1:], (("sun_lola", "sun_ours", "Sun visibility: ours vs NASA LOLA"), ("earth_lola", "earth_ours", "Earth visibility: ours vs NASA LOLA")), strict=True):
+            axx.hexbin(a[xk], a[yk], gridsize=40, bins="log", cmap="viridis", mincnt=1)
+            axx.plot([0, 1], [0, 1], "w--", lw=1)
+            axx.set(xlabel="LOLA average visibility", ylabel="ours", title=ttl)
     png.parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout()
     fig.savefig(png, dpi=150)
@@ -93,6 +101,13 @@ def write_report(rows, md: Path, png: Path) -> bool:
 
 def main() -> int:
     rows = run()
-    ok = write_report(rows, REPO / "docs" / "validation.md", REPO / "docs" / "img" / "validation.png")
+    extra, cc = None, None
+    work = REPO / "data" / "work" / "polar_plots.npz"
+    if work.exists() and (REPO / "data" / "raw" / "illum").exists() and (REPO / "data" / "raw" / "diviner").exists():
+        from . import crosscheck
+
+        cc = crosscheck.run(work)
+        extra = crosscheck.markdown(cc)
+    ok = write_report(rows, REPO / "docs" / "validation.md", REPO / "docs" / "img" / "validation.png", extra, cc)
     print("EPH-3", "PASS" if ok else "FAIL", f"worst el err {max(r['max_el_err'] for r in rows):.4f} deg")
     return 0 if ok else 1
