@@ -72,3 +72,29 @@ def hazard_score(p90, rough, relief, cfg) -> np.ndarray:
     sf = cfg["safety"]
     return (norm(p90, sf["slope_p90_range"]) + norm(rough, sf["roughness_range_m"])
             + norm(relief, sf["relief_range_m"])) / 3
+
+
+def resample_global(tif, out_npy, strip_rows: int = 2048) -> np.ndarray:
+    """Block-mean the LOLA global DEM (int16, scale 0.5 m/DN) to 1/32 deg, strip by strip. Writes float32 metres."""
+    import rasterio
+
+    with rasterio.open(tif) as ds:
+        h, w = ds.shape
+        scale = ds.scales[0] if ds.scales else 1.0
+        f = h // (180 * CELLS_PER_DEG)  # source pixels per output cell
+        assert h % f == 0 and w % f == 0 and strip_rows % f == 0
+        out = np.empty((h // f, w // f), np.float32)
+        for r0 in range(0, h, strip_rows):
+            a = ds.read(1, window=((r0, min(r0 + strip_rows, h)), (0, w)))
+            out[r0 // f : (r0 + a.shape[0]) // f] = resample_block_mean(
+                a, (a.shape[0] // f, w // f), nodata=ds.nodata
+            ) * scale
+    np.save(out_npy, out)
+    return out
+
+
+def build_global_stats(dem_npy, out_npz, max_slope_deg: float) -> dict:
+    dem = np.load(dem_npy)
+    st = global_plot_stats(dem, slope_deg_lonlat(dem), max_slope_deg)
+    np.savez_compressed(out_npz, **{k: v.astype(np.float32) for k, v in st.items()})
+    return st
