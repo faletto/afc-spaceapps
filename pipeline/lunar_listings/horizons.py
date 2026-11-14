@@ -122,3 +122,15 @@ def quantize(m_deg: np.ndarray, unit=0.16, offset=-3.0) -> np.ndarray:
 
 def dequantize(q: np.ndarray, unit=0.16, offset=-3.0) -> np.ndarray:
     return q.astype(np.float32) * unit + offset
+
+
+def load_dems(raw_dir, near_half_m: float = 160_000.0) -> Dems:
+    """Real PGDA DEMs: 20 m cropped to +-near_half_m and the full 80 m raster (NaN = no data)."""
+    from pathlib import Path
+
+    from . import terrain
+
+    raw = Path(raw_dir)
+    near, _ = terrain.read_polar_core(raw / "LDEM_80S_20MPP_ADJ.TIF", half_m=near_half_m)
+    far, _ = terrain.read_polar_core(raw / "LDEM_80S_80MPP_ADJ.TIF", half_m=304_000.0)
+    return Dems(near, near_half_m, 20.0, far, 304_000.0, 80.0)

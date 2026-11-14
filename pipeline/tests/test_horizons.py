@@ -38,7 +38,7 @@ def test_wall_in_known_direction():
 def test_cone_matches_dense_bruteforce_within_0p05_deg():
     H, a = 800.0, 4000.0  # cone of height H, base radius a, centred 6 km east of the observer
     cx = 6000.0
-    prof = lambda r: np.clip(H * (1 - np.abs(r) / a), 0, 0.9 * H)  # noqa: E731  (frustum: sharp apex is below the 20 m raster's resolving power)
+    prof = lambda r: np.clip(H * (1 - np.abs(r) / a), 0, 0.9 * H)
     d = _dems(lambda X, Y: prof(np.hypot(X - cx, Y)))
     x0, y0 = 0.0, 0.0
     fast = horizons.compute(np.array([x0]), np.array([y0]), np.array([0.0]), d, CFG)[0]
