@@ -18,6 +18,9 @@ def main(argv=None) -> int:
     elif a.stage == "config":
         from . import config
         config.export(config.load(), a.out / "config.json")
+    elif a.stage == "fetch":
+        from .fetch import run
+        print("ephemeris rows:", run.fetch_ephemeris())
     else:
         print(f"stage '{a.stage}' not implemented yet", file=sys.stderr)
         return 2
