@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import config, ephemeris, geometry, pricing, scoring, visibility
+from . import config, ephemeris, geometry, horizons, pricing, scoring, visibility
 
 OUT = Path(__file__).resolve().parents[1] / "tests" / "golden"
 SITES = [(0.0, 0.0), (30.0, 20.0), (-60.0, -150.0), (-85.0, -30.0), (-89.7, 45.0), (0.0, 180.0)]
@@ -45,7 +45,9 @@ def build() -> dict:
           "viability_safe": float(scoring.viability(sub, np.array([True]), cfg)[0]),
           "viability_unsafe": float(scoring.viability(sub, np.array([False]), cfg)[0])}
     return {"version": 1, "tolerances": {"angle_deg": 1e-6, "stat": 1e-9, "price_rel": 1e-9},
-            "geometry": geo, "visibility": vis, "pricing": pr, "scoring": sc}
+            "geometry": geo, "visibility": vis, "pricing": pr, "scoring": sc,
+            "horizon_quantisation": {"unit_deg": 0.16, "offset_deg": -6.0,
+                                     "cases": [{"deg": float(m), "q": int(horizons.quantize(np.array([m]))[0])} for m in (-7.0, -6.0, -2.5, 0.0, 1.234, 12.5, 34.8, 40.0)]}}
 
 
 def write() -> Path:

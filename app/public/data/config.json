@@ -32,7 +32,7 @@
  "home_types": {
   "habitat": {
    "gates": {
-    "longest_blackout_h": 72
+    "longest_blackout_h": 168
    },
    "ref_stay_days": 90,
    "weights": {
@@ -42,7 +42,7 @@
   },
   "ice_depot": {
    "gates": {
-    "ice_km": 10
+    "ice_km": 2
    },
    "polar_only": true,
    "ref_stay_days": 366,

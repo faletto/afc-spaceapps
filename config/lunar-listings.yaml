@@ -12,11 +12,12 @@ safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], rou
 norm:   { energy_wh_m2_day: [0, 30000] }
 penalty: { dark: { h50: 120, k: 2 }, blackout: { h50: 120, k: 2 } }
 weights: { safety: 0.30, power: 0.25, comms: 0.20, thermal: 0.15, landmark: 0.10, ice: 0.0 }
+# Gates calibrated 14 Nov (human-approved): habitat 72->168 h (28 -> 397 polar plots), ice 10->2 km (47k -> 36k)
 home_types:
   lander_pad: { weights: { safety: 0.4, power: 0.35 }, ref_stay_days: 14, gates: { longest_night_h: 48 } }
-  habitat:    { weights: { comms: 0.35, thermal: 0.25 }, ref_stay_days: 90, gates: { longest_blackout_h: 72 } }
+  habitat:    { weights: { comms: 0.35, thermal: 0.25 }, ref_stay_days: 90, gates: { longest_blackout_h: 168 } }
   solar_farm: { weights: { power: 0.6 }, ref_stay_days: 366, gates: { safe_area_frac: 0.4, sunlit_frac: 0.6 } }
-  ice_depot:  { weights: { ice: 0.45, power: 0.25 }, ref_stay_days: 366, gates: { ice_km: 10 }, polar_only: true }
+  ice_depot:  { weights: { ice: 0.45, power: 0.25 }, ref_stay_days: 366, gates: { ice_km: 2 }, polar_only: true }
   min_results: 50
 price:
   base_usd: 5000

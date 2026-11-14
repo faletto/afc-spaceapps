@@ -5,15 +5,15 @@
   "global": "real",
   "polar": "real"
  },
- "pipeline_sha": "8972463",
- "generated_utc": "2026-11-14T22:30:05Z",
+ "pipeline_sha": "ee565ff",
+ "generated_utc": "2026-11-14T22:33:01Z",
  "analysis_year": 2028,
  "steps": 8784,
  "counts": {
   "global": 64800,
   "polar": 78464
  },
- "config_sha256": "08953b36c4ba84f8",
+ "config_sha256": "fefbd7ad88b96d30",
  "horizon": {
   "az_count": 180,
   "az_step_deg": 2,
@@ -26,7 +26,7 @@
   {
    "path": "config.json",
    "bytes": 2711,
-   "sha256": "a28973683c4c91ddca5e43924c28dd9e5f76afb02fbe1e2d017557ec9db8f331"
+   "sha256": "dec83a8511da86de9d4636dd7b56d42c90c8c599b873cfa24a59e3072b46671f"
   },
   {
    "path": "ephemeris.bin",
