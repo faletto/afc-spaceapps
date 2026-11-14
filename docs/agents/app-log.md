@@ -16,7 +16,7 @@
 | A1 | ✅ | see git log | no | stub data; worker + filters in A2/A3 |
 | A2 | ✅ (OV-7 comm window deferred) | see git log | no | worker + overlays + tooltips |
 | A3 | ✅ | see Done log | M3 | real data, filters, D-6 e2e, reviewer pass |
-| A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | ready for M4 merge on human OK |
+| A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | M4 (94204b7) |
 | A5 | ⬜ | | | |
 | A6 | ⬜ | | | |
 | A7 | ⬜ | | | |
