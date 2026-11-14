@@ -31,3 +31,7 @@ price:
 badges: { hot_property_pct: 95, earth_view_frac: 0.95, price_cut_frac: 0.10, max_per_card: 2 }
 results: { max_cards: 200 }
 stays: [14, 30, 90, 366]
+# ASSUMED defaults (spec references these keys without values); tune/confirm at P3 gate calibration
+land: { peak_light_frac: 0.7, tpi_radius_km: 5, tpi_rim: 150, tpi_floor: -150 }
+landmarks: { radius_km: 300, d0_km: 100, max_nearby: 5, fame_weights: { apollo_artemis: 1.0, major_crater: 0.6, other: 0.3 } }
+ice: { max_km: 50 }
