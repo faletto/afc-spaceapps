@@ -23,6 +23,7 @@
 <!-- newest first: H#, date/time, contract vN, main@sha, what's new, files, size MB, known issues -->
 
 ## Open questions
+- Q-P6 · 14 Nov · Moon-wide `s_power` is ≈ 0.04 on almost every plot: longest night ≈ 360 h → penalty(360; h50=120, k=2) = 0.10, times norm(energy) ≈ 0.45. Power therefore doesn't discriminate Moon-wide (only polar light matters). Viability tops out ≈ 65, scarcity cutoff ≈ 58, top Moon-wide price ≈ $730K. Spec values used as-is; proposal for the P3 calibration: raise `penalty.dark.h50` to ~400 h (or apply the dark penalty only in the polar tier). ASSUMED keep spec until a human decides.
 - (answered, see below) Q-P5 · 14 Nov · Reviewer: Moon-wide plots use `terrain_margin` (m≡0) so Earth contact needs only ≥ 1° elevation, vs COMM-1's 5° cutoff. Follows the spec's decided mode. My default: ASSUMED keep. Please confirm for the Moon-wide tier (or set `comms.mode: absolute` there).
 - Q-P2 · 14 Nov · Spec's TSI sanity band 1320–1412 W/m² is too tight: 2028 gives 1310–1413 (L☉/4πr² is correct). ASSUMED band 1300–1420; tell me if you want the spec fixed.
 - Q-P1 · 14 Nov · Stub data (41 MB) committed to git; real data likely larger (detail JSON). Default: ASSUMED commit if < 50 MB total, else Release asset (per answers.md).
@@ -42,6 +43,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P3 (part) · landmarks (1,454), land.py, scoring/pricing wired into plots.build_global (viability/price/rent on real global data); crater rim/floor via plot TPI p90/p10, thresholds ±300 m ASSUMED · see git log
 - 14 Nov · P1 complete (20 m polar stats) + P2 validate.py PASS · see git log
 - 14 Nov · P1/P2 · polar terrain code, visibility.py + tests (28 pass) · see git log
 - 14 Nov · P1 · global terrain (resample 1/32°, slope, plot stats) on real DEM; Q-P3 ranges applied; DEM fetch in progress (20 m DEM + slope remaining) · see git log

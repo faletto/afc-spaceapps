@@ -28,9 +28,10 @@ def test_land_type_priority():
     lon = np.array([0, 0, 120, 0, 0, 0.0])
     elev = np.array([0, 0, 0, 0, 0, -5000.0])
     elev_ref = np.append(elev, np.full(20, 0.0))  # median 0
-    tpi = np.array([0, 0, 0, 300, -300, 0.0])
+    hi = np.array([0, 0, 0, 500, 10, 0.0])
+    lo = np.array([0, 0, 0, -10, -500, 0.0])
     full = lambda a, fill: np.append(a, np.full(20, fill))
-    t = land.land_type(full(n, 0.5), full(lat, -87.0), full(lon, 0.0), elev_ref, full(tpi, 0.0), CFG, polar=True)[:6]
+    t = land.land_type(full(n, 0.5), full(lat, -87.0), full(lon, 0.0), elev_ref, full(hi, 0.0), full(lo, 0.0), CFG, polar=True)[:6]
     assert [land.LAND_TYPES[i] for i in t] == ["psr", "peak_of_light", "far_side", "crater_rim", "crater_floor", "mare"]
 
 

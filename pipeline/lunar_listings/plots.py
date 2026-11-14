@@ -3,7 +3,7 @@ from pathlib import Path
 
 import numpy as np
 
-from . import ephemeris, terrain, visibility
+from . import ephemeris, land, pricing, scoring, terrain, visibility
 
 R_M = 1_737_400.0
 
@@ -29,5 +29,23 @@ def build_global(cfg, work_dir) -> dict:
     tab["hazard_score"] = terrain.hazard_score(tab["slope_p90_deg"], tab["roughness_m"], tab["relief_m"], cfg)
     vis = visibility.site_stats(g["lat"], g["lon"], np.zeros((g["lat"].size, 180)), ephemeris.load(), cfg)
     tab.update(vis)
+    dem = np.load(work / "dem_global_32.npy")
+    tab["elev_mean_m"] = np.flipud(terrain.plot_blocks(dem).mean(-1)).ravel()
+    hi, lo = land.plot_tpi_extremes(dem, cfg["land"]["tpi_radius_km"])
+    tab["tpi_p90_m"], tab["tpi_p10_m"] = np.flipud(hi).ravel(), np.flipud(lo).ravel()
+    lm = land.load_landmarks()
+    tab["landmark_score"], tab["nearby"] = land.landmark_score_and_nearby(g["lat"], g["lon"], lm, cfg)
+    tab["land_type"] = land.land_type(tab["sunlit_frac"], g["lat"], g["lon"], tab["elev_mean_m"], tab["tpi_p90_m"], tab["tpi_p10_m"], cfg,
+                                      polar=False)
+    th = scoring.thermal_hazard(tab["temp_min_k"], tab["temp_max_k"], cfg)
+    tab["thermal_hazard_score"] = th
+    s = scoring.subscores(tab, cfg)
+    tab.update({f"s_{k}": v for k, v in s.items()})
+    tab["viability"] = scoring.viability(s, tab["landing_safe"], cfg)
+    cut = pricing.scarcity_cutoff(tab["viability"], cfg)
+    tab["scarcity_cutoff"] = np.float64(cut)
+    prem = np.where(tab["landmark_score"] > 0.5, cfg["price"]["apollo_premium"], 0.0)
+    tab["price"] = pricing.price_usd(tab["viability"], cfg, prem, cut)
+    tab["rent_avg"] = pricing.rent_per_month(tab["price"], cfg)
     np.savez_compressed(work / "plots_global.npz", **tab)
     return tab

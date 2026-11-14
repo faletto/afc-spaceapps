@@ -51,18 +51,21 @@ def tpi_cells(dem: np.ndarray, radius_km: float, cell_deg: float = 1 / 32) -> np
     return dem - uniform_filter(dem, size=w, mode="reflect")
 
 
-def plot_mean_tpi(dem: np.ndarray, radius_km: float) -> np.ndarray:
-    return terrain.plot_blocks(tpi_cells(dem, radius_km)).mean(-1)
+def plot_tpi_extremes(dem: np.ndarray, radius_km: float):
+    """(p90, p10) of the TPI within each plot. A plot-mean TPI is ~0 by construction, so extremes classify."""
+    b = terrain.plot_blocks(tpi_cells(dem, radius_km))
+    return np.percentile(b, 90, axis=-1), np.percentile(b, 10, axis=-1)
 
 
-def land_type(sunlit_frac, lat, lon, elev_mean_m, tpi_m, cfg, polar: bool) -> np.ndarray:
+def land_type(sunlit_frac, lat, lon, elev_mean_m, tpi_hi, tpi_lo, cfg, polar: bool) -> np.ndarray:
     """Rules in priority order (LAND-1). `elev_mean_m` also sets the global-median mare/highland split."""
     ld = cfg["land"]
     sunlit_frac, lon = np.asarray(sunlit_frac), np.asarray(lon)
     out = np.full(sunlit_frac.shape, LT["highlands"], np.uint8)
     out[elev_mean_m < np.median(elev_mean_m) - 1000.0] = LT["mare"]
-    out[tpi_m < ld["tpi_floor"]] = LT["crater_floor"]
-    out[tpi_m > ld["tpi_rim"]] = LT["crater_rim"]
+    hi, lo = np.asarray(tpi_hi), np.asarray(tpi_lo)
+    out[(lo < ld["tpi_floor"]) & (-lo > hi)] = LT["crater_floor"]
+    out[(hi > ld["tpi_rim"]) & (hi >= -lo)] = LT["crater_rim"]
     out[np.abs(lon) > 90] = LT["far_side"]
     if polar:
         out[sunlit_frac >= ld["peak_light_frac"]] = LT["peak_of_light"]
