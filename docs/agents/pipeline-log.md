@@ -1,11 +1,10 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` · Contract: **v2** (+H4 notes) · P0–P4 ✅ (H0, H3, H4 merged to main)
-- Real data for both tiers in app/public/data (~106 MB raw). Rebuild: `make polar` (cells ~12 min, cached in data/work/polar_cells.npz; plots ~30 s) then `python -m lunar_listings data` (~30 s; needs data/work/{dem_global_32.npy,terrain_global.npz,terrain_polar_*_20m.npz}, regenerate via terrain.resample_global / build_global_stats / build_polar_stats).
-- Next: P5 — blurbs (config/blurbs.yaml, 20–30 templates, hash of plot ID), featured plots, rent reference (`pricing.py` rent for a stay: recompute stats over [move_in, move_in+stay] at the best cell) + **rent golden vectors**, TEMP-4 Diviner note, find the demo before/after number. Then P6 (payload/perf, README pipeline section). Read spec §3.10 + req §5.6.
-- Open: Q-P6 (flat power score; spec penalty kept), HOR-2 external profile (needs a human-supplied Moon Trek/QuickMap profile), TEMP-4 Diviner (download needed later).
-- Env: `.venv` py3.11; `make test` = 61 tests; NEVER `make stub` over real data (guarded).
+- Branch: `pipeline` · Contract: **v2** (+H4, H6 notes) · P0–P5 ✅ (H0, H3, H4 merged; H6 merging now)
+- Done in P5: blurbs + why lines (config/blurbs.yaml, blurbs.py), featured plots (flag bit 4), `pricing.rent_for_stay` + `golden_rent_v1.json`, RENT-5 tests, demo number found (see Contract/handoffs).
+- Next: P6 — payload/perf pass (data ≈ 129 MB raw; check gzip sizes vs NFR-4), data-release decision (committed, human-approved), README pipeline section, `make data` reproducibility (document `make polar` → `make data` and the work-dir prerequisites; maybe add `make terrain`), bug fixes requested by App. Open: TEMP-4 Diviner cross-check (needs the Diviner south-polar GDR from PDS: ODE/`lro_diviner_derived1`, POLS 240 m bins; exact file not confirmed), HOR-2 external profile, Q-P6.
+- Env: `.venv` py3.11; `make test` = 70+ tests. NEVER `make stub` over real data.
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
@@ -15,10 +14,11 @@
 | P2 | ✅ | see git log | H3 | validate PASS 0.006°, sanity suite |
 | P3 | ✅ | see git log | H3/H4 | gates calibrated + approved |
 | P4 | ✅ | see git log | H4 | horizons (cone test ≤0.05°), polar tier real, reviewer pass |
-| P5 | ⬜ | | | |
+| P5 | ✅ | see git log | H6 | blurbs, rent ref + golden, demo number; TEMP-4 deferred |
 | P6 | ⬜ | | | |
 
 ## Contract/handoffs
+- H6 · 14 Nov · contract v2 + H6 notes · detail `blurb`/`why`, `featured` flag, rent reference + `golden_rent_v1.json`. Demo number: SP-0172-0148, 14-day stay: day 274 → $16,758/mo, day 288 → $7,129/mo (−57%, Earth blackout). TEMP-4 (Diviner) not done.
 - H4 · 14 Nov · contract v2 + H4 notes (CONTRACT.md) · real polar tier: 78,464 plots, horizon tiles for every plot (uint8·0.16−6°), projection descriptor, gates (habitat 168 h, ice 2 km), shared scarcity cutoff, new global prices. ≈106 MB raw in app/public/data. Known: polar `s_power` small under spec penalty (Q-P6).
 - H3 · 14 Nov · contract **v2** · real Moon-wide data (global tier), ≈72 MB app/public/data (polar still stub). `make data` regenerates global; `make stub` now refuses to overwrite real data without `--force`. Golden vectors v1 committed. Known: Q-P6 power score flat Moon-wide; Q-P7 below.
 - H0 · 14 Nov · contract v1 · stub data (fake values, real formats), ≈41 MB, 738 files. Details in CONTRACT.md 'v1 concrete details'. Known: polar ≈78k plots (disk to 85°S), not 91k; polar projection is a stand-in.
@@ -46,6 +46,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P5 · blurbs, featured, rent_for_stay + rent golden, demo number · H6
 - 14 Nov · P4 · projection, horizons.py (Numba; 1.25 M cells in 11.5 min), polar build, export, sanity tests, reviewer fixes (polar far-side rule, global median, premiums) · H4
 - 14 Nov · P3 (part) · landmarks (1,454), land.py, scoring/pricing wired into plots.build_global (viability/price/rent on real global data); crater rim/floor via plot TPI p90/p10, thresholds ±300 m ASSUMED · see git log
 - 14 Nov · P1 complete (20 m polar stats) + P2 validate.py PASS · see git log

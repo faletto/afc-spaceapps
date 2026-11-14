@@ -1,0 +1,43 @@
+# Listing blurbs (DET-6) and "why" lines (DET-2). Conditions: "<fact> <op> <number>" or "<fact> == <string>".
+# Facts: sunlit (0-1), earth (0-1), land (type name), ice_km, tmin_k, tmax_k, slope_deg, viability, safe (1/0),
+# dark_h, polar (1/0), apollo_km, nearby (nearest landmark name, "" if none).
+# `lead`: highest-priority matching templates; one chosen by a hash of the plot ID. `extra`: optional 2nd sentence.
+lead:
+  - {pri: 9, if: ["safe == 0"], text: "Steep, rugged lot. Not currently buildable; great for climbers."}
+  - {pri: 8, if: ["land == psr"], text: "Permanently shadowed lot, a cozy {tmax_k} K basement that never sees the Sun."}
+  - {pri: 8, if: ["land == psr"], text: "Dark-side-of-the-street living: no sunrise, ever, and ice potentially nearby."}
+  - {pri: 7, if: ["land == peak_of_light"], text: "Peak-of-light lot: {sun_pct}% sunshine, one of the brightest addresses on the Moon."}
+  - {pri: 7, if: ["land == peak_of_light"], text: "Bright rim lot with near-constant sun and views for days."}
+  - {pri: 6, if: ["sunlit >= 0.7", "earth >= 0.5"], text: "Bright, sunny lot with a view of Earth {earth_pct}% of the year."}
+  - {pri: 6, if: ["sunlit >= 0.7"], text: "Sun-soaked lot: {sun_pct}% sunlit, solar panels will thank you."}
+  - {pri: 5, if: ["land == crater_rim", "earth >= 0.4"], text: "Crater-rim lot with sweeping views and Earth overhead {earth_pct}% of the time."}
+  - {pri: 5, if: ["land == crater_rim"], text: "Panoramic crater-rim lot. Mind the drop."}
+  - {pri: 5, if: ["land == crater_floor"], text: "Sheltered crater-floor lot, quiet, cool and a little dark."}
+  - {pri: 4, if: ["land == far_side", "polar == 0"], text: "Far-side retreat: no Earth views, no radio noise, total peace and quiet."}
+  - {pri: 4, if: ["land == mare", "earth >= 0.9"], text: "Flat mare lot with year-round Earth views, a starter home for first-time Moon buyers."}
+  - {pri: 4, if: ["land == mare"], text: "Smooth, flat mare lot, easy landing and plenty of room to build."}
+  - {pri: 3, if: ["land == highlands", "slope_deg <= 6"], text: "Gently sloped highlands lot with good drainage (there is no rain)."}
+  - {pri: 3, if: ["land == highlands"], text: "Highlands lot with character: rugged terrain and ancient crust."}
+  - {pri: 3, if: ["earth >= 0.95"], text: "Earth-view lot: our home planet in the sky nearly all the time."}
+  - {pri: 2, if: ["viability >= 0"], text: "Cozy lunar lot with room to grow."}
+  - {pri: 2, if: ["viability >= 0"], text: "Quiet lot, no HOA, no neighbours within sight."}
+extra:
+  - {if: ["ice_km <= 1"], text: "Cozy {psr_temp_c} °C basement (PSR) next door."}
+  - {if: ["ice_km <= 5"], text: "Water-ice access within {ice_km_round} km."}
+  - {if: ["nearby != "], text: "Walk to {nearby}."}
+  - {if: ["apollo_km <= 50"], text: "Historic neighbourhood: an Apollo/Artemis site is on the block."}
+  - {if: ["dark_h >= 400"], text: "Note: nights here last {dark_days} days. Bring a battery."}
+  - {if: ["tmax_k >= 380"], text: "Hot property in the literal sense: daytime highs of {tmax_k} K."}
+  - {if: ["earth <= 0.05", "polar == 0"], text: "No Earth view. Phone calls go through the relay."}
+  - {if: ["sunlit <= 0.45", "polar == 1", "land != psr"], text: "Sunlight comes and goes with the terrain, plan your solar accordingly."}
+why:  # fragments; the line reads "Priced up for A", "Priced down for B" or "Priced up for A, down for B"
+  power_high: "abundant sunlight"
+  power_low: "long nights"
+  comms_high: "excellent Earth contact"
+  comms_low: "limited Earth contact"
+  safety_high: "a gentle landing surface"
+  safety_low: "rugged terrain"
+  thermal_high: "mild temperatures"
+  thermal_low: "extreme temperatures"
+  landmark_high: "a prestigious neighbourhood"
+  ice_high: "ice close by"

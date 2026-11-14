@@ -16,3 +16,19 @@ def test_golden_file_is_current():
         assert a["dark_runs"] == b["dark_runs"] and a["best_window_lander"] == b["best_window_lander"]
         assert a["energy_wh_m2_day"] == pytest.approx(b["energy_wh_m2_day"], rel=1e-9)
     assert cur["pricing"] == new["pricing"] and cur["scoring"] == new["scoring"]
+
+
+def test_rent_golden_file_reproduces_from_embedded_inputs():
+    import numpy as np
+
+    from lunar_listings import config, ephemeris, pricing
+
+    g = json.loads((golden.OUT / "golden_rent_v1.json").read_text())
+    cfg, eph = config.load(), ephemeris.load()
+    sites = {s["id"]: dict(s, horizon_deg=np.array(s["horizon_deg"])) for s in g["sites"]}
+    assert len(g["cases"]) >= 60 and "SP-0172-0148" in sites
+    for c in g["cases"][::3]:
+        r = pricing.rent_for_stay(sites[c["site"]], eph, cfg, g["scarcity_cutoff"], c["move_in_day"], c["stay_days"])
+        assert r["rent_per_month"] == pytest.approx(c["rent_per_month"], rel=1e-9)
+    demo = {c["move_in_day"]: c["rent_per_month"] for c in g["cases"] if c["site"] == "SP-0172-0148" and c["stay_days"] == 14}
+    assert demo[274] > 2 * demo[288]  # the demo story: moving in two weeks later cuts the rent a lot
