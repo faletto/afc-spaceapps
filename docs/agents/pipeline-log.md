@@ -1,10 +1,10 @@
 # Pipeline Claude — log
 
 *Single writer: **Pipeline Claude**. Others read only. Keep `## Resume here
-- Branch: `pipeline` · Contract v2 (+H4, H6 notes) · P0–P5 ✅ merged (H6 = main c5a4fc0); P6 in progress.
-- P6 done: `make terrain` / `make all-data` targets, `pipeline/README.md`, payload check (gzip core ≈ 9 MB, polar detail+horizon ≈ 11 MB; raw ≈ 129 MB).
-- IN PROGRESS (may have finished): from-scratch rebuild started with `make terrain polar data` after moving old intermediates to `data/work_old/` (git-ignore it or delete before `git add -A`). Check scratchpad rebuild.log; then compare `find app/public/data -type f ! -name manifest.json -exec shasum -a 256 {} +` with before.sha (scratchpad) — expect identical. If identical, `rm -rf data/work_old`, commit regenerated data only if changed, push, merge to main (H7/final).
-- Open: TEMP-4 Diviner (needs exact PDS file), HOR-2 external profile, Q-P6, App requests (read app-log.md `## Requests to Pipeline Claude`).
+- Branch: `pipeline` · Contract v2 (+H4, H6, P6 notes) · P0–P6 ✅. From-scratch rebuild verified byte-identical (737 files; `make all-data`).
+- P6 done: `make terrain/all-data`, `pipeline/README.md`, payload check (gzip core ≈ 9 MB; polar detail+horizon ≈ 11 MB), App requests R-A2/A3/A4/A5 answered (nearest_feature/km, glossary.json, manifest v2, basemap_small).
+- Open: TEMP-4 Diviner cross-check (needs the exact PDS file), HOR-2 external profile (needs a Moon Trek/QuickMap profile), Q-P6 (flat power score), polar detail is 53 MB raw (NFR-4 says 60 MB total incl. horizons; gzip is 11 MB) — trim if the humans mean raw.
+- Maintenance: bug fixes requested by App in app-log.md `## Requests to Pipeline Claude`. Rebuild: `make all-data`. NEVER `make stub` over real data.
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
@@ -15,7 +15,7 @@
 | P3 | ✅ | see git log | H3/H4 | gates calibrated + approved |
 | P4 | ✅ | see git log | H4 | horizons (cone test ≤0.05°), polar tier real, reviewer pass |
 | P5 | ✅ | see git log | H6 | blurbs, rent ref + golden, demo number; TEMP-4 deferred |
-| P6 | ⬜ | | | |
+| P6 | ✅ | see git log | final | README, reproducibility verified, App requests R-A2..A5 |
 
 ## Contract/handoffs
 - H6 · 14 Nov · contract v2 + H6 notes · detail `blurb`/`why`, `featured` flag, rent reference + `golden_rent_v1.json`. Demo number: SP-0172-0148, 14-day stay: day 274 → $16,758/mo, day 288 → $7,129/mo (−57%, Earth blackout). TEMP-4 (Diviner) not done.
@@ -46,6 +46,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · P6 · make terrain/all-data, README, rebuild byte-identical, glossary.json, nearest_feature, basemap_small · final handoff
 - 14 Nov · P5 · blurbs, featured, rent_for_stay + rent golden, demo number · H6
 - 14 Nov · P4 · projection, horizons.py (Numba; 1.25 M cells in 11.5 min), polar build, export, sanity tests, reviewer fixes (polar far-side rule, global median, premiums) · H4
 - 14 Nov · P3 (part) · landmarks (1,454), land.py, scoring/pricing wired into plots.build_global (viability/price/rent on real global data); crater rim/floor via plot TPI p90/p10, thresholds ±300 m ASSUMED · see git log
