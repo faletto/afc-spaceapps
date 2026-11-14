@@ -1,14 +1,35 @@
-import DeckGL from '@deck.gl/react';
-import { OrthographicView } from '@deck.gl/core';
-import { ScatterplotLayer } from '@deck.gl/layers';
+import { useEffect, useState } from 'react';
+import { httpSource, loadManifest, loadTier } from './data/loader';
+import type { Columns, Tier } from './data/types';
+import { MapView } from './map/MapView';
+import { useStore } from './state/store';
 
-// A0 placeholder: proves the deck.gl canvas renders. Replaced by MapView in A1.
-const layers = [new ScatterplotLayer({ id: 'demo', data: [{ p: [0, 0] as [number, number] }], getPosition: (d: { p: [number, number] }) => d.p, getRadius: 40, getFillColor: [200, 200, 220] })];
+const src = httpSource();
+const base = import.meta.env.BASE_URL + 'data/';
 
 export function App() {
+  const { tier, setTier, selection } = useStore();
+  const [data, setData] = useState<Partial<Record<Tier, Columns>>>({});
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadManifest(src).then(() => loadTier(src, tier)).then((c) => setData((d) => ({ ...d, [tier]: c }))).catch((e) => setError(String(e)));
+  }, [tier]);
+
+  const cols = data[tier];
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#0b0d12' }}>
-      <DeckGL views={new OrthographicView({})} initialViewState={{ target: [0, 0, 0], zoom: 0 }} controller layers={layers} />
+    <div style={{ position: 'fixed', inset: 0, color: '#eee', font: '14px system-ui' }}>
+      {cols && <MapView key={tier} tier={tier} cols={cols} basemapUrl={`${base}${tier}/basemap.jpg`} />}
+      <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+        {(['global', 'polar'] as const).map((t) => (
+          <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 12px', fontWeight: tier === t ? 700 : 400 }}>
+            {t === 'global' ? 'Moon-wide' : 'South Pole District'}
+          </button>
+        ))}
+        {!cols && !error && <span>Loading…</span>}
+        {error && <span role="alert">{error}</span>}
+        {cols && selection != null && <span data-testid="selected">Selected plot #{selection}</span>}
+      </div>
     </div>
   );
 }

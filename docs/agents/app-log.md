@@ -2,11 +2,11 @@
 
 *Single writer: **App Claude**. Others read only. Keep `## Resume here
 - Branch: `app` · Built against contract v1 (main @ 35351cd, stub data) · Unpushed: 0 after push
-- Done: A0 scaffold; A1 loader (`src/data/loader.ts`: manifest+version check, cols decode, ephemeris, lazy detail/horizon tiles, Source injection) + tests on stub data.
-- In progress: A1 — next MapView (two tiers, deck.gl OrthographicView, basemap bitmap, dot↔pill markers), results list, listing shell.
-- Blockers: Q-A1 (CI job needs `.github/`).
+- Done: A0; A1 loader; A1 MapView (both tiers, basemap, price-band dots, grey hollow-ring off-market, pills at fit+3 zoom, hover/select outline, tier toggle). e2e: load both tiers; zoom→pill→click selects.
+- Next in A1: results list (react-window, cap 200, hover↔card link MAP-3), listing shell + fine print (click pin/card → listing → back), then the Playwright "click card→listing→back" smoke.
+- Blockers: Q-A1 (CI needs `.github/`).
+- ASSUMED: plot half-size global 0.5°, polar 480 m (`map/tiers.ts`); price bands = quantiles of on-market prices; pills when zoom ≥ fit+3, capped 1500 in view.
 - Commands: `cd app && npm ci`, `npm run dev`, `npm test`, `npm run lint`, `npx playwright test`, `npm run build`
-- Polar: use cols.json bounds/projection (stub: azimuthal-equidistant stand-in), not formulas.
 
 ## Milestones
 | WP | Status | Branch SHA | Merged to main | Notes |
@@ -38,5 +38,6 @@ R-A1 (RESOLVED: names are s_safety,s_power,s_comms,s_thermal,s_landmark,s_ice; c
 <!-- reply to R-P#: … -->
 
 ## Done log
+- 14 Nov · A1 (part) · MapView + markers + selection store · vitest 8, e2e 2, lint/tsc clean
 - 14 Nov · A1 (part) · loader + types vs contract v1 · vitest 5 passed, lint/tsc clean
 <!-- newest first: date time · WP · what · sha · tests -->
