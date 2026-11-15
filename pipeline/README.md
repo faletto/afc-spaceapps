@@ -61,7 +61,7 @@ badges and golden vectors all follow the config (regenerate goldens with `python
 golden.write(); golden.write_rent()"` and update `cutoff` in `golden.build_rent`). Common knobs:
 - **Sun score:** `power.load_w`, `power.net_ref_w`, `power.battery_wh_per_kg`, `power.battery_ref_kg` (also `area_m2`, `efficiency`).
 - **Night/blackout penalty (Signal score):** `penalty.blackout.{h50,k}`; **Earth contact:** `comms.margin_deg` / `mode`.
-- **Temperatures:** `thermal.floor_k`, `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
+- **Temperatures:** `thermal.floor_k` (Moon-wide night floor), `thermal.polar_floor_k` (polar tier),  `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
 - **Prices:** `price.base_usd`, `k`, `scarcity_*`, `range.*`, `rent_ratio`; **Home-type gates:** `home_types.*.gates`.
 The app mirror (`science/*.ts`, `rent.ts`) must read these from `config.json`, never hard-code them.
 

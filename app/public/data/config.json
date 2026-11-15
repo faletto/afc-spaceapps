@@ -15,7 +15,7 @@
   "mode": "terrain_margin"
  },
  "computed": {
-  "scarcity_viability_cutoff": 62.2882346149193
+  "scarcity_viability_cutoff": 62.25908702629204
  },
  "grid": {
   "global": {
@@ -175,6 +175,7 @@
   ],
   "emissivity": 0.95,
   "floor_k": 95,
+  "polar_floor_k": 50,
   "psr_floor_k": 40,
   "swing_range_k": [
    100,

@@ -77,6 +77,9 @@ def rent_for_stay(site: dict, eph: dict, cfg: dict, cutoff: float, move_in_day: 
         w,
         cfg,
         start_hour=a,
+        floor_k=cfg["thermal"]["polar_floor_k"]
+        if site.get("ice_km") is not None
+        else None,  # polar tier: colder nights
     )
     t = {
         k: st[k]

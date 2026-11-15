@@ -435,3 +435,60 @@ def test_why_ties_and_empty():
     assert blurbs.why({}) == "Priced as a typical lunar lot"
     assert blurbs.why({"power": 0.5, "comms": 0.5}).startswith("Priced up for")
     assert "down for" in blurbs.why({"power": 0.0, "safety": 0.0})
+
+
+def test_polar_night_floor_is_configurable_and_kernel_matches_reference(eph):
+    month = visibility.month_of_hour(2028, 8784)
+    hz = np.full(180, 1.0)
+    k50 = visibility.site_stats(np.array([-88.0]), np.array([10.0]), hz[None], eph, CFG, floor_k=50.0)
+    k95 = visibility.site_stats(np.array([-88.0]), np.array([10.0]), hz[None], eph, CFG)
+    r50 = visibility.site_stats_ref(
+        -88.0,
+        10.0,
+        hz,
+        eph["sun_xyz"],
+        eph["earth_xyz"],
+        eph["earth_dist_m"],
+        eph["tsi"],
+        eph["r_sun_km"],
+        CFG,
+        month,
+        floor_k=50.0,
+    )
+    assert k50["temp_min_k"][0] == 50.0 and k95["temp_min_k"][0] == 95.0 and r50["temp_min_k"] == 50.0
+    assert (
+        k50["temp_mean_k"][0] == pytest.approx(r50["temp_mean_k"])
+        and k50["temp_mean_k"][0] < k95["temp_mean_k"][0]
+    )
+    assert k50["temp_max_k"][0] == k95["temp_max_k"][0]  # the floor never changes the maximum
+    walled = visibility.site_stats(
+        np.array([-88.0]), np.array([10.0]), np.full((1, 180), 95.0), eph, CFG, floor_k=50.0
+    )
+    assert walled["temp_min_k"][0] == 40.0  # PSR floor still wins when the Sun never rises
+
+
+def test_rent_uses_polar_floor_only_for_polar_sites(eph):
+    base = {
+        "lat": -88.0,
+        "lon": 10.0,
+        "horizon_deg": np.full(180, 1.0),
+        "hazard_score": 0.3,
+        "landmark_score": 0.0,
+        "landing_safe": True,
+        "premium": 0.0,
+    }
+    polar = pricing.rent_for_stay({**base, "ice_km": 1.0}, eph, CFG, 60.0, 1, 366)
+    moon = pricing.rent_for_stay({**base, "ice_km": None}, eph, CFG, 60.0, 1, 366)
+    assert (
+        polar["rent_per_month"] < moon["rent_per_month"]
+    )  # colder polar night -> lower comfort -> lower rent
+
+
+def test_config_thermal_floor_ordering():
+    c = copy.deepcopy(CFG)
+    c["thermal"]["polar_floor_k"] = 120
+    with pytest.raises(config.ConfigError):
+        config.validate(c)
+    c["thermal"].update(polar_floor_k=30)  # below the PSR floor
+    with pytest.raises(config.ConfigError):
+        config.validate(c)

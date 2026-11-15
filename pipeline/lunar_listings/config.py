@@ -58,6 +58,11 @@ def validate(c: dict) -> dict:
         ),
         "power.area_m2/efficiency/load_w/net_ref_w/battery_* must be > 0",
     )
+    th = c["thermal"]
+    _need(
+        0 < th["psr_floor_k"] <= th["polar_floor_k"] <= th["floor_k"],
+        "thermal: 0 < psr_floor_k <= polar_floor_k <= floor_k",
+    )
     _need(c["comms"]["mode"] in ("terrain_margin", "absolute"), "comms.mode: terrain_margin|absolute")
     _need(c["comms"]["margin_deg"] >= 0 and c["comms"]["cutoff_deg"] >= 0, "comms angles >= 0")
     for r in ("cold_range_k", "swing_range_k"):
