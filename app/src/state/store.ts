@@ -50,7 +50,8 @@ export const useStore = create<State>((set) => ({
   t: 24 * 273, stayDays: 14,
   setT: (t) => set({ t }),
   setStay: (stayDays) => set({ stayDays }),
-  setTab: (tab) => set({ tab }),
+  // Buy bounds are dollars, Rent bounds are $/month: carrying one over would silently empty the list.
+  setTab: (tab) => set((st) => ({ tab, filters: { ...st.filters, priceMin: null, priceMax: null } })),
   setTier: (tier) => set((st) => ({ tier, results: null, selection: null, hover: null, viewRect: null, overlay: tier === 'global' && st.overlay === 'ice' ? null : st.overlay })),
   select: (selection) => set({ selection }),
   setHover: (hover) => set({ hover }),

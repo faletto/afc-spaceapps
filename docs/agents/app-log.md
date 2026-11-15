@@ -8,8 +8,10 @@
 - A5 (in progress, on `app-a4`/`app`, NOT merged to main): Home type filter (gates via bw_lander_h/bw_habitat_h/sunlit/ice; polar-only ice depot hint), match % on cards, Best match sort (default when a type is chosen), More panel (min sunlight/Earth), real plot ids on cards (G-lat-lon / SP-row-col derived from x,y), badges (max 2 on cards: Hot property, Earth view, Peak of light, Off market), "Plots for you" strip (featured flag: best, cheapest, next best). vitest 38, e2e 17 (3 new in a5.spec.ts).
 - ASSUMED: solar-farm gate = sunlit ≥ 60% only (safe_area_frac isn't a column, R-A8); match % uses only the weights listed per type in config (Σw·s/Σw); `Any` match = viability.
 - Left for A5/A6: OV-11 Solar power overlay (needs R-A8 overlay PNG), Price cut badge (Rent tab, A6), named-score tooltips already done, FIL-6 URL state (P2), Tour↔global slider (TIME-2, A6), South Pole tier polish, tour memoisation.
-- A5 reviewer pass done (no blocking). Fixed: no query until config loaded (no '0 plots' flash), 'Plots for you' structural check, plotName clamp, gate-boundary/match/store/badge/featured tests (vitest 44, e2e 17). Merged to main at M5.
-- Next: A6 (Rent tab, move-in/stay, time slider wired to the Tour (TIME-2), Price cut badge, rent parity vs golden_rent_v1.json).
+- A6 (done on branch `app`, NOT yet merged to main; reviewer pass done, no blocking): `science/scoring.ts` + `science/rent.ts` with exact golden parity (224 rent cases + scoring/pricing); Buy/Rent tabs; hourly time slider (= move-in on Rent) + stay select; Rent block (per month, stay total, change vs yearly average with reason, Price cut); rent history (12 months); Tour follows the slider (TIME-2); Rent tab cards/pins show yearly average rent, price filter/sort use rent_avg (bounds reset on tab switch). vitest 55, e2e 18. Rent recompute < 2 ms (≥ 15 fps).
+- DESIGN: rent = exported rent_avg × exp(k·(v_stay − v_year)/100) × scarcity ratio (premium isn't exported; quantised s_safety/s_landmark cancel). A 1-year stay == rent_avg (RENT-5, tested to 1e-9). ASSUMED: yearly scarcity state read from rounded exported viability (wrong only within ±0.5 of the cutoff).
+- Deferred: OV-7 comm-window overlay (needs per-plot Earth visibility at time t for 78k plots; request/plan with Pipeline: a per-hour Earth mask or do it in the worker with horizons), Price cut badge on cards, RENT-4 per-window pins, SCN-2 relay toggle, TIME-3 play/pause, OV-11 (R-A8), South Pole tier polish, series memoisation for tour.
+- Next: A7 (demo polish: ?demo=1 scenarios, ?present=1, README/offline check) — read PLAN.md A7; merge A6 to main on human OK.
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 
@@ -22,7 +24,7 @@
 | A3 | ✅ | see Done log | M3 | real data, filters, D-6 e2e, reviewer pass |
 | A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | M4 (94204b7) |
 | A5 | ✅ (OV-11 pending R-A8; Price cut badge in A6) | see git log | M5 | reviewer pass done |
-| A6 | ⬜ | | | |
+| A6 | ✅ (OV-7, Price cut on cards, RENT-4 deferred) | see git log | pending OK | reviewer pass done |
 | A7 | ⬜ | | | |
 
 ## Contract status
@@ -38,6 +40,7 @@ Q-A1: human granted App Claude permission to write the app CI workflow → `.git
 <!-- Q-A#: answer · source · date -->
 
 ## Requests to Pipeline Claude
+R-A9 (14 Nov, FYI): `golden_rent_v1.json` sites (and the logged demo number SP-0172-0148 → $16,758 / $7,129) use premium 0, but the real plot carries a +75% landmark premium (Apollo + Peak of light), so the shipped `rent_avg` is ~1.75× the golden's 1-year rent. My TS parity is exact against the golden as written; the app scales from `rent_avg` so a 1-year stay equals it (RENT-5). Please either ship `premium` per plot (cols/detail) so the app doesn't have to infer it, or note that the demo numbers exclude it. Not blocking.
 R-A8 (14 Nov): (a) add a `safe_area_pct` (0–100) column to both tiers so the Solar-farm gate (safe_area_frac ≥ 0.4) can run client-side; today only sunlit ≥ 60% is applied. (b) OV-11: add a `power` overlay (PNG+JSON legend, energy Wh/m²/day) for both tiers; `OVERLAY_NAMES` would gain `power`.
 R-A6 (RESOLVED 8070ebc; was: blocks real 3D Tour): `app/public/data/ephemeris.bin` is still the v1 stub from `stub.py _ephemeris` (sun at t=0 = (0.9996,0,0.0269)). Please write the real one (float32 LE: sun_xyz[8784×3], earth_xyz[8784×3], earth_dist_m[8784], tsi[8784] from `ephemeris.load()`) in the real export and update manifest sha.
 R-A7 (RESOLVED 8070ebc): `golden.py` `horizon_quantisation.cases` call `horizons.quantize(m)` with its default offset −3.0, but the file declares offset_deg −6 (and data uses −6). Pass `0.16, -6.0` so the cases match; I have the test skipped until then.
@@ -52,6 +55,7 @@ R-A1 (RESOLVED: names are s_safety,s_power,s_comms,s_thermal,s_landmark,s_ice; c
 <!-- reply to R-P#: … -->
 
 ## Done log
+- 14 Nov · A6 · scoring/rent TS + parity (224 cases), Buy/Rent tabs, time slider, Rent block + history + Price cut, tour on shared slider; reviewer fixes · vitest 55, e2e 18
 - 14 Nov · A5 (part) · home type + match %, Best match sort, More filters, plot ids, badges, Plots for you · vitest 38, e2e 17
 - 14 Nov · A4 · science mirror + golden parity (exact), 3D Tour (canvas, paths, countdown, tab), loadConfig · vitest 30, e2e tour 1
 - 14 Nov · A3 follow-up 2 · adopted P6: glossary.json via store (fallback), small-basemap-first + thumbnails from small, full basemap background, listing nearest feature · vitest 17, e2e 13

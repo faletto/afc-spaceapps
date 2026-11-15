@@ -13,10 +13,10 @@ export interface PlotRentData { site: RentSite; eph: Eph; cfg: AppConfig; year: 
 /**
  * Everything the client needs to price a stay for one plot: config, ephemeris, the plot's best cell + horizon
  * (polar: from the detail record and horizon tile; Moon-wide: plot centre, smooth Moon) and the full-year reference.
- * null while loading, and for polar plots until `detail` (best cell) has arrived.
+ * false if the plot has no horizon data, null while loading, and for polar plots until `detail` (best cell) has arrived.
  */
-export function usePlotRentData(cols: Columns, tier: Tier, i: number, detail: DetailRecord | null): PlotRentData | null {
-  const [data, setData] = useState<PlotRentData | null>(null);
+export function usePlotRentData(cols: Columns, tier: Tier, i: number, detail: DetailRecord | null): PlotRentData | null | false {
+  const [data, setData] = useState<PlotRentData | null | false>(null);
   const bx = detail?.best_cell_xy?.[0], by = detail?.best_cell_xy?.[1];
   useEffect(() => {
     if (tier === 'polar' && (bx == null || by == null)) return;
@@ -29,7 +29,7 @@ export function usePlotRentData(cols: Columns, tier: Tier, i: number, detail: De
         let lat = cols.col.y[i]!, lon = cols.col.x[i]!, hz: ArrayLike<number> | null = null;
         if (tier === 'polar') {
           const q = hzTile!.subarray(row * 180, row * 180 + 180);
-          if (q.length < 180) return;
+          if (q.length < 180) { setData(false); return; }
           ({ lat, lon } = polarXYToLatLon(bx!, by!));
           hz = decodeHorizon(q);
         }

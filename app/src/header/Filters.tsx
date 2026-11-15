@@ -41,7 +41,7 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
         ))}
       </span>
       <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        Price <PriceInput label="Min price" value={filters.priceMin} onCommit={(v) => setFilters({ priceMin: v })} />
+        Price{tab === 'rent' ? ' ($/mo)' : ''} <PriceInput label="Min price" value={filters.priceMin} onCommit={(v) => setFilters({ priceMin: v })} />
         – <PriceInput label="Max price" value={filters.priceMax} onCommit={(v) => setFilters({ priceMax: v })} />
       </span>
       <label>

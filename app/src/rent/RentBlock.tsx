@@ -7,11 +7,12 @@ import { plotRent } from './plotRent';
 import type { PlotRentData } from './usePlotRentData';
 
 /** RENT-2/3 + Price cut badge: Rent Moonstimate for the chosen move-in and stay, with the reason it differs from the yearly average. */
-export function RentBlock({ data, cols, i }: { data: PlotRentData | null; cols: Columns; i: number }) {
+export function RentBlock({ data, cols, i }: { data: PlotRentData | null | false; cols: Columns; i: number }) {
   const t = useDeferredValue(useStore((s) => s.t)), stayDays = useDeferredValue(useStore((s) => s.stayDays));
   const day = moveInDay(t);
   const r = useMemo(() => (data ? plotRent(data.site, data.eph, data.cfg, cols, i, day, stayDays, data.year) : null), [data, cols, i, day, stayDays]);
   const stayLabel = STAYS.find(([d]) => d === stayDays)?.[1] ?? `${stayDays} days`;
+  if (data === false) return <section aria-label="Rent"><div role="alert">Rent estimate unavailable: no horizon data for this plot.</div></section>;
   if (!r) return <section aria-label="Rent"><div style={{ opacity: 0.7 }}>Calculating rent…</div></section>;
   const pct = Math.round(Math.abs(r.vsAvg) * 100);
   const clipped = r.stayHours < stayDays * 24;
