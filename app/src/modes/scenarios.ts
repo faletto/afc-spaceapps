@@ -57,7 +57,7 @@ export const SCENARIOS: Scenario[] = [
   { id: 'shackleton', label: 'Shackleton rim + 3D Tour', tier: 'polar', run: async (c) => {
     const i = await shackletonRim(c);
     s().resetFilters(); s().setTab('buy'); s().setOverlay(null);
-    if (i != null) { s().select(i); s().setGalleryTab('tour'); }
+    if (i != null) { s().select(i); }
   } },
   { id: 'rent', label: 'Rent: move in 30 Sep', tier: 'polar', run: (c) => {
     const i = plotIndexByName(c, 'polar', RENT_DEMO_PLOT);
