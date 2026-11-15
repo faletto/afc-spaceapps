@@ -139,6 +139,9 @@ def build_rent(work_dir=None, allow_partial: bool = False) -> dict:
     if npz.exists():
         o = np.load(npz)
         la, lo = polar.xy_to_lonlat(o["best_x"], o["best_y"])
+        from . import land
+
+        prem = pricing.landmark_premium(o["apollo_km"], o["land_type"] == land.LT["peak_of_light"], cfg)
         for sid, i in (
             ("SP-0032-0154", int(np.flatnonzero((o["plot_row"] == 32) & (o["plot_col"] == 154))[0])),
             ("SP-0172-0148", int(np.flatnonzero((o["plot_row"] == 172) & (o["plot_col"] == 148))[0])),
@@ -154,7 +157,7 @@ def build_rent(work_dir=None, allow_partial: bool = False) -> dict:
                     o["hazard_score"][i],
                     o["landmark_score"][i],
                     o["landing_safe"][i],
-                    0.0,
+                    prem[i],
                     o["ice_km"][i],
                 )
             )
