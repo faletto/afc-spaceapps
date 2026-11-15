@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Columns } from '../data/types';
 import { AboutButton } from '../ui/About';
 import { HOME_TYPES, type HomeType } from '../results/homeTypes';
+import { RENT_ENABLED } from '../features';
 import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../state/store';
 import { parsePrice } from './parsePrice';
@@ -47,11 +48,13 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
     setFilters({ landTypes: filters.landTypes.includes(i) ? filters.landTypes.filter((x) => x !== i) : [...filters.landTypes, i].sort() });
   return (
     <div ref={bar} role="search" aria-label="Filters" style={{ display: 'flex', gap: 12, alignItems: 'center', flex: 1, flexWrap: 'wrap', fontSize: 13 }}>
-      <span role="tablist" aria-label="Buy or Rent">
-        {(['buy', 'rent'] as const).map((k) => (
-          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{k === 'buy' ? 'Buy' : 'Rent'}</button>
-        ))}
-      </span>
+      {RENT_ENABLED && (
+        <span role="tablist" aria-label="Buy or Rent">
+          {(['buy', 'rent'] as const).map((k) => (
+            <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{k === 'buy' ? 'Buy' : 'Rent'}</button>
+          ))}
+        </span>
+      )}
       <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         Price{tab === 'rent' ? ' ($/mo)' : ''} <PriceInput label="Min price" value={filters.priceMin} onCommit={(v) => setFilters({ priceMin: v })} />
         – <PriceInput label="Max price" value={filters.priceMax} onCommit={(v) => setFilters({ priceMax: v })} />

@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const money = (s: string | null) => s!.replace(/[^0-9.KMB]/g, '');
 
-test('?demo=1 scenarios: far-side bargain, Shackleton + 3D Tour, rent shift', async ({ page }) => {
+test('?demo=1 scenarios: far-side bargain, Shackleton + 3D Tour', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
   await page.goto('/?demo=1');
   await expect(page.getByTestId('demo-panel')).toBeVisible();
@@ -18,14 +17,7 @@ test('?demo=1 scenarios: far-side bargain, Shackleton + 3D Tour, rent shift', as
   await expect(page.getByTestId('tour-canvas')).toBeVisible();
   await expect(page.getByTestId('nearby')).toContainText(/Shackleton/);
 
-  await page.getByTestId('demo-rent').click();
-  await expect(page.getByTestId('listing-title')).toContainText('SP-0172-0148');
-  await expect(page.getByTestId('listing-rent')).toBeVisible();
-  const buy = money(await page.getByTestId('listing-price').textContent());
-  const before = money(await page.getByTestId('listing-rent').textContent());
-  await page.getByTestId('demo-shift').click();
-  await expect.poll(async () => money(await page.getByTestId('listing-rent').textContent())).not.toBe(before);
-  expect(money(await page.getByTestId('listing-price').textContent())).toBe(buy); // D-6
+  await expect(page.getByTestId('demo-rent')).toHaveCount(0);
 });
 
 test('demo panel is absent without ?demo=1', async ({ page }) => {
@@ -67,7 +59,5 @@ test('offline: every request stays on the local origin (no live APIs)', async ({
   await page.getByTestId('card').first().waitFor();
   await page.getByTestId('demo-shackleton').click();
   await page.getByTestId('tour-canvas').waitFor();
-  await page.getByTestId('demo-rent').click();
-  await page.getByTestId('listing-rent').waitFor();
   expect(foreign).toEqual([]);
 });

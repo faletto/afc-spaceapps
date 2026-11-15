@@ -54,7 +54,5 @@ test('plot overview says what the numbers mean; no rent history', async ({ page 
   await expect(facts).toContainText('of the year Earth is in view');
   await expect(facts).toContainText('average ground slope');
   await expect(facts).toContainText('plot area');
-  await page.getByRole('tab', { name: 'Rent' }).click();
-  await expect(page.getByTestId('rent-block')).toBeVisible();
-  await expect(page.getByRole('region', { name: 'Rent history' })).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Rent' })).toHaveCount(0);
 });

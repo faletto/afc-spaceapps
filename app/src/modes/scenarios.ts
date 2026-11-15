@@ -1,3 +1,4 @@
+import { RENT_ENABLED } from '../features';
 import { loadDetailTile } from '../data/loader';
 import { dataSource } from '../data/source';
 import type { Columns, Tier } from '../data/types';
@@ -46,7 +47,7 @@ export const RENT_DEMO_DAY = 274; // 30 Sep 2028
 
 const s = () => useStore.getState();
 
-export const SCENARIOS: Scenario[] = [
+const ALL_SCENARIOS: Scenario[] = [
   { id: 'far-side', label: 'Far-side bargain', tier: 'global', run: (c) => {
     const i = farSideBargain(c);
     s().resetFilters(); s().setTab('buy'); s().setSort('price_asc'); s().setOverlay(null);
@@ -65,6 +66,8 @@ export const SCENARIOS: Scenario[] = [
     if (i != null) s().select(i);
   } },
 ];
+
+export const SCENARIOS: Scenario[] = RENT_ENABLED ? ALL_SCENARIOS : ALL_SCENARIOS.filter((x) => x.id !== 'rent');
 
 /** The rent-shift step: two weeks later (rent changes; the Buy price does not). */
 export const shiftMoveIn = () => s().setT(Math.min(8783, s().t + 14 * DAY));
