@@ -31,6 +31,7 @@ The final 7-slide deck is [`lunar-listings-deck.pptx`](lunar-listings-deck.pptx)
 | `personas.png` | Who it's for and the user flow |
 | `horizons.png` | Roadmap: today → next → vision (slide 7) |
 | `next-concept.png` | Concept art for what's next: AI realtor, rover routes, lunar town (1920×1080, on the real LOLA polar hillshade) |
+| `next-concept-coral.png` | Same concept, transparent background with white cards, for the coral hackathon deck |
 | `roadmap.png` | Build plan timeline |
 | `concept-mockup.png` | Concept UI mockup (illustrative values; replace with real screenshots) |
 | `concept-skyview.png` | Concept 3D Tour (illustrative; replace with a real capture) |
