@@ -1,3 +1,4 @@
+/** One result card: basemap thumbnail, price, facts line, badges. Subscribes to its own hover/selected flags so a hover re-renders only two cards. */
 import { memo } from 'react';
 import type { Columns, Tier } from '../data/types';
 import { formatPrice } from '../map/markers';

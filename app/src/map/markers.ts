@@ -1,3 +1,4 @@
+/** Marker data for the map: price bands, off-market flag, typed-array marker sets built in one pass, and view-rect helpers. */
 import type { Columns } from '../data/types';
 
 export const FLAG_OFF_MARKET = 0;

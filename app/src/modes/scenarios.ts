@@ -1,3 +1,4 @@
+/** ?demo=1 scenarios: preloaded states (far-side bargain, overlays, Shackleton rim with 3D Tour). The rent scenario is filtered out while RENT_ENABLED is false. */
 import { RENT_ENABLED } from '../features';
 import { loadDetailTile } from '../data/loader';
 import { dataSource } from '../data/source';

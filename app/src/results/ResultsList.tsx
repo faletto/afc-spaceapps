@@ -1,3 +1,4 @@
+/** Virtualized, two-column results list with the sort control; hover and selection state live in each card, not here. */
 import { useEffect, useRef, useState } from 'react';
 import { List, type RowComponentProps } from 'react-window';
 import type { Columns, Tier } from '../data/types';

@@ -1,3 +1,4 @@
+/** App shell: loads the manifest and the current tier's columns, runs the worker query, and lays out header, map and results/listing panel. The map and listing are lazy-loaded to keep the entry bundle small. */
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { loadManifest, loadTier } from './data/loader';
 import { dataBase as base, dataSource as src } from './data/source';
