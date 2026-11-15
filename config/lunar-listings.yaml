@@ -9,7 +9,7 @@ power:  { panel: vertical_tracking, area_m2: 10, efficiency: 0.30, sunlit_thresh
           # Q-P6 (human-chosen 14 Nov): Sun score = net energy over the duration. ASSUMED values below, tune if needed.
           load_w: 500, net_ref_w: 3000, battery_wh_per_kg: 150, battery_ref_kg: 2000 }
 comms:  { mode: terrain_margin, cutoff_deg: 5.0, margin_deg: 1.0 }
-thermal: { albedo: 0.12, emissivity: 0.95, floor_k: 95, psr_floor_k: 40, cold_range_k: [40, 120], swing_range_k: [100, 300] }
+thermal: { albedo: 0.12, emissivity: 0.95, floor_k: 95, polar_floor_k: 50, psr_floor_k: 40, cold_range_k: [40, 120], swing_range_k: [100, 300] }
 safety: { max_slope_deg: 8.0, min_safe_frac: 0.25, slope_p90_range: [0, 30], roughness_range_m: [0, 600], relief_range_m: [0, 4000] }  # Q-P3 (human-approved 14 Nov): spec's 0-50/0-2000 saturate at 1-deg plots; Moon-wide tier. Polar ranges revisited in P4.
 norm:   { energy_wh_m2_day: [0, 30000] }
 penalty: { dark: { h50: 120, k: 2 }, blackout: { h50: 120, k: 2 } }
@@ -31,7 +31,8 @@ price:
   peak_light_premium: 0.5
   range: { global: 0.25, polar: 0.10 }
   rent_ratio: 0.006
-badges: { hot_property_pct: 95, earth_view_frac: 0.95, price_cut_frac: 0.10, max_per_card: 2 }
+badges: { hot_property_pct: 95,  # percentile within each tier (Moon-wide / polar)
+           earth_view_frac: 0.95, price_cut_frac: 0.10, max_per_card: 2 }
 results: { max_cards: 200 }
 stays: [14, 30, 90, 366]
 # ASSUMED defaults (spec references these keys without values); tune/confirm at P3 gate calibration

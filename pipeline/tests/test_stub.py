@@ -28,8 +28,12 @@ def test_cols_roundtrip(out, tier):
     buf = (out / tier / "cols.bin").read_bytes()
     assert len(meta["bounds"]) == 4 and "type" in meta["projection"]
     n = meta["rows"]
-    got = {c["name"]: np.frombuffer(buf, dtype=np.dtype(c["dtype"]).newbyteorder("<"), count=n, offset=c["offset"])
-           for c in meta["columns"]}
+    got = {
+        c["name"]: np.frombuffer(
+            buf, dtype=np.dtype(c["dtype"]).newbyteorder("<"), count=n, offset=c["offset"]
+        )
+        for c in meta["columns"]
+    }
     assert [c["name"] for c in meta["columns"]] == [c[0] for c in contract.COLUMNS]
     assert got["viability"].max() <= 100 and got["price"].min() >= 5000
     # tile/row_in_tile consistent with detail files and horizon sizes

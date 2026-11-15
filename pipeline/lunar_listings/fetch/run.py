@@ -1,4 +1,5 @@
 """`make fetch` ephemeris step: Horizons -> parsed committed CSV."""
+
 from .. import config, ephemeris
 from . import horizons
 
@@ -14,6 +15,8 @@ def fetch_ephemeris() -> int:
 def fetch_all() -> None:
     print("ephemeris rows:", fetch_ephemeris())
     from . import dem
+
     dem.fetch_all()
     from . import gazetteer
-    print('landmarks:', gazetteer.build())
+
+    print("landmarks:", gazetteer.build())

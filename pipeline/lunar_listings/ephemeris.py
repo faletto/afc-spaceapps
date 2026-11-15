@@ -1,4 +1,5 @@
 """Parse Horizons text -> CSV -> unit vectors, distances, TSI (spec §3.2)."""
+
 import re
 from pathlib import Path
 
@@ -29,8 +30,17 @@ def parse_horizons(text: str, n_steps: int | None = None) -> list[tuple]:
         v = {k: float(p[i]) for k, i in idx.items()}
         if west:
             v["ObsSub-LON"], v["SunSub-LON"] = -v["ObsSub-LON"], -v["SunSub-LON"]
-        rows.append((p[0], v["ObsSub-LON"] % 360, v["ObsSub-LAT"], v["SunSub-LON"] % 360, v["SunSub-LAT"],
-                     v["r"], v["delta"]))
+        rows.append(
+            (
+                p[0],
+                v["ObsSub-LON"] % 360,
+                v["ObsSub-LAT"],
+                v["SunSub-LON"] % 360,
+                v["SunSub-LAT"],
+                v["r"],
+                v["delta"],
+            )
+        )
     if n_steps is not None:
         if len(rows) < n_steps:
             raise ValueError(f"expected >= {n_steps} rows, got {len(rows)}")
@@ -42,7 +52,9 @@ def write_csv(rows, path: Path = DEFAULT_CSV) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         f.write(HEADER + "\n")
-        f.writelines(f"{t},{a:.6f},{b:.6f},{c:.6f},{d:.6f},{r:.3f},{dl:.4f}\n" for t, a, b, c, d, r, dl in rows)
+        f.writelines(
+            f"{t},{a:.6f},{b:.6f},{c:.6f},{d:.6f},{r:.3f},{dl:.4f}\n" for t, a, b, c, d, r, dl in rows
+        )
 
 
 def lonlat_to_unit(lon_deg, lat_deg) -> np.ndarray:

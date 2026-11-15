@@ -1,4 +1,5 @@
 """Load + validate config/lunar-listings.yaml; export config.json for the app."""
+
 import json
 from pathlib import Path
 
@@ -22,17 +23,46 @@ def _range(v, name):
 
 
 def validate(c: dict) -> dict:
-    for k in ("analysis", "moon", "grid", "horizon", "power", "comms", "thermal", "safety", "norm",
-              "penalty", "weights", "home_types", "price", "badges", "results", "stays"):
+    for k in (
+        "analysis",
+        "moon",
+        "grid",
+        "horizon",
+        "power",
+        "comms",
+        "thermal",
+        "safety",
+        "norm",
+        "penalty",
+        "weights",
+        "home_types",
+        "price",
+        "badges",
+        "results",
+        "stays",
+    ):
         _need(k in c, f"missing section: {k}")
     _need(c["analysis"]["year"] == int(c["analysis"]["year"]), "analysis.year must be int")
     _need(c["analysis"]["step_hours"] > 0, "analysis.step_hours > 0")
     _need(c["moon"]["radius_m"] > 1e6, "moon.radius_m implausible")
     _need(-90 < c["grid"]["polar"]["lat_min"] < 0, "grid.polar.lat_min in (-90, 0)")
-    _need(c["grid"]["polar"]["plot_m"] % c["grid"]["polar"]["cell_m"] == 0, "plot_m must be a multiple of cell_m")
+    _need(
+        c["grid"]["polar"]["plot_m"] % c["grid"]["polar"]["cell_m"] == 0,
+        "plot_m must be a multiple of cell_m",
+    )
     pw = c["power"]
-    _need(all(pw[k] > 0 for k in ("area_m2", "efficiency", "load_w", "net_ref_w", "battery_wh_per_kg", "battery_ref_kg")),
-          "power.area_m2/efficiency/load_w/net_ref_w/battery_* must be > 0")
+    _need(
+        all(
+            pw[k] > 0
+            for k in ("area_m2", "efficiency", "load_w", "net_ref_w", "battery_wh_per_kg", "battery_ref_kg")
+        ),
+        "power.area_m2/efficiency/load_w/net_ref_w/battery_* must be > 0",
+    )
+    th = c["thermal"]
+    _need(
+        0 < th["psr_floor_k"] <= th["polar_floor_k"] <= th["floor_k"],
+        "thermal: 0 < psr_floor_k <= polar_floor_k <= floor_k",
+    )
     _need(c["comms"]["mode"] in ("terrain_margin", "absolute"), "comms.mode: terrain_margin|absolute")
     _need(c["comms"]["margin_deg"] >= 0 and c["comms"]["cutoff_deg"] >= 0, "comms angles >= 0")
     for r in ("cold_range_k", "swing_range_k"):
@@ -42,7 +72,9 @@ def validate(c: dict) -> dict:
     _range(c["norm"]["energy_wh_m2_day"], "norm.energy_wh_m2_day")
     _need(0 < c["safety"]["min_safe_frac"] <= 1, "safety.min_safe_frac in (0, 1]")
     _need(set(c["weights"]) == WEIGHT_KEYS, f"weights keys must be {sorted(WEIGHT_KEYS)}")
-    _need(all(w >= 0 for w in c["weights"].values()) and sum(c["weights"].values()) > 0, "weights >= 0, sum > 0")
+    _need(
+        all(w >= 0 for w in c["weights"].values()) and sum(c["weights"].values()) > 0, "weights >= 0, sum > 0"
+    )
     for name, h in c["home_types"].items():
         if name == "min_results":
             continue

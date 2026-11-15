@@ -12,15 +12,35 @@ def eph():
 
 
 def _site(lat, lon, hz=None, **kw):
-    s = {"lat": lat, "lon": lon, "horizon_deg": np.zeros(180) if hz is None else hz, "hazard_score": 0.2,
-         "landmark_score": 0.1, "landing_safe": True, "premium": 0.0, "ice_km": None}
+    s = {
+        "lat": lat,
+        "lon": lon,
+        "horizon_deg": np.zeros(180) if hz is None else hz,
+        "hazard_score": 0.2,
+        "landmark_score": 0.1,
+        "landing_safe": True,
+        "premium": 0.0,
+        "ice_km": None,
+    }
     s.update(kw)
     return s
 
 
 def _buy(site, eph, cutoff):
-    st = visibility.site_stats(np.array([site["lat"]]), np.array([site["lon"]]), np.asarray(site["horizon_deg"])[None], eph, CFG)
-    t = {k: st[k] for k in ("energy_wh_m2_day", "longest_dark_h", "earth_frac", "longest_blackout_h", "temp_min_k", "temp_max_k")}
+    st = visibility.site_stats(
+        np.array([site["lat"]]), np.array([site["lon"]]), np.asarray(site["horizon_deg"])[None], eph, CFG
+    )
+    t = {
+        k: st[k]
+        for k in (
+            "energy_wh_m2_day",
+            "longest_dark_h",
+            "earth_frac",
+            "longest_blackout_h",
+            "temp_min_k",
+            "temp_max_k",
+        )
+    }
     t["hazard_score"], t["landmark_score"] = np.array([0.2]), np.array([0.1])
     v = float(scoring.viability(scoring.subscores(t, CFG), np.array([True]), CFG)[0])
     return pricing.price_usd(v, CFG, 0.0, 60.0)
@@ -39,7 +59,9 @@ def test_rent_changes_with_move_in_and_buy_does_not(eph):
     site = _site(-89.0, 20.0, hz=np.full(180, 1.0))
     rents = [pricing.rent_for_stay(site, eph, CFG, 60.0, d, 14)["rent_per_month"] for d in range(1, 300, 14)]
     assert max(rents) / min(rents) > 1.2  # a 14-day stay depends on where in the cycle it starts
-    assert pricing.price_usd(50.0, CFG) == pricing.price_usd(50.0, CFG)  # Buy price is a pure function of viability
+    assert pricing.price_usd(50.0, CFG) == pricing.price_usd(
+        50.0, CFG
+    )  # Buy price is a pure function of viability
 
 
 def test_stay_clipped_to_year_end_and_bad_move_in(eph):

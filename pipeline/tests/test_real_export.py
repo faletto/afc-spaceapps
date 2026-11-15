@@ -1,4 +1,5 @@
 """Checks the committed real export (skipped when the tier is still stub)."""
+
 import json
 from pathlib import Path
 
@@ -13,7 +14,10 @@ pytestmark = pytest.mark.skipif(m.get("tiers", {}).get("global") != "real", reas
 def test_global_cols_real():
     meta = json.loads((D / "global" / "cols.json").read_text())
     buf = (D / "global" / "cols.bin").read_bytes()
-    g = {c["name"]: np.frombuffer(buf, np.dtype(c["dtype"]).newbyteorder("<"), meta["rows"], c["offset"]) for c in meta["columns"]}
+    g = {
+        c["name"]: np.frombuffer(buf, np.dtype(c["dtype"]).newbyteorder("<"), meta["rows"], c["offset"])
+        for c in meta["columns"]
+    }
     assert meta["rows"] == 64800 and meta["land_types"][0] == "highlands"
     assert g["price"].min() >= 5000 and g["viability"].max() <= 100
     assert abs(g["area_km2"].sum() - 4 * np.pi * 1737.4**2) < 100

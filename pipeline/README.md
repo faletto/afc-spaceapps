@@ -12,7 +12,7 @@ make setup          # uv venv (py3.11) + pip install -e pipeline[dev]
 ## Commands (repo root)
 | Command | What it does | Time |
 |---|---|---|
-| `make fetch` | Horizons 2028 ephemeris → `pipeline/data/ephemeris_2028.csv` (cached, committed); LOLA/PGDA DEMs (≈ 11.5 GB, resumable, SHA-256 in `pipeline/data/sources.yaml`) → `data/raw/`; IAU gazetteer → `pipeline/data/landmarks.csv` | ~20–60 min (network) |
+| `make fetch` | Horizons 2028 ephemeris → `pipeline/data/ephemeris_2028.csv` (cached, committed); LOLA/PGDA DEMs (≈ 15 GB, resumable, SHA-256 in `pipeline/data/sources.yaml`) → `data/raw/`; IAU gazetteer → `pipeline/data/landmarks.csv` | ~20–60 min (network) |
 | `make terrain` | Global DEM → 1/32° grid, slopes, per-plot stats; polar 20 m DEM → 240 m cell and 960 m plot stats → `data/work/` | ~1 min |
 | `make polar` | South Pole tier: terrain horizons for every 240 m cell (Numba), visibility/energy/temperature per cell, best cell per plot, PSR + ice distance → `data/work/polar_plots.npz` | ~12 min (cached in `polar_cells.npz`) |
 | `make data` | Moon-wide tier + scoring, pricing, blurbs, overlays, basemaps, tiles, manifest → `app/public/data/` | ~30 s |
@@ -46,7 +46,7 @@ detail ≈ 3 MB lazy; basemaps ≈ 12 MB. Raw on disk ≈ 130 MB (most of it JSO
 
 ## Science notes and approved deviations (see `docs/agents/pipeline-log.md` for IDs)
 - Earth contact = Earth ≥ 1° above local terrain (`terrain_margin`); Moon-wide plots use zero terrain (Q-P5).
-- Roughness/relief normalisation ranges widened for 1° plots (Q-P3); slope computed from the 20 m DEM, not LDSM (Q-P4).
+- Roughness/relief normalisation ranges widened for 1° plots (Q-P3); polar slopes use NASA's LDSM 20 m product (falling back to our own central differences if it is not downloaded; the two agree, r = 1.000).
 - Horizon tiles: `elevation = v × 0.16° − 6°` (spec −3°; real skylines reach −5.8°).
 - Sun score = net energy over the duration (panel harvest minus a 500 W continuous load, discounted by the battery mass needed for the longest night), human-chosen to replace the spec's night penalty, which flattened it (Q-P6). The blackout penalty (`h50 = 120 h`) still applies to the Signal score.
 - Home-type gates calibrated and human-approved on the polar tier (habitat 168 h, ice 2 km).
@@ -61,7 +61,7 @@ badges and golden vectors all follow the config (regenerate goldens with `python
 golden.write(); golden.write_rent()"` and update `cutoff` in `golden.build_rent`). Common knobs:
 - **Sun score:** `power.load_w`, `power.net_ref_w`, `power.battery_wh_per_kg`, `power.battery_ref_kg` (also `area_m2`, `efficiency`).
 - **Night/blackout penalty (Signal score):** `penalty.blackout.{h50,k}`; **Earth contact:** `comms.margin_deg` / `mode`.
-- **Temperatures:** `thermal.floor_k`, `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
+- **Temperatures:** `thermal.floor_k` (Moon-wide night floor), `thermal.polar_floor_k` (polar tier),  `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
 - **Prices:** `price.base_usd`, `k`, `scarcity_*`, `range.*`, `rent_ratio`; **Home-type gates:** `home_types.*.gates`.
 The app mirror (`science/*.ts`, `rent.ts`) must read these from `config.json`, never hard-code them.
 

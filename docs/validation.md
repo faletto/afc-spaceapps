@@ -29,7 +29,7 @@ Our `sunlit_frac`/`earth_frac` at each plot's best cell vs the LOLA 60 m maps av
 | Sun visible fraction | 0.987 | -0.004 | 0.025 | 99% |
 | Earth visible fraction | 0.957 | -0.066 | 0.092 | 75% |
 
-PSR (< 1% sunlit): ours 13.8% of plots, LOLA 12.1%, classification agrees on 98.2%.
+PSR (< 1% sunlit): ours 15.2% of plots, LOLA 13.2%, classification agrees on 98.0%.
 Expected differences: our `sunlit` counts the Sun only when more than half of its disk is above the terrain (LOLA counts any illumination, so it reads higher); our Earth contact needs 1° above the horizon and covers only 2028 (LOLA integrates 2016-2020 libration); LOLA's grid is 60 m vs our 240 m cell mean.
 
 ### Temperature vs LRO Diviner polar maps (TEMP-4)
@@ -37,9 +37,19 @@ Diviner average bolometric brightness temperature in 240 m bins by local time (P
 
 | Comparison | n | Result |
 |---|---|---|
-| Max temperature (ours annual max vs Diviner max of local-noon bins) | 74,823 | r = 0.11, bias +122 K, RMSE 136 K |
-| Night floor at lit sites (>30% sunlit) | 25,341 | ours 95 K vs Diviner median 65 K (10th pct 53 K) |
-| PSR plots, max temperature | 9,988 | ours 40 K vs Diviner median 43 K (90th pct 62 K) |
+| Max temperature (ours annual max vs Diviner max of local-noon bins) | 74,840 | r = 0.12, bias +119 K, RMSE 134 K |
+| Night floor at lit sites (>30% sunlit) | 25,327 | ours 50 K vs Diviner median 65 K (10th pct 53 K) |
+| PSR plots, max temperature | 11,032 | ours 40 K vs Diviner median 44 K (90th pct 62 K) |
 
-**Reading:** permanently shadowed plots agree (40 K floor vs Diviner ≈ 43 K). For sunlit sites our modelled annual maximum (flat surface at peak Sun elevation) is far above Diviner's local-time-binned averages (bias +122 K, r = 0.11), because the binned maps average over season, sun angle and sub-bin shadowing and so do not capture annual extremes, while T1 ignores terrain-scattered light and subsurface conduction. TEMP-4 is therefore a coarse check: shadowed terrain validates, lit-site maxima and the 95 K night floor (Diviner nights ≈ 65 K) are conservative/modelled values and the app labels temperatures as modelled. The thermal sub-score uses the swing (max − min), so it likely overstates polar swings (Q-P8).
+**Reading:** permanently shadowed plots agree (40 K floor vs Diviner ≈ 43 K). For sunlit sites our modelled annual maximum (flat surface at peak Sun elevation) is far above Diviner's local-time-binned averages (bias +119 K, r = 0.12), because the binned maps average over season, sun angle and sub-bin shadowing and so do not capture annual extremes, while T1 ignores terrain-scattered light and subsurface conduction. TEMP-4 is therefore a coarse check: shadowed terrain validates, lit-site maxima and the 95 K night floor (Diviner nights ≈ 65 K) are conservative/modelled values and the app labels temperatures as modelled. The thermal sub-score uses the swing (max − min), so it likely overstates polar swings (Q-P8).
+
+### Slope: our central differences vs NASA's LDSM 20 m slope product
+The pipeline uses the LDSM product for slopes and safe-area fractions (spec §3.4). For reference, a plain central-difference slope on the same 20 m DEM agrees with it on the 960 m plot grid as follows (102,400 plots):
+
+| Quantity | Pearson r | bias (own − LDSM) | RMSE |
+|---|---|---|---|
+| Plot mean slope (deg) | 1.000 | +0.04 | 0.05 |
+| Share of area under 8° | 1.000 | -0.002 | 0.006 |
+
+Per-pixel difference: bias +0.04°, RMSE 0.31°. The two agree closely, so the earlier own-slope approximation (Q-P4) was sound; the exported data now uses the NASA product.
 
