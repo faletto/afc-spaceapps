@@ -5,6 +5,7 @@ Stage 1 (`build_cells`, ~15 min, cached to data/work/polar_cells.npz): for every
 Stage 2 (`build_plots`): pick the best cell per plot, recompute its full statistics (monthly, best windows), ice
 distance, land type, price.
 """
+
 import time
 from pathlib import Path
 
@@ -68,17 +69,34 @@ def build_cells(cfg, raw_dir, work_dir, chunk=60_000, log=print) -> Path:
             stats[k][s] = st[k]
         lscore[s], _ = land.landmark_score_and_nearby(lat[s], lon[s], lm, cfg, chunk=2000)
         log(f"cells {s.stop}/{n}  {time.time() - t0:.0f}s")
-    np.savez(out, idx=idx, x=x, y=y, lat=lat, lon=lon, hzq=hzq, landmark_score=lscore,
-             **{f"cs_{k}": v for k, v in cs.items()}, **stats)
+    np.savez(
+        out,
+        idx=idx,
+        x=x,
+        y=y,
+        lat=lat,
+        lon=lon,
+        hzq=hzq,
+        landmark_score=lscore,
+        **{f"cs_{k}": v for k, v in cs.items()},
+        **stats,
+    )
     return out
 
 
 def _cell_scores(c, cfg):
     """Cell sub-scores + viability from stage-1 stats and the 240 m terrain stats."""
     haz = terrain.hazard_score(c["cs_slope_p90_deg"], c["cs_roughness_m"], c["cs_relief_m"], cfg)
-    t = {"hazard_score": haz, "energy_wh_m2_day": c["energy_wh_m2_day"], "longest_dark_h": c["longest_dark_h"],
-         "earth_frac": c["earth_frac"], "longest_blackout_h": c["longest_blackout_h"], "temp_min_k": c["temp_min_k"],
-         "temp_max_k": c["temp_max_k"], "landmark_score": c["landmark_score"]}
+    t = {
+        "hazard_score": haz,
+        "energy_wh_m2_day": c["energy_wh_m2_day"],
+        "longest_dark_h": c["longest_dark_h"],
+        "earth_frac": c["earth_frac"],
+        "longest_blackout_h": c["longest_blackout_h"],
+        "temp_min_k": c["temp_min_k"],
+        "temp_max_k": c["temp_max_k"],
+        "landmark_score": c["landmark_score"],
+    }
     s = scoring.subscores(t, cfg)
     safe = c["cs_safe_area_frac"] >= cfg["safety"]["min_safe_frac"]
     return s, safe, scoring.viability({k: v for k, v in s.items() if k != "ice"}, safe, cfg)
@@ -88,14 +106,23 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     """Best cell per plot -> plot table (arrays over the n plots inside the disc, plot order = row-major)."""
     work = Path(work_dir)
     c = dict(np.load(work / "polar_cells.npz"))
-    lm = land.load_landmarks()  # recomputed here (not cached in stage 1) so landmark edits never leave stale scores
+    terr = np.load(
+        work / "terrain_polar_cells_20m.npz"
+    )  # terrain stats are re-read here, never taken from the stage-1 cache
+    for k in terr.files:
+        c[f"cs_{k}"] = terr[k].ravel()[c["idx"]]
+    lm = (
+        land.load_landmarks()
+    )  # recomputed here (not cached in stage 1) so landmark edits never leave stale scores
     c["landmark_score"] = land.landmark_score_and_nearby(c["lat"], c["lon"], lm, cfg, chunk=1000)[0]
     n_cells = len(c["idx"])
     n = n_cells // (K * K)
     _, safe, viab = _cell_scores(c, cfg)
     V = viab.reshape(n, K * K)
     Sf = safe.reshape(n, K * K)
-    pick = np.argmax(np.where(Sf, V, -1.0), axis=1)  # best safe cell; if none safe, argmax of -1s -> cell 0 ...
+    pick = np.argmax(
+        np.where(Sf, V, -1.0), axis=1
+    )  # best safe cell; if none safe, argmax of -1s -> cell 0 ...
     any_safe = Sf.any(1)
     pick = np.where(any_safe, pick, np.argmax(V, axis=1))
     sel = np.arange(n) * (K * K) + pick  # index into the cell arrays
@@ -125,8 +152,19 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
 
     # plot-level sub-scores: safety from the whole plot, the rest from the best cell
     hazard = terrain.hazard_score(area["slope_p90_deg"], area["roughness_m"], area["relief_m"], cfg)
-    cs = {k: c[k][sel] for k in ("energy_wh_m2_day", "longest_dark_h", "earth_frac", "longest_blackout_h",
-                                  "temp_min_k", "temp_max_k", "landmark_score", "sunlit_frac")}
+    cs = {
+        k: c[k][sel]
+        for k in (
+            "energy_wh_m2_day",
+            "longest_dark_h",
+            "earth_frac",
+            "longest_blackout_h",
+            "temp_min_k",
+            "temp_max_k",
+            "landmark_score",
+            "sunlit_frac",
+        )
+    }
     plot_lscore, nearby = land.landmark_score_and_nearby(plat, plon, lm, cfg)
     cs["landmark_score"] = np.maximum(plot_lscore, cs["landmark_score"])
     tab = {**cs, "hazard_score": hazard, "ice_km": ice_km}
@@ -141,17 +179,49 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     tpi = el - ndimage.uniform_filter(el, size=2 * round(cfg["land"]["tpi_radius_km"] * 1000 / CELL_M) + 1)
     tp = tpi.ravel()[c["idx"]].reshape(n, K * K)
     gdem = np.load(work / "dem_global_32.npy")
-    gmed = float(np.median(terrain.plot_blocks(gdem).mean(-1)))  # global plot median (spec: mare = median - 1 km)
-    ltype = land.land_type(cs["sunlit_frac"], plat, plon, area["elev_mean_m"], np.percentile(tp, 90, 1),
-                           np.percentile(tp, 10, 1), cfg, polar=True, median_ref=gmed)
+    gmed = float(
+        np.median(terrain.plot_blocks(gdem).mean(-1))
+    )  # global plot median (spec: mare = median - 1 km)
+    ltype = land.land_type(
+        cs["sunlit_frac"],
+        plat,
+        plon,
+        area["elev_mean_m"],
+        np.percentile(tp, 90, 1),
+        np.percentile(tp, 10, 1),
+        cfg,
+        polar=True,
+        median_ref=gmed,
+    )
     apollo_km = land.apollo_distance_km(plat, plon, lm)
-    out = {**{k: v for k, v in st.items()}, "plot_row": pr, "plot_col": pc, "lat": plat, "lon": plon,
-           "x": px[pr, pc], "y": py[pr, pc], "area_km2": np.full(n, (PLOT_M / 1000) ** 2), "best_cell": c["idx"][sel],
-           "best_x": c["x"][sel], "best_y": c["y"][sel], "hzq": c["hzq"][sel], "hazard_score": hazard,
-           "landing_safe": landing_safe, "viability": viability, "land_type": ltype, "ice_km": ice_km,
-           "landmark_score": cs["landmark_score"], "nearby": nearby, "apollo_km": apollo_km,
-           "bw_lander_h": bwl[0], "bw_lander_start": bwl[1], "bw_habitat_h": bwh[0], "bw_habitat_start": bwh[1],
-           **{f"s_{k}": v for k, v in sub.items()}, **{k: v for k, v in area.items()}}
+    out = {
+        **{k: v for k, v in st.items()},
+        "plot_row": pr,
+        "plot_col": pc,
+        "lat": plat,
+        "lon": plon,
+        "x": px[pr, pc],
+        "y": py[pr, pc],
+        "area_km2": np.full(n, (PLOT_M / 1000) ** 2),
+        "best_cell": c["idx"][sel],
+        "best_x": c["x"][sel],
+        "best_y": c["y"][sel],
+        "hzq": c["hzq"][sel],
+        "hazard_score": hazard,
+        "landing_safe": landing_safe,
+        "viability": viability,
+        "land_type": ltype,
+        "ice_km": ice_km,
+        "landmark_score": cs["landmark_score"],
+        "nearby": nearby,
+        "apollo_km": apollo_km,
+        "bw_lander_h": bwl[0],
+        "bw_lander_start": bwl[1],
+        "bw_habitat_h": bwh[0],
+        "bw_habitat_start": bwh[1],
+        **{f"s_{k}": v for k, v in sub.items()},
+        **{k: v for k, v in area.items()},
+    }
     np.savez(work / "polar_plots.npz", **out)
     log(f"plots {n}  viability pct {np.round(np.percentile(viability, [0, 50, 99, 100]), 1)}")
     return out

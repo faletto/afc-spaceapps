@@ -5,6 +5,7 @@ n = (-sinφ, 0, cosφ) at the pole, with e = (0, 1, 0)); azimuth at the pole is 
 measured from the lon=0 meridian direction. Map grid-north azimuth for polar tiles is applied in the
 polar export (P4). Validation compares elevations only at the pole.
 """
+
 import numpy as np
 
 R_MOON_M = 1_737_400.0

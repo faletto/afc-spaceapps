@@ -1,4 +1,5 @@
 """Pricing, rent, badges (spec §3.10). Python reference for the TypeScript mirror (golden vectors)."""
+
 import numpy as np
 
 
@@ -20,7 +21,8 @@ def landmark_premium(apollo_km, land_type_is_peak, cfg) -> np.ndarray:
     """Apollo/Artemis premium within apollo_radius_km, plus peak_light_premium on Peak-of-light plots (additive)."""
     p = cfg["price"]
     return np.where(np.asarray(apollo_km) <= p["apollo_radius_km"], p["apollo_premium"], 0.0) + np.where(
-        land_type_is_peak, p["peak_light_premium"], 0.0)
+        land_type_is_peak, p["peak_light_premium"], 0.0
+    )
 
 
 def price_range(price, cfg, polar: bool):
@@ -68,10 +70,25 @@ def rent_for_stay(site: dict, eph: dict, cfg: dict, cutoff: float, move_in_day: 
     from . import scoring, visibility
 
     w, a = window_eph(eph, move_in_day, stay_days)
-    st = visibility.site_stats(np.array([site["lat"]]), np.array([site["lon"]]),
-                               np.asarray(site["horizon_deg"], float)[None], w, cfg, start_hour=a)
-    t = {k: st[k] for k in ("energy_wh_m2_day", "longest_dark_h", "earth_frac", "longest_blackout_h", "temp_min_k",
-                            "temp_max_k")}
+    st = visibility.site_stats(
+        np.array([site["lat"]]),
+        np.array([site["lon"]]),
+        np.asarray(site["horizon_deg"], float)[None],
+        w,
+        cfg,
+        start_hour=a,
+    )
+    t = {
+        k: st[k]
+        for k in (
+            "energy_wh_m2_day",
+            "longest_dark_h",
+            "earth_frac",
+            "longest_blackout_h",
+            "temp_min_k",
+            "temp_max_k",
+        )
+    }
     t["hazard_score"] = np.array([site["hazard_score"]])
     t["landmark_score"] = np.array([site["landmark_score"]])
     polar = site.get("ice_km") is not None
@@ -82,5 +99,10 @@ def rent_for_stay(site: dict, eph: dict, cfg: dict, cutoff: float, move_in_day: 
     price = float(price_usd(v, cfg, site["premium"], cutoff))
     rent = float(rent_per_month(price, cfg))
     hours = len(w["tsi"])
-    return {"viability_stay": v, "price_stay": price, "rent_per_month": rent, "stay_hours": hours,
-            "total_stay": rent * hours / 24.0 / (365.25 / 12.0)}
+    return {
+        "viability_stay": v,
+        "price_stay": price,
+        "rent_per_month": rent,
+        "stay_hours": hours,
+        "total_stay": rent * hours / 24.0 / (365.25 / 12.0),
+    }

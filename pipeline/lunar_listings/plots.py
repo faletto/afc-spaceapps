@@ -1,4 +1,5 @@
 """Plot tables. Global tier: 180 x 360 plots of 1 deg, ordered lat index from the SOUTH (row 0 = 90S..89S), lon from -180."""
+
 from pathlib import Path
 
 import numpy as np
@@ -35,12 +36,22 @@ def build_global(cfg, work_dir) -> dict:
     tab["tpi_p90_m"], tab["tpi_p10_m"] = np.flipud(hi).ravel(), np.flipud(lo).ravel()
     lm = land.load_landmarks()
     tab["landmark_score"], tab["nearby"] = land.landmark_score_and_nearby(g["lat"], g["lon"], lm, cfg)
-    tab["land_type"] = land.land_type(tab["sunlit_frac"], g["lat"], g["lon"], tab["elev_mean_m"], tab["tpi_p90_m"], tab["tpi_p10_m"], cfg,
-                                      polar=False)
+    tab["land_type"] = land.land_type(
+        tab["sunlit_frac"],
+        g["lat"],
+        g["lon"],
+        tab["elev_mean_m"],
+        tab["tpi_p90_m"],
+        tab["tpi_p10_m"],
+        cfg,
+        polar=False,
+    )
     eph = ephemeris.load()
     sunlit, eok = visibility.site_masks(g["lat"], g["lon"], np.zeros((g["lat"].size, 180)), eph, cfg)
     ht = cfg["home_types"]
-    tab["bw_lander_h"], tab["bw_lander_start"] = visibility.best_window(sunlit, ht["lander_pad"]["ref_stay_days"])
+    tab["bw_lander_h"], tab["bw_lander_start"] = visibility.best_window(
+        sunlit, ht["lander_pad"]["ref_stay_days"]
+    )
     tab["bw_habitat_h"], tab["bw_habitat_start"] = visibility.best_window(eok, ht["habitat"]["ref_stay_days"])
     del sunlit, eok
     th = scoring.thermal_hazard(tab["temp_min_k"], tab["temp_max_k"], cfg)

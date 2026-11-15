@@ -1,4 +1,5 @@
 """M0 stub generator: fake data in the real §5 formats (contract v1). Values are plausible, not physical."""
+
 import hashlib
 import json
 import subprocess
@@ -18,12 +19,18 @@ R = 1_737_400.0
 LAND_TYPES = ["mare", "highland", "crater_floor", "rim", "ridge", "psr_edge"]
 OVERLAYS = ["viability", "sunlit", "earth", "temperature", "safety", "ice"]
 LANDMARKS = [
-    ("Apollo 11", "apollo", 0.67, 23.47, 100), ("Apollo 12", "apollo", -3.01, -23.42, 80),
-    ("Apollo 14", "apollo", -3.65, -17.47, 75), ("Apollo 15", "apollo", 26.13, 3.63, 85),
-    ("Apollo 16", "apollo", -8.97, 15.50, 80), ("Apollo 17", "apollo", 20.19, 30.77, 90),
-    ("Tycho", "crater", -43.31, -11.36, 85), ("Copernicus", "crater", 9.62, -20.08, 80),
-    ("Shackleton", "crater", -89.9, 0.0, 95), ("Malapert Massif", "massif", -85.9, 12.9, 70),
-    ("Connecting Ridge", "ridge", -89.4, -129.0, 60), ("Mons Huygens", "mountain", 19.9, -3.2, 55),
+    ("Apollo 11", "apollo", 0.67, 23.47, 100),
+    ("Apollo 12", "apollo", -3.01, -23.42, 80),
+    ("Apollo 14", "apollo", -3.65, -17.47, 75),
+    ("Apollo 15", "apollo", 26.13, 3.63, 85),
+    ("Apollo 16", "apollo", -8.97, 15.50, 80),
+    ("Apollo 17", "apollo", 20.19, 30.77, 90),
+    ("Tycho", "crater", -43.31, -11.36, 85),
+    ("Copernicus", "crater", 9.62, -20.08, 80),
+    ("Shackleton", "crater", -89.9, 0.0, 95),
+    ("Malapert Massif", "massif", -85.9, 12.9, 70),
+    ("Connecting Ridge", "ridge", -89.4, -129.0, 60),
+    ("Mons Huygens", "mountain", 19.9, -3.2, 55),
 ]
 
 
@@ -53,7 +60,10 @@ def _plots(tier: str):
         area = np.full(x.size, 0.960**2)
         tile = tile_index(x, y, np.array([[-rmax], [-rmax]]), np.array([[rmax], [rmax]]))
     order = np.argsort(tile, kind="stable")
-    d = {k: np.asarray(v)[order] for k, v in {"x": x, "y": y, "lat": lat, "lon": lon, "area": area, "tile": tile}.items()}
+    d = {
+        k: np.asarray(v)[order]
+        for k, v in {"x": x, "y": y, "lat": lat, "lon": lon, "area": area, "tile": tile}.items()
+    }
     t = d["tile"]
     start = np.r_[0, np.flatnonzero(np.diff(t)) + 1]
     first = np.repeat(start, np.diff(np.r_[start, t.size]))
@@ -71,28 +81,43 @@ def _columns(tier: str, p: dict, rng) -> dict:
     cfg = config.load()["price"]
     price = cfg["base_usd"] * (1 + cfg["k"] * viability / 100)  # fake: real model is pricing.py
     flags = np.zeros(n, np.uint16)
-    flags |= ((noise > 0.97).astype(np.uint16) << FLAGS["off_market"])
-    flags |= ((viability > 80).astype(np.uint16) << FLAGS["hot_property"])
-    flags |= ((noise < 0.03).astype(np.uint16) << FLAGS["price_cut"])
+    flags |= (noise > 0.97).astype(np.uint16) << FLAGS["off_market"]
+    flags |= (viability > 80).astype(np.uint16) << FLAGS["hot_property"]
+    flags |= (noise < 0.03).astype(np.uint16) << FLAGS["price_cut"]
     if tier == "polar":
         flags |= np.uint16(1 << FLAGS["tier_polar"])
     polar = np.clip((np.abs(lat) - 60) / 30, 0, 1)
     c = {
-        "x": p["x"], "y": p["y"], "lat": lat, "lon": lon, "area_km2": p["area"], "price": price, "rent_avg": price * cfg["rent_ratio"],
+        "x": p["x"],
+        "y": p["y"],
+        "lat": lat,
+        "lon": lon,
+        "area_km2": p["area"],
+        "price": price,
+        "rent_avg": price * cfg["rent_ratio"],
         "viability": viability,
-        "s_safety": u8(30 + 60 * noise), "s_power": u8(20 + 70 * smooth), "s_comms": u8(90 - 40 * polar - 10 * noise),
-        "s_thermal": u8(40 + 40 * polar + 10 * noise), "s_landmark": u8(100 * rng.random(n) ** 3),
+        "s_safety": u8(30 + 60 * noise),
+        "s_power": u8(20 + 70 * smooth),
+        "s_comms": u8(90 - 40 * polar - 10 * noise),
+        "s_thermal": u8(40 + 40 * polar + 10 * noise),
+        "s_landmark": u8(100 * rng.random(n) ** 3),
         "s_ice": u8(100 * polar * noise),
-        "sunlit_pct": u8(40 + 55 * smooth - 10 * noise), "earth_pct": u8(90 - 50 * polar * noise),
+        "sunlit_pct": u8(40 + 55 * smooth - 10 * noise),
+        "earth_pct": u8(90 - 50 * polar * noise),
         "slope_mean_ddeg": (10 + 100 * noise).astype(np.uint16),
         "longest_dark_h": (100 + 350 * (1 - smooth) + 50 * noise).astype(np.uint16),
         "longest_blackout_h": (50 + 300 * polar * noise).astype(np.uint16),
-        "temp_min_k": (40 + 90 * (1 - polar)).astype(np.uint16), "temp_max_k": (250 + 120 * (1 - polar)).astype(np.uint16),
+        "temp_min_k": (40 + 90 * (1 - polar)).astype(np.uint16),
+        "temp_max_k": (250 + 120 * (1 - polar)).astype(np.uint16),
         "ice_km10": np.where(polar > 0.8, (noise * 300).astype(np.uint16), 65535).astype(np.uint16),
-        "land_type": (noise * len(LAND_TYPES)).astype(np.uint8) % len(LAND_TYPES), "flags": flags,
-        "bw_lander_h": (300 + 400 * smooth).astype(np.uint16), "bw_habitat_h": (600 + 900 * smooth).astype(np.uint16),
-        "bw_lander_start": (1 + 365 * noise).astype(np.uint16), "bw_habitat_start": (1 + 365 * smooth).astype(np.uint16),
-        "tile": p["tile"].astype(np.uint16), "row_in_tile": p["row_in_tile"].astype(np.uint16),
+        "land_type": (noise * len(LAND_TYPES)).astype(np.uint8) % len(LAND_TYPES),
+        "flags": flags,
+        "bw_lander_h": (300 + 400 * smooth).astype(np.uint16),
+        "bw_habitat_h": (600 + 900 * smooth).astype(np.uint16),
+        "bw_lander_start": (1 + 365 * noise).astype(np.uint16),
+        "bw_habitat_start": (1 + 365 * smooth).astype(np.uint16),
+        "tile": p["tile"].astype(np.uint16),
+        "row_in_tile": p["row_in_tile"].astype(np.uint16),
     }
     return c
 
@@ -101,8 +126,10 @@ def _tier_geo(tier: str) -> dict:
     if tier == "global":
         return {"projection": {"type": "lonlat"}, "bounds": [-180, -90, 180, 90]}
     rmax = R * np.radians(5.0)
-    return {"projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
-            "bounds": [-rmax, -rmax, rmax, rmax]}
+    return {
+        "projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
+        "bounds": [-rmax, -rmax, rmax, rmax],
+    }
 
 
 def _write_tiles(d: Path, tier: str, cols: dict, rng):
@@ -110,15 +137,25 @@ def _write_tiles(d: Path, tier: str, cols: dict, rng):
     tile = cols["tile"]
     for t in np.unique(tile):
         idx = np.flatnonzero(tile == t)
-        recs = [{"row": int(cols["row_in_tile"][i]), "name": f"{tier.title()} plot {i}",
-                 "blurb": "Stub listing.", "sunlit_monthly": [int(v) for v in (cols["sunlit_pct"][i] + rng.integers(-5, 6, 12)).clip(0, 100)]}
-                for i in idx]
+        recs = [
+            {
+                "row": int(cols["row_in_tile"][i]),
+                "name": f"{tier.title()} plot {i}",
+                "blurb": "Stub listing.",
+                "sunlit_monthly": [
+                    int(v) for v in (cols["sunlit_pct"][i] + rng.integers(-5, 6, 12)).clip(0, 100)
+                ],
+            }
+            for i in idx
+        ]
         tx, ty = int(t) % N_TILES_AXIS, int(t) // N_TILES_AXIS
         (d / "detail" / f"{tx}_{ty}.json").write_text(json.dumps(recs, separators=(",", ":")))
         if tier == "polar":
             (d / "horizon").mkdir(exist_ok=True)
             az = np.arange(HORIZON_AZ)
-            elev = (cols["slope_mean_ddeg"][idx] / 10.0)[:, None] * (1 + 0.5 * np.sin(np.radians(az * 6 + idx[:, None] % 360)))
+            elev = (cols["slope_mean_ddeg"][idx] / 10.0)[:, None] * (
+                1 + 0.5 * np.sin(np.radians(az * 6 + idx[:, None] % 360))
+            )
             h = (elev - HORIZON_OFFSET_DEG) / HORIZON_UNIT_DEG
             (d / "horizon" / f"{tx}_{ty}.bin").write_bytes(h.clip(0, 255).astype(np.uint8).tobytes())
 
@@ -135,9 +172,19 @@ def _write_overlays(d: Path, tier: str, size):
         rgba[..., 2] = 255 * (1 - v)
         rgba[..., 3] = 200
         Image.fromarray(rgba, "RGBA").save(d / "overlay" / f"{name}.png", optimize=True)
-        (d / "overlay" / f"{name}.json").write_text(json.dumps(
-            {"name": name, "label": name.title(), "unit": "%" if name != "temperature" else "K",
-             "min": 0, "max": 100, "ramp": [[0, "#0000ff"], [1, "#ff0000"]], "size": [w, h]}))
+        (d / "overlay" / f"{name}.json").write_text(
+            json.dumps(
+                {
+                    "name": name,
+                    "label": name.title(),
+                    "unit": "%" if name != "temperature" else "K",
+                    "min": 0,
+                    "max": 100,
+                    "ramp": [[0, "#0000ff"], [1, "#ff0000"]],
+                    "size": [w, h],
+                }
+            )
+        )
 
 
 def _write_basemap(d: Path, size):
@@ -152,9 +199,13 @@ def _ephemeris(out: Path):
     t = np.arange(N_STEPS, dtype=np.float64)  # hours since 2028-01-01T00:00Z
     sun_ang = -2 * np.pi * t / (27.321661 * 24)
     dec = np.radians(1.54)
-    sun = np.stack([np.cos(sun_ang) * np.cos(dec), np.sin(sun_ang) * np.cos(dec), np.full_like(t, np.sin(dec))], 1)
+    sun = np.stack(
+        [np.cos(sun_ang) * np.cos(dec), np.sin(sun_ang) * np.cos(dec), np.full_like(t, np.sin(dec))], 1
+    )
     lib = np.radians(6.7) * np.sin(2 * np.pi * t / (27.554 * 24))
-    earth = np.stack([np.cos(lib), np.sin(np.radians(7) * np.sin(2 * np.pi * t / (27.212 * 24))), np.sin(lib)], 1)
+    earth = np.stack(
+        [np.cos(lib), np.sin(np.radians(7) * np.sin(2 * np.pi * t / (27.212 * 24))), np.sin(lib)], 1
+    )
     earth /= np.linalg.norm(earth, axis=1, keepdims=True)
     dist = 384_400e3 * (1 - 0.0549 * np.cos(2 * np.pi * t / (27.554 * 24)))
     tsi = 1361 * (1 + 0.0334 * np.cos(2 * np.pi * (t / 24 - 3) / 365.25))
@@ -165,8 +216,12 @@ def _ephemeris(out: Path):
 
 def _git_sha():
     try:
-        return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True,
-                                       cwd=Path(__file__).parent, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            text=True,
+            cwd=Path(__file__).parent,
+            stderr=subprocess.DEVNULL,
+        ).strip()
     except (OSError, subprocess.CalledProcessError):
         return "unknown"
 
@@ -187,17 +242,34 @@ def write_stub(out: Path) -> dict:
         _write_tiles(d, tier, cols, rng)
         _write_overlays(d, tier, osize)
         _write_basemap(d, bsize)
-    (out / "landmarks.json").write_text(json.dumps(
-        [{"name": n, "type": t, "lat": la, "lon": lo, "fame": f} for n, t, la, lo, f in LANDMARKS]))
+    (out / "landmarks.json").write_text(
+        json.dumps([{"name": n, "type": t, "lat": la, "lon": lo, "fame": f} for n, t, la, lo, f in LANDMARKS])
+    )
     files = sorted(p for p in out.rglob("*") if p.is_file() and p.name != "manifest.json")
     manifest = {
-        "contract_version": CONTRACT_VERSION, "stub": True, "pipeline_sha": _git_sha(),
+        "contract_version": CONTRACT_VERSION,
+        "stub": True,
+        "pipeline_sha": _git_sha(),
         "generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "analysis_year": cfg["analysis"]["year"], "steps": N_STEPS, "counts": counts,
-        "horizon": {"az_count": HORIZON_AZ, "az_step_deg": 2, "unit_deg": HORIZON_UNIT_DEG, "offset_deg": HORIZON_OFFSET_DEG, "dtype": "uint8"},
+        "analysis_year": cfg["analysis"]["year"],
+        "steps": N_STEPS,
+        "counts": counts,
+        "horizon": {
+            "az_count": HORIZON_AZ,
+            "az_step_deg": 2,
+            "unit_deg": HORIZON_UNIT_DEG,
+            "offset_deg": HORIZON_OFFSET_DEG,
+            "dtype": "uint8",
+        },
         "tiles_per_axis": N_TILES_AXIS,
-        "files": [{"path": p.relative_to(out).as_posix(), "bytes": p.stat().st_size,
-                   "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in files],
+        "files": [
+            {
+                "path": p.relative_to(out).as_posix(),
+                "bytes": p.stat().st_size,
+                "sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+            }
+            for p in files
+        ],
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1))
     return manifest
@@ -207,5 +279,7 @@ def _tier_geo(tier: str) -> dict:
     if tier == "global":
         return {"projection": {"type": "lonlat"}, "bounds": [-180, -90, 180, 90]}
     rmax = R * np.radians(5.0)
-    return {"projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
-            "bounds": [-rmax, -rmax, rmax, rmax]}
+    return {
+        "projection": {"type": "azimuthal_equidistant_south", "lat0": -90, "R": R, "stub": True},
+        "bounds": [-rmax, -rmax, rmax, rmax],
+    }

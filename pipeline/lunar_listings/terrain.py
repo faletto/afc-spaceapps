@@ -2,6 +2,7 @@
 
 Global arrays are indexed [row, col] with row 0 = +90 (north), col 0 = -180 (west); cell size 1/32 deg.
 """
+
 import numpy as np
 
 R_M = 1_737_400.0
@@ -51,7 +52,9 @@ def detrended_std(z: np.ndarray, n=CELLS_PER_DEG) -> np.ndarray:
     return (zc - b * X - d * Y).std(-1)
 
 
-def global_plot_stats(dem: np.ndarray, slope: np.ndarray, max_slope_deg: float, n: int = CELLS_PER_DEG) -> dict:
+def global_plot_stats(
+    dem: np.ndarray, slope: np.ndarray, max_slope_deg: float, n: int = CELLS_PER_DEG
+) -> dict:
     """Per-block stats; blocks are n x n source pixels (n=32 for 1-deg global plots)."""
     z, s = plot_blocks(dem, n), plot_blocks(slope, n)
     return {
@@ -71,8 +74,11 @@ def norm(x, lo_hi):
 def hazard_score(p90, rough, relief, cfg) -> np.ndarray:
     """Mean of normalised slope_p90, roughness, relief (0 = benign, 1 = hazardous)."""
     sf = cfg["safety"]
-    return (norm(p90, sf["slope_p90_range"]) + norm(rough, sf["roughness_range_m"])
-            + norm(relief, sf["relief_range_m"])) / 3
+    return (
+        norm(p90, sf["slope_p90_range"])
+        + norm(rough, sf["roughness_range_m"])
+        + norm(relief, sf["relief_range_m"])
+    ) / 3
 
 
 def resample_global(tif, out_npy, strip_rows: int = 2048) -> np.ndarray:
@@ -87,9 +93,9 @@ def resample_global(tif, out_npy, strip_rows: int = 2048) -> np.ndarray:
         out = np.empty((h // f, w // f), np.float32)
         for r0 in range(0, h, strip_rows):
             a = ds.read(1, window=((r0, min(r0 + strip_rows, h)), (0, w)))
-            out[r0 // f : (r0 + a.shape[0]) // f] = resample_block_mean(
-                a, (a.shape[0] // f, w // f), nodata=ds.nodata
-            ) * scale
+            out[r0 // f : (r0 + a.shape[0]) // f] = (
+                resample_block_mean(a, (a.shape[0] // f, w // f), nodata=ds.nodata) * scale
+            )
     np.save(out_npy, out)
     return out
 
@@ -159,8 +165,26 @@ def polar_lat_deg(x, y):
     return -90.0 + np.degrees(2 * np.arctan(r / (2 * R_M)))
 
 
+LDSM_NAME, LDSM_BYTES = "LDSM_80S_20MPP_ADJ.TIF", 3_778_056_355
+
+
+def polar_slope(raw_dir, dem, res) -> tuple[np.ndarray, str]:
+    """Slope (deg) on the polar core grid: NASA's LDSM 20 m slope product when fully downloaded (spec §3.4),
+    otherwise our own central differences on the DEM (same grid, same units)."""
+    from pathlib import Path
+
+    f = Path(raw_dir) / LDSM_NAME
+    if res == 20.0 and f.exists() and f.stat().st_size == LDSM_BYTES:
+        s, r2 = read_polar_core(f)
+        assert r2 == res and s.shape == dem.shape, "LDSM grid does not match the DEM"
+        return s, f"{LDSM_NAME} (NASA PGDA)"
+    return slope_deg_planar(dem, res), "own central differences on the DEM"
+
+
 def build_polar_stats(raw_dir, out_dir, cfg) -> str:
-    """Polar cell (cell_m) and plot (plot_m) stats. Uses the 20 m DEM if fully downloaded, else the 80 m one."""
+    """Polar cell (cell_m) and plot (plot_m) stats. Uses the 20 m DEM and LDSM slope if fully downloaded, else the
+    80 m DEM and our own slope. Writes terrain_polar_source.json recording what was used."""
+    import json
     from pathlib import Path
 
     raw, out_dir = Path(raw_dir), Path(out_dir)
@@ -168,7 +192,7 @@ def build_polar_stats(raw_dir, out_dir, cfg) -> str:
     f20 = raw / name
     src = f20 if f20.exists() and f20.stat().st_size == full else raw / "LDEM_80S_80MPP_ADJ.TIF"
     dem, res = read_polar_core(src)
-    slope = slope_deg_planar(dem, res)
+    slope, slope_src = polar_slope(raw, dem, res)
     p = cfg["grid"]["polar"]
     ms = cfg["safety"]["max_slope_deg"]
     cells = polar_block_stats(dem, slope, res, p["cell_m"], ms)
@@ -176,4 +200,7 @@ def build_polar_stats(raw_dir, out_dir, cfg) -> str:
     tag = f"{round(res)}m"
     np.savez_compressed(out_dir / f"terrain_polar_cells_{tag}.npz", **cells)
     np.savez_compressed(out_dir / f"terrain_polar_plots_{tag}.npz", **plots)
-    return str(src.name)
+    (out_dir / "terrain_polar_source.json").write_text(
+        json.dumps({"dem": src.name, "slope": slope_src, "res_m": res})
+    )
+    return f"{src.name} + slope: {slope_src}"

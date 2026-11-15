@@ -1,4 +1,5 @@
 """Resumable DEM download + SHA-256 verify (spec §3.1). Raw DEMs live in data/raw/ (gitignored)."""
+
 import hashlib
 import subprocess
 from pathlib import Path
