@@ -33,7 +33,6 @@ test('Rent tab: move-in changes the rent, never the Buy price; tour follows the 
   await expect(page.getByTestId('rent-history')).toBeVisible();
 
   // 3D Tour follows the same slider (TIME-2).
-  await page.getByRole('tab', { name: '3D Tour' }).click();
   await expect(page.getByTestId('tour-sun')).toContainText(/Sun (sets|rises|stays)/);
   const before = await page.getByTestId('tour-sun').textContent();
   await slider.fill(String(24 * 40));

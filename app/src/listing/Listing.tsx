@@ -61,7 +61,6 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         {detail?.blurb && <p data-testid="blurb" style={{ margin: '6px 0 0', fontStyle: 'italic', opacity: 0.85 }}>{detail.blurb}</p>}
       </section>
       <Gallery
-        photo={<div style={{ padding: 16, borderRadius: 6, background: '#1a2030', color: '#9aa3b8', fontSize: 13 }}>No photos from the Moon yet. {tier === 'polar' ? 'Try the 3D Tour.' : ''}</div>}
         tour={tier === 'polar' && detail?.best_cell_xy ? { tile: cols.col.tile[i]!, rowInTile: cols.col.row_in_tile[i]!, tilesPerAxis: cols.meta.tiles_per_axis, bestXY: detail?.best_cell_xy, lat, lon } : null}
       />
       {rentTab && !off && <RentBlock data={rentData} cols={cols} i={i} />}
