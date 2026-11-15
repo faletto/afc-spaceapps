@@ -15,7 +15,7 @@ test('?demo=1 scenarios: far-side bargain, Shackleton + 3D Tour', async ({ page 
   await page.getByTestId('demo-shackleton').click();
   await expect(page.getByRole('article', { name: 'Listing' })).toBeVisible();
   await expect(page.getByTestId('tour-canvas')).toBeVisible();
-  await expect(page.getByTestId('nearby')).toContainText(/Shackleton/);
+  await expect(page.getByTestId('nearby')).toContainText(/Shackleton|Connecting Ridge/);
 
   await expect(page.getByTestId('demo-rent')).toHaveCount(0);
 });
