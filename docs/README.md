@@ -13,6 +13,7 @@ Start with the repo-root [`README.md`](../README.md) (overview, commands), then 
 | [`requirements.md`](requirements.md) | **Source of truth**: what to build and how well (v2.2 final) |
 | [`milestones.md`](milestones.md) | Build plan M0–M8, exit criteria, time split, risks |
 | [`presentation.md`](presentation.md) | 30-second video script, 7-slide outline, live-pitch flow, project-page draft, capture checklist |
+| [`resources.md`](resources.md) | Every dataset, model and tool we use, what it is, and how we use it |
 | [`technical-spec.md`](technical-spec.md) | How to build it: architecture, algorithms, data formats, frontend, tests |
 | [`build-plan.md`](build-plan.md) | Task-by-task plan for the 48 h event: owners, hours, dependencies, done-when checks, cut list |
 | [`agents/`](agents/) | **Two-agent build:** `PLAN.md` (who does what, git workflow, handoffs), `KICKOFF.md` (prompts to paste), `pipeline-log.md` / `app-log.md` (each agent's memory + messages), `answers.md` (human decisions), `CONTRACT.md` (data contract version) |
