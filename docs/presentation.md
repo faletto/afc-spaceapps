@@ -4,6 +4,8 @@
 
 *Companion to `docs/requirements.md` v2.2 (final), §11. v2.2 uses the Zillow vocabulary from requirements v2.1: **3D Tour**, **Rent** tab, **Home type**, named scores, badges. Space Apps rules: a Project Demo is either a video of **up to 30 seconds** or a deck of **up to 7 slides including the title**, publicly hosted, in English (or with English subtitles). Judging criteria: **Impact, Creativity, Validity, Relevance, Presentation**. We make both; the video is the primary link.*
 
+> **Update (14 Nov):** the final 7-slide deck, 2-minute notes and demo video script are in [`pitch-notes.md`](pitch-notes.md) and [`demo-video-script.md`](demo-video-script.md), with real numbers. The Rent tab is switched off in the current build, so those versions omit Rent; the tables below are the original plan.
+
 > **Rule for all numbers.** Prices, percentages and before/after values in the final video and slides must come from the running app. Values in this plan and in the draft deck are **illustrative placeholders** until M6 captures the real ones.
 
 ---
