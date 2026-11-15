@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { loadManifest, loadTier } from './data/loader';
 import { dataBase as base, dataSource as src } from './data/source';
 import { Filters } from './header/Filters';
+import { TimeSlider } from './header/TimeSlider';
 import { FinePrint } from './listing/FinePrint';
 import { OverlayControl } from './map/OverlayControl';
 import { loadGlossary } from './ui/glossary';
@@ -36,6 +37,7 @@ export function App() {
         {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
         {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} />}
         {cols && <OverlayControl tier={tier} />}
+        {cols && <TimeSlider />}
         <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
           {(['global', 'polar'] as const).map((t) => (
             <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 12px', fontWeight: tier === t ? 700 : 400 }}>

@@ -9,6 +9,10 @@ import { Facts } from './Facts';
 import { FinePrint, InfoIcon } from './FinePrint';
 import { Gallery } from './Gallery';
 import { Scores } from './Scores';
+import { RentBlock } from '../rent/RentBlock';
+import { RentHistory } from '../rent/RentHistory';
+import { usePlotRentData } from '../rent/usePlotRentData';
+import { useStore } from '../state/store';
 
 export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; i: number; onBack: () => void }) {
   const [detail, setDetail] = useState<DetailRecord | null>(null);
@@ -29,6 +33,8 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
     return () => window.removeEventListener('keydown', k);
   }, [onBack]);
 
+  const rentTab = useStore((s) => s.tab === 'rent');
+  const rentData = usePlotRentData(cols, tier, i, detail);
   const lat = cols.col.lat[i]!, lon = cols.col.lon[i]!;
   const off = ((cols.col.flags[i]! >> (cols.meta.flags.off_market ?? 0)) & 1) === 1;
   return (
@@ -48,6 +54,7 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         <div data-testid="listing-price" style={{ fontSize: 32, fontWeight: 800 }}>
           {off ? 'Off market' : formatPrice(cols.col.price[i]!)} <InfoIcon />
         </div>
+        {rentTab && !off && <div style={{ fontSize: 12, opacity: 0.7 }}>Buy Moonstimate</div>}
         <div style={{ fontSize: 14 }}>{factsLine(cols, i)}</div>
         <div style={{ marginTop: 4 }}><FinePrint compact /></div>
         {detail?.why && <p data-testid="why" style={{ margin: '8px 0 0', fontSize: 14 }}>{detail.why}</p>}
@@ -57,7 +64,9 @@ export function Listing({ cols, tier, i, onBack }: { cols: Columns; tier: Tier; 
         photo={<div style={{ padding: 16, borderRadius: 6, background: '#1a2030', color: '#9aa3b8', fontSize: 13 }}>No photos from the Moon yet. {tier === 'polar' ? 'Try the 3D Tour.' : ''}</div>}
         tour={tier === 'polar' && detail?.best_cell_xy ? { tile: cols.col.tile[i]!, rowInTile: cols.col.row_in_tile[i]!, tilesPerAxis: cols.meta.tiles_per_axis, bestXY: detail?.best_cell_xy, lat, lon } : null}
       />
+      {rentTab && !off && <RentBlock data={rentData} cols={cols} i={i} />}
       <Scores cols={cols} i={i} tier={tier} />
+      {rentData && !off && <RentHistory data={rentData} cols={cols} i={i} />}
       <section><h3 style={{ margin: '0 0 6px', fontSize: 14 }}>Facts &amp; features</h3><Facts cols={cols} i={i} detail={detail} /></section>
     </article>
   );

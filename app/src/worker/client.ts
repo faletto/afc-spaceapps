@@ -35,12 +35,12 @@ class ComputeClient {
     this.w.postMessage(msg);
   }
 
-  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey, filters: Filters, home: HomeCfg | null = null): Promise<Results> {
+  query(tier: Tier, c: Columns, rect: Rect | null, sort: SortKey, filters: Filters, home: HomeCfg | null = null, tab: 'buy' | 'rent' = 'buy'): Promise<Results> {
     this.init(tier, c);
     const id = ++this.seq;
     return new Promise((ok, fail) => {
       this.pending.set(id, { ok, fail });
-      this.w.postMessage({ type: 'query', id, tier, rect, sort, filters, home } satisfies Req);
+      this.w.postMessage({ type: 'query', id, tier, rect, sort, filters, home, tab } satisfies Req);
     });
   }
 }

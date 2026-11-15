@@ -15,7 +15,10 @@ export interface Results {
 }
 
 /** Does plot i pass the filters? Off-market plots have no price, so any price bound hides them (they can't be "in range"). */
-export function passes(c: Columns, i: number, f: Filters, home?: HomeCfg | null, tier: Tier = 'global'): boolean {
+/** FIL-1/FIL-7: Buy = price; Rent = yearly-average rent until pins are recomputed per window (RENT-4). */
+export const priceCol = (c: Columns, tab: 'buy' | 'rent') => (tab === 'rent' ? c.col.rent_avg : c.col.price);
+
+export function passes(c: Columns, i: number, f: Filters, home?: HomeCfg | null, tier: Tier = 'global', tab: 'buy' | 'rent' = 'buy'): boolean {
   const off = isOffMarket(c, i);
   if (f.minSun > 0 && c.col.sunlit_pct[i]! < f.minSun) return false;
   if (f.minEarth > 0 && c.col.earth_pct[i]! < f.minEarth) return false;
@@ -26,7 +29,7 @@ export function passes(c: Columns, i: number, f: Filters, home?: HomeCfg | null,
   if (f.landTypes.length && !f.landTypes.includes(c.col.land_type[i]!)) return false;
   if (f.priceMin != null || f.priceMax != null) {
     if (off) return false;
-    const p = c.col.price[i]!;
+    const p = priceCol(c, tab)[i]!;
     if (f.priceMin != null && p < f.priceMin) return false;
     if (f.priceMax != null && p > f.priceMax) return false;
   }
@@ -34,19 +37,19 @@ export function passes(c: Columns, i: number, f: Filters, home?: HomeCfg | null,
 }
 
 /** Filtered plots inside `rect` (or the whole tier), sorted, top RESULT_CAP. The list shows on-market plots only. */
-export function queryResults(c: Columns, rect: Rect | null, sort: SortKey, filters: Filters = NO_FILTERS, cap = RESULT_CAP, home: HomeCfg | null = null, tier: Tier = 'global'): Results {
+export function queryResults(c: Columns, rect: Rect | null, sort: SortKey, filters: Filters = NO_FILTERS, cap = RESULT_CAP, home: HomeCfg | null = null, tier: Tier = 'global', tab: 'buy' | 'rent' = 'buy'): Results {
   const { x, y } = c.col;
   const passing = new Uint8Array(c.rows);
   const hit: number[] = [];
   for (let i = 0; i < c.rows; i++) {
-    if (!passes(c, i, filters, home, tier)) continue;
+    if (!passes(c, i, filters, home, tier, tab)) continue;
     passing[i] = 1;
     if (isOffMarket(c, i)) continue;
     if (rect && (x[i]! < rect[0] || x[i]! > rect[2] || y[i]! < rect[1] || y[i]! > rect[3])) continue;
     hit.push(i);
   }
   const matchOf = (i: number) => (home ? matchPct(c, i, filters.homeType, home) : c.col.viability[i]!);
-  const key = sort === 'best_match' ? null : sort.startsWith('price') ? c.col.price : sort === 'viability_desc' ? c.col.viability
+  const key = sort === 'best_match' ? null : sort.startsWith('price') ? priceCol(c, tab) : sort === 'viability_desc' ? c.col.viability
     : sort === 'sun_score_desc' ? c.col.s_power : c.col.s_comms;
   const dir = sort.endsWith('asc') ? 1 : -1;
   if (key) hit.sort((a, b) => dir * (key[a]! - key[b]!) || a - b);

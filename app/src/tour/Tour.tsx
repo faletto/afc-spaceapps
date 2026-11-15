@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
+import { HOURS_2028 } from '../science/visibility';
 import { loadConfig, loadEphemeris, loadHorizonTile } from '../data/loader';
 import { dataSource } from '../data/source';
 import { polarXYToLatLon } from '../geo/projections';
-import { HOURS_2028 } from '../science/visibility';
+import { useStore } from '../state/store';
 import { TourCanvas } from './TourCanvas';
 import { buildTour, earthCountdown, hourLabel, sunCountdown, type TourModel } from './tourModel';
 
 export interface TourProps { tile: number; rowInTile: number; tilesPerAxis: number; bestXY?: [number, number]; lat: number; lon: number }
 
-/** DET-5: 3D Tour panorama for a polar plot. Own time control until the global slider (A6) lands. */
+/** DET-5: 3D Tour panorama for a polar plot; follows the global time slider (TIME-2). */
 export function Tour({ tile, rowInTile, tilesPerAxis, bestXY, lat, lon }: TourProps) {
   const bx = bestXY?.[0], by = bestXY?.[1];
   const [model, setModel] = useState<TourModel | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [t, setT] = useState(24 * 273); // ~30 Sep
+  const t = useStore((s) => s.t); // global time slider (TIME-2)
   useEffect(() => {
     let live = true;
     setModel(null); setErr(null);
@@ -37,10 +38,7 @@ export function Tour({ tile, rowInTile, tilesPerAxis, bestXY, lat, lon }: TourPr
         <strong data-testid="tour-sun">☀ {texts[0]}</strong>
         <strong data-testid="tour-earth">🌍 {texts[1]}</strong>
       </div>
-      <label style={{ fontSize: 12, display: 'grid', gap: 2 }}>
-        Time: {hourLabel(t)}
-        <input type="range" min={0} max={HOURS_2028 - 1} step={6} value={t} onChange={(e) => setT(Number(e.target.value))} aria-label="Tour time" />
-      </label>
+      <div style={{ fontSize: 12, opacity: 0.8 }}>Showing {hourLabel(t)} · move the time slider under the map</div>
     </div>
   );
 }

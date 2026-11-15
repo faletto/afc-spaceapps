@@ -25,7 +25,7 @@ function PriceInput({ label, value, onCommit }: { label: string; value: number |
 
 /** Filter bar (FIL-1 price, FIL-2 land type, FIL-3 hide off-market). Home type / More come in A5. */
 export function Filters({ cols }: { cols: Columns | undefined }) {
-  const { filters, setFilters, setHomeType, resetFilters, tab } = useStore();
+  const { filters, setFilters, setHomeType, resetFilters, tab, setTab } = useStore();
   const tier = useStore((s) => s.tier);
   const results = useStore((s) => s.results);
   const active = filters.priceMin != null || filters.priceMax != null || filters.landTypes.length > 0 || filters.hideOff
@@ -35,7 +35,11 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
     setFilters({ landTypes: filters.landTypes.includes(i) ? filters.landTypes.filter((x) => x !== i) : [...filters.landTypes, i].sort() });
   return (
     <div role="search" aria-label="Filters" style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '8px 12px', borderBottom: '1px solid #262c38', flexWrap: 'wrap', fontSize: 13 }}>
-      <strong>{tab === 'buy' ? 'Buy' : 'Rent'}</strong>
+      <span role="tablist" aria-label="Buy or Rent" style={{ display: 'flex', gap: 4 }}>
+        {(['buy', 'rent'] as const).map((k) => (
+          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={{ fontWeight: tab === k ? 700 : 400 }}>{k === 'buy' ? 'Buy' : 'Rent'}</button>
+        ))}
+      </span>
       <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         Price <PriceInput label="Min price" value={filters.priceMin} onCommit={(v) => setFilters({ priceMin: v })} />
         – <PriceInput label="Max price" value={filters.priceMax} onCommit={(v) => setFilters({ priceMax: v })} />

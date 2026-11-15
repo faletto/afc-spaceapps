@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import type { Columns, Tier } from '../data/types';
 import { formatPrice } from '../map/markers';
+import { useStore } from '../state/store';
 import { Badges } from '../listing/Badges';
 import { factsLine } from './format';
 import { plotName } from './homeTypes';
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl, highlighted, selected, onHover, onOpen, match }: Props) {
+  const rent = useStore((s) => s.tab === 'rent');
   const [b0, b1, b2, b3] = cols.meta.bounds;
   const u = (cols.col.x[i]! - b0) / (b2 - b0), v = 1 - (cols.col.y[i]! - b1) / (b3 - b1);
   const aspect = (b2 - b0) / (b3 - b1);
@@ -42,7 +44,8 @@ export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl
       />
       <div style={{ padding: '6px 8px' }}>
         <div style={{ fontSize: 18, fontWeight: 700 }}>
-          {formatPrice(cols.col.price[i]!)}
+          {rent ? `${formatPrice(cols.col.rent_avg[i]!)}/mo` : formatPrice(cols.col.price[i]!)}
+          {rent && <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 400, opacity: 0.7 }}>avg</span>}
           {match != null && <span data-testid="match" style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: '#8fd19e' }}>{Math.round(match)}% match</span>}
         </div>
         <div style={{ fontSize: 12, opacity: 0.85 }}>{factsLine(cols, i)}</div>

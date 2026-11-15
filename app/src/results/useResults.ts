@@ -11,13 +11,14 @@ export function useResultsQuery(tier: Tier, cols: Columns | undefined) {
   const viewRect = useStore((s) => s.viewRect);
   const sort = useStore((s) => s.sort);
   const filters = useStore((s) => s.filters);
+  const tab = useStore((s) => s.tab);
   const setResults = useStore((s) => s.setResults);
   const [home, setHome] = useState<HomeCfg | null>(null);
-  useEffect(() => { loadConfig(dataSource).then((c) => setHome((c as unknown as { home_types: HomeCfg }).home_types)).catch((e) => console.warn('config not loaded', e)); }, []);
+  useEffect(() => { loadConfig(dataSource).then((c) => setHome(c.home_types)).catch((e) => console.warn('config not loaded', e)); }, []);
   useEffect(() => {
     if (!cols || (filters.homeType !== 'any' && !home)) return; // wait for config.json so the home gate isn't applied as 'fail all'
     let live = true;
-    compute().query(tier, cols, viewRect, sort, filters, home).then((r) => live && setResults(r)).catch((e) => console.error('query failed', e));
+    compute().query(tier, cols, viewRect, sort, filters, home, tab).then((r) => live && setResults(r)).catch((e) => console.error('query failed', e));
     return () => { live = false; };
-  }, [tier, cols, viewRect, sort, filters, home, setResults]);
+  }, [tier, cols, viewRect, sort, filters, home, tab, setResults]);
 }

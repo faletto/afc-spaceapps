@@ -5,6 +5,7 @@ import type { HomeType } from '../results/homeTypes';
 import type { Results } from '../results/query';
 
 export type SortKey = 'price_asc' | 'price_desc' | 'viability_desc' | 'sun_score_desc' | 'signal_score_desc' | 'best_match';
+export const moveInDay = (t: number) => Math.floor(t / 24) + 1;
 export type Rect = [number, number, number, number];
 
 /** Filters (FIL-1..3). Prices are USD; null = unbounded. landTypes = indices into cols.meta.land_types ([] = all). */
@@ -25,6 +26,11 @@ interface State {
   overlayOpacity: number;
   /** Visible map rect in tier coordinates (null = whole tier). */
   viewRect: Rect | null;
+  /** Time slider: hour index into the analysis year (TIME-1). On Rent it is the move-in date (RENT-1). */
+  t: number;
+  stayDays: number;
+  setT: (t: number) => void;
+  setStay: (d: number) => void;
   setTab: (t: State['tab']) => void;
   setTier: (t: Tier) => void;
   select: (i: number | null) => void;
@@ -41,6 +47,9 @@ interface State {
 }
 export const useStore = create<State>((set) => ({
   tab: 'buy', tier: 'global', selection: null, hover: null, sort: 'price_desc', filters: NO_FILTERS, results: null, overlay: null, overlayOpacity: 0.7, viewRect: null,
+  t: 24 * 273, stayDays: 14,
+  setT: (t) => set({ t }),
+  setStay: (stayDays) => set({ stayDays }),
   setTab: (tab) => set({ tab }),
   setTier: (tier) => set((st) => ({ tier, results: null, selection: null, hover: null, viewRect: null, overlay: tier === 'global' && st.overlay === 'ice' ? null : st.overlay })),
   select: (selection) => set({ selection }),

@@ -19,6 +19,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
   const [vs, setVs] = useState<VS>({ target: [0, 0, 0], zoom: 0 });
   const selection = useStore((s) => s.selection), hover = useStore((s) => s.hover);
   const select = useStore((s) => s.select), setHover = useStore((s) => s.setHover), setViewRect = useStore((s) => s.setViewRect);
+  const rentTab = useStore((s) => s.tab === 'rent');
   const overlay = useStore((s) => s.overlay), overlayOpacity = useStore((s) => s.overlayOpacity);
   const down = useRef<[number, number] | null>(null);
   const [offTip, setOffTip] = useState<{ x: number; y: number } | null>(null);
@@ -96,9 +97,10 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     }),
     new TextLayer<number>({
       id: 'pills', visible: pills, data: shown, pickable: true,
-      getPosition: (i) => [cols.col.x[i]!, cols.col.y[i]!], getText: (i) => formatPrice(cols.col.price[i]!),
+      getPosition: (i) => [cols.col.x[i]!, cols.col.y[i]!], getText: (i) => (rentTab ? `${formatPrice(cols.col.rent_avg[i]!)}/mo` : formatPrice(cols.col.price[i]!)),
       getSize: 12, sizeUnits: 'pixels', getColor: [20, 20, 25, 255], fontWeight: 700,
       background: true, getBackgroundColor: (i) => [...BAND_COLORS[bandOf(cols.col.price[i]!, markers.edges)]!, 240] as [number, number, number, number],
+      updateTriggers: { getText: rentTab },
       backgroundPadding: [5, 2], getBorderColor: [20, 20, 25, 255], getBorderWidth: 1,
       onHover: (info) => setHover(info.object ?? null),
       onClick: (info) => info.object != null && select(info.object),
