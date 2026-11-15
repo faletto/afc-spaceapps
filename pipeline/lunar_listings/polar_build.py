@@ -64,7 +64,9 @@ def build_cells(cfg, raw_dir, work_dir, chunk=60_000, log=print) -> Path:
         hz = horizons.compute(x[s], y[s], lon[s], dems, cfg)
         q = horizons.quantize(hz, HZ_UNIT, HZ_OFFSET)
         hzq[s] = q
-        st = visibility.site_stats(lat[s], lon[s], hz.astype(np.float64), eph, cfg)
+        st = visibility.site_stats(
+            lat[s], lon[s], hz.astype(np.float64), eph, cfg, floor_k=cfg["thermal"]["polar_floor_k"]
+        )
         for k in visibility.KEYS:
             stats[k][s] = st[k]
         lscore[s], _ = land.landmark_score_and_nearby(lat[s], lon[s], lm, cfg, chunk=2000)
@@ -136,7 +138,9 @@ def build_plots(cfg, raw_dir, work_dir, log=print) -> dict:
     # full statistics (monthly, run lists) for the best cells
     eph = ephemeris.load()
     hz = horizons.dequantize(c["hzq"][sel], HZ_UNIT, HZ_OFFSET).astype(np.float64)
-    st = visibility.site_stats(c["lat"][sel], c["lon"][sel], hz, eph, cfg)
+    st = visibility.site_stats(
+        c["lat"][sel], c["lon"][sel], hz, eph, cfg, floor_k=cfg["thermal"]["polar_floor_k"]
+    )
     sunlit, eok = visibility.site_masks(c["lat"][sel], c["lon"][sel], hz, eph, cfg)
     ht = cfg["home_types"]
     bwl = visibility.best_window(sunlit, ht["lander_pad"]["ref_stay_days"])

@@ -38,7 +38,9 @@ def _runs_longest(b):
     return best
 
 
-def site_stats_ref(lat, lon, horizon_deg, sun, earth, dist_m, tsi, r_sun_km, cfg, month, R=1_737_400.0):
+def site_stats_ref(
+    lat, lon, horizon_deg, sun, earth, dist_m, tsi, r_sun_km, cfg, month, R=1_737_400.0, floor_k=None
+):
     """Reference for ONE site. Returns dict of scalars/arrays (see KEYS)."""
     pw, cm, th = cfg["power"], cfg["comms"], cfg["thermal"]
     u, e, n = (x[0] for x in _frames(np.array([lat]), np.array([lon])))
@@ -75,7 +77,7 @@ def site_stats_ref(lat, lon, horizon_deg, sun, earth, dist_m, tsi, r_sun_km, cfg
     energy = (tsi * f_sun * panel).sum() / days  # Wh/m2/day (1 h steps)
     fh = tsi * f_sun * np.maximum(0, np.sin(np.radians(es)))
     teq = (np.maximum(0, (1 - th["albedo"]) * fh / (th["emissivity"] * SIGMA))) ** 0.25
-    floor = th["psr_floor_k"] if sunlit.mean() == 0 else th["floor_k"]
+    floor = th["psr_floor_k"] if sunlit.mean() == 0 else (th["floor_k"] if floor_k is None else floor_k)
     t = np.maximum(teq, floor)
     return {
         "sunlit_frac": sunlit.mean(),
@@ -232,8 +234,9 @@ KEYS = [
 ]
 
 
-def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0, start_hour=0):
-    """Numba kernel over many sites. eph: dict with sun_xyz, earth_xyz, earth_dist_m, tsi, r_sun_km."""
+def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0, start_hour=0, floor_k=None):
+    """Numba kernel over many sites. eph: dict with sun_xyz, earth_xyz, earth_dist_m, tsi, r_sun_km.
+    floor_k: night-floor temperature for sunlit sites (default thermal.floor_k; the polar tier passes thermal.polar_floor_k)."""
     lat, lon = np.ascontiguousarray(lat, float), np.ascontiguousarray(lon, float)
     hz = np.ascontiguousarray(horizon_deg, float)
     pw, cm, th = cfg["power"], cfg["comms"], cfg["thermal"]
@@ -257,7 +260,7 @@ def site_stats(lat, lon, horizon_deg, eph, cfg, year=2028, R=1_737_400.0, start_
         cm["cutoff_deg"],
         th["albedo"],
         th["emissivity"],
-        th["floor_k"],
+        th["floor_k"] if floor_k is None else floor_k,
         th["psr_floor_k"],
         R,
         out,
