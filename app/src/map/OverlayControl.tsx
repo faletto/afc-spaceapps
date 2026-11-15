@@ -1,3 +1,4 @@
+import { MODE } from '../modes/mode';
 import { useEffect, useState } from 'react';
 import { loadLegend, OVERLAY_NAMES } from '../data/loader';
 import { dataSource } from '../data/source';
@@ -41,7 +42,7 @@ export function OverlayControl({ tier }: { tier: Tier }) {
             <option key={n} value={n}>{OVERLAY_INFO[n].label}</option>))}
         </select>
       </label>
-      {overlay && (
+      {overlay && !MODE.present && (
         <label style={{ display: 'block', marginTop: 6 }}>
           Opacity{' '}
           <input type="range" aria-label="Overlay opacity" min={0} max={1} step={0.05} value={overlayOpacity}

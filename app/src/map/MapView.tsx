@@ -1,3 +1,4 @@
+import { MODE, PRESENT_ZOOM } from '../modes/mode';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';
 import { OrthographicView } from '@deck.gl/core';
@@ -62,7 +63,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
 
   // Dot radius follows plot size on screen so dots don't wall off the basemap/overlay; fade them under an overlay.
   const plotPx = 2 ** vs.zoom * 2 * PLOT_HALF[tier];
-  const dotR = Math.min(4, Math.max(0.8, plotPx * 0.3));
+  const dotR = Math.min(4, Math.max(0.8, plotPx * 0.3)) * (MODE.present ? PRESENT_ZOOM : 1);
   const dotOpacity = overlay ? 0.35 : 1;
 
   const pills = vs.zoom - fit >= PILL_ZOOM_ABOVE_FIT;
@@ -98,7 +99,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     new TextLayer<number>({
       id: 'pills', visible: pills, data: shown, pickable: true,
       getPosition: (i) => [cols.col.x[i]!, cols.col.y[i]!], getText: (i) => (rentTab ? `${formatPrice(cols.col.rent_avg[i]!)}/mo` : formatPrice(cols.col.price[i]!)),
-      getSize: 12, sizeUnits: 'pixels', getColor: [20, 20, 25, 255], fontWeight: 700,
+      getSize: MODE.present ? Math.round(12 * PRESENT_ZOOM) : 12, sizeUnits: 'pixels', getColor: [20, 20, 25, 255], fontWeight: 700,
       background: true, getBackgroundColor: (i) => [...BAND_COLORS[bandOf(cols.col.price[i]!, markers.edges)]!, 240] as [number, number, number, number],
       updateTriggers: { getText: rentTab },
       backgroundPadding: [5, 2], getBorderColor: [20, 20, 25, 255], getBorderWidth: 1,

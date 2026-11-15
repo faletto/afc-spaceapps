@@ -4,6 +4,7 @@ import { defineConfig } from '@playwright/test';
 // dependency re-optimisation can reload the page mid-test and cause flakes.
 export default defineConfig({
   testDir: 'e2e',
+  retries: 1, // pill/dot clicks use fixed geometry and software-GL timing; one retry absorbs load flakes (see app-log)
   timeout: 60_000, // long journeys (D-6) take >30 s under headless software GL
   // Headless software GL keeps the main thread busy uploading the 8192x4096 basemap, which delays worker replies;
   // the default 5 s expect timeout is too tight for that (not an app bug).

@@ -14,6 +14,8 @@ import { MapView } from './map/MapView';
 import { useResultsQuery } from './results/useResults';
 import { ResultsList } from './results/ResultsList';
 import { useStore } from './state/store';
+import { DemoPanel } from './modes/DemoPanel';
+import { MODE, PRESENT_ZOOM } from './modes/mode';
 
 export function App() {
   const { tier, setTier, selection, select } = useStore();
@@ -31,13 +33,14 @@ export function App() {
   const basemaps = useBasemap(tier, base);
   const results = useStore((s) => s.results);
   return (
-    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }}>
-      <div style={{ gridColumn: '1 / -1' }}><Filters cols={cols} /></div>
+    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }} data-mode={MODE.present ? 'present' : MODE.demo ? 'demo' : undefined}>
+      <div style={{ gridColumn: '1 / -1', zoom: MODE.present ? PRESENT_ZOOM : undefined }}><Filters cols={cols} /></div>
       <div style={{ position: 'relative' }}>
         {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
         {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} />}
         {cols && <OverlayControl tier={tier} />}
         {cols && <TimeSlider />}
+        {MODE.demo && <DemoPanel data={data} />}
         <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
           {(['global', 'polar'] as const).map((t) => (
             <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 12px', fontWeight: tier === t ? 700 : 400 }}>
@@ -46,10 +49,10 @@ export function App() {
           ))}
           {!cols && !error && <span>Loading…</span>}
           {error && <span role="alert">{error}</span>}
-          {cols && selection != null && <span data-testid="selected">Selected plot #{selection}</span>}
+          {cols && selection != null && !MODE.present && <span data-testid="selected">Selected plot #{selection}</span>}
         </div>
       </div>
-      <aside style={{ borderLeft: '1px solid #262c38', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <aside style={{ borderLeft: '1px solid #262c38', minHeight: 0, display: 'flex', flexDirection: 'column', zoom: MODE.present ? PRESENT_ZOOM : undefined }}>
         <div style={{ flex: 1, minHeight: 0 }}>
         {cols && selection != null
           ? <Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} />

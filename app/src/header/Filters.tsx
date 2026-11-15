@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Columns } from '../data/types';
+import { AboutButton } from '../ui/About';
 import { HOME_TYPES, type HomeType } from '../results/homeTypes';
 import { useStore } from '../state/store';
 import { parsePrice } from './parsePrice';
@@ -68,7 +69,8 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
       </details>
       <label><input type="checkbox" checked={filters.hideOff} onChange={(e) => setFilters({ hideOff: e.target.checked })} /> Hide off-market plots</label>
       {active && <button type="button" onClick={() => { resetFilters(); }}>Clear filters</button>}
-      {results && <span data-testid="match-count" style={{ marginLeft: 'auto', opacity: 0.75 }}>{countPassing(results.passing).toLocaleString()} plots match</span>}
+      <AboutButton />
+      {results && <span data-testid="match-count" aria-live="polite" style={{ marginLeft: 'auto', opacity: 0.75 }}>{countPassing(results.passing).toLocaleString()} plots match</span>}
     </div>
   );
 }
