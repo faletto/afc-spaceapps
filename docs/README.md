@@ -21,7 +21,7 @@ Start with the repo-root [`README.md`](../README.md) (overview, commands), then 
 
 Word exports of the requirements, milestones and presentation plan are in `../Claude outputs/`. They're exports: edit the markdown here, then regenerate.
 
-The 7-slide deck is the "Lunar Listings — Space Apps 2026 (7 slides)" Slides artifact (downloadable as PowerPoint, or send to Google Slides).
+The final 7-slide deck is [`lunar-listings-deck.pptx`](lunar-listings-deck.pptx) (offline in PowerPoint or Keynote; import into Google Slides for online). Rebuild notes: it mirrors the "Lunar Listings – Space Apps 2026" Slides artifact.
 
 ## Figures (`img/`)
 

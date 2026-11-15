@@ -4,7 +4,7 @@
 
 *Companion to `docs/requirements.md` v2.2 (final), §11. v2.2 uses the Zillow vocabulary from requirements v2.1: **3D Tour**, **Rent** tab, **Home type**, named scores, badges. Space Apps rules: a Project Demo is either a video of **up to 30 seconds** or a deck of **up to 7 slides including the title**, publicly hosted, in English (or with English subtitles). Judging criteria: **Impact, Creativity, Validity, Relevance, Presentation**. We make both; the video is the primary link.*
 
-> **Update (14 Nov):** the final 7-slide deck, 2-minute notes and demo video script are in [`pitch-notes.md`](pitch-notes.md) and [`demo-video-script.md`](demo-video-script.md), with real numbers. The Rent tab is switched off in the current build, so those versions omit Rent; the tables below are the original plan.
+> **Update (15 Nov):** the final deck is [`lunar-listings-deck.pptx`](lunar-listings-deck.pptx) (opens offline in PowerPoint or Keynote, online in Google Slides or PowerPoint for the web; speaker notes include how every score and price is determined). Slide 4 is the resources slide. The 7-slide deck, 2-minute notes and demo video script are in [`pitch-notes.md`](pitch-notes.md) and [`demo-video-script.md`](demo-video-script.md), with real numbers. The Rent tab is switched off in the current build, so those versions omit Rent; the tables below are the original plan.
 
 > **Rule for all numbers.** Prices, percentages and before/after values in the final video and slides must come from the running app. Values in this plan and in the draft deck are **illustrative placeholders** until M6 captures the real ones.
 
@@ -32,7 +32,7 @@ Three beats:
 | 0:08–0:12 | Click a far-side plot → listing: low price, "Earth contact 0%", "longest night 14 days" | *Far side: $XX K · no Earth contact* | "The far side? Cheap. No signal home, two-week nights." | M3 |
 | 0:12–0:21 | Jump to the **South Pole District** → sunlight overlay (rims glow, craters black) → open a rim listing (HOT PROPERTY badge, facts line) → **3D Tour**: the Sun skimming a jagged horizon | *South Pole: $X.XM · XX% sun · XX% Earth* | "The south pole is the Moon's Manhattan. Here the terrain decides everything: a crater rim gets near-endless sun, while a few kilometers away it's permanent night." | M4 |
 | 0:21–0:26 | Switch to **Rent** → move-in date +2 weeks → rent drops, *Price cut* badge and reason appear | *Move in 2 weeks later → rent ↓ XX%* | "Renting? Move in two weeks later and you'll pay less, because you'd arrive for a five-day night." | M6 |
-| 0:26–0:30 | Logo + credits | *Built on NASA JPL Horizons · LRO LOLA · Moon Trek* · *Find your place on the Moon* · *Fictional premise, real science* | "Lunar Listings. Find your place on the Moon." | M8 |
+| 0:26–0:30 | Logo + credits | *Built on NASA JPL Horizons · LRO LOLA · LRO Diviner* · *Find your place on the Moon* · *Fictional premise, real science* | "Lunar Listings. Find your place on the Moon." | M8 |
 
 **Editing notes**
 - Keep cuts on the beat; no shot shorter than 2 s.
@@ -97,7 +97,7 @@ One person drives the app and one talks. Demo mode is offline, and the backup re
 - From those we compute sunlight, darkness, Earth contact, temperature and landing safety per plot, combine them into a viability score, and turn that into a price.
 - Our Sun/Earth geometry is validated against direct Horizons queries.
 
-*NASA data used:* JPL Horizons API · LRO LOLA global DEM (USGS) and south-polar products (NASA GSFC PGDA) · NASA Moon Trek basemap · (cross-check) LRO Diviner temperatures.
+*NASA data used:* JPL Horizons API · LRO LOLA global DEM (USGS) and south-polar products (NASA GSFC PGDA) · (cross-checks) LOLA illumination maps and LRO Diviner temperatures. Basemaps are our own shaded relief made from LOLA. Full list: [`resources.md`](resources.md).
 
 *Limits:* fictional premise and prices (under the 1967 Outer Space Treaty nobody can claim the Moon); screening-level analysis, not mission certification; boulder-scale hazards not resolved.
 
