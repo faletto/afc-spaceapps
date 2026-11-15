@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { loadManifest, loadTier } from './data/loader';
 import { dataBase as base, dataSource as src } from './data/source';
 import { Filters } from './header/Filters';
@@ -7,10 +7,11 @@ import { FinePrint } from './listing/FinePrint';
 import { OverlayControl } from './map/OverlayControl';
 import { loadGlossary } from './ui/glossary';
 import { Notice } from './listing/Notice';
-import { Listing } from './listing/Listing';
+const Listing = lazy(() => import('./listing/Listing').then((m) => ({ default: m.Listing })));
 import type { Columns, Tier } from './data/types';
 import { useBasemap } from './map/useBasemap';
-import { MapView } from './map/MapView';
+// deck.gl is most of the bundle: load it after the list's first paint instead of blocking it.
+const MapView = lazy(() => import('./map/MapView').then((m) => ({ default: m.MapView })));
 import { useResultsQuery } from './results/useResults';
 import { ResultsList } from './results/ResultsList';
 import { useShallow } from 'zustand/react/shallow';
@@ -41,7 +42,7 @@ export function App() {
       </header>
       <div style={{ position: 'relative' }}>
         {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
-        {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} />}
+        {cols && results && <Suspense fallback={null}><MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} /></Suspense>}
         {cols && <OverlayControl tier={tier} />}
         {cols && <TimeSlider />}
         {MODE.demo && <DemoPanel data={data} />}
@@ -59,7 +60,7 @@ export function App() {
       <aside style={{ borderLeft: '1px solid var(--border)', background: 'var(--surface)', minHeight: 0, display: 'flex', flexDirection: 'column', zoom: MODE.present ? PRESENT_ZOOM : undefined }}>
         <div style={{ flex: 1, minHeight: 0 }}>
         {cols && selection != null
-          ? <Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} />
+          ? <Suspense fallback={<p className="muted" style={{ padding: 16 }}>Loading listing…</p>}><Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} /></Suspense>
           : cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemaps.small ?? basemaps.full} />}
         </div>
         <footer style={{ padding: '8px 12px', borderTop: '1px solid var(--border)' }}><FinePrint compact /></footer>

@@ -48,25 +48,30 @@ const edgeCache = new WeakMap<Columns, number[]>();
 
 /** `passing` (1 = shown) comes from the filter worker; price bands stay fixed by the unfiltered prices so colors don't shift. */
 export function buildMarkers(c: Columns, passing?: Uint8Array): TierMarkers {
-  const on: number[] = [], off: number[] = [], allOn: number[] = [];
-  for (let i = 0; i < c.rows; i++) {
-    const offm = isOffMarket(c, i);
-    if (!offm) allOn.push(i);
-    if (passing && !passing[i]) continue;
-    (offm ? off : on).push(i);
-  }
-  const onIds = Uint32Array.from(on), offIds = Uint32Array.from(off);
-  const price = c.col.price;
+  // Single pass into preallocated typed arrays (no per-plot boxing); shrink with subarray at the end.
+  const n = c.rows, { x, y, price } = c.col;
+  const allOn = new Uint32Array(n);
+  let nAll = 0;
+  const offFlags = new Uint8Array(n);
+  for (let i = 0; i < n; i++) { if (isOffMarket(c, i)) offFlags[i] = 1; else allOn[nAll++] = i; }
   let edges = edgeCache.get(c);
-  if (!edges) edgeCache.set(c, (edges = priceBandEdges(price, Uint32Array.from(allOn))));
-  const pos = (ids: Uint32Array) => {
-    const p = new Float32Array(ids.length * 2);
-    ids.forEach((i, k) => { p[2 * k] = c.col.x[i]!; p[2 * k + 1] = c.col.y[i]!; });
-    return p;
+  if (!edges) edgeCache.set(c, (edges = priceBandEdges(price, allOn.subarray(0, nAll))));
+  const onIds = new Uint32Array(n), offIds = new Uint32Array(n);
+  const onPos = new Float32Array(2 * n), offPos = new Float32Array(2 * n), colors = new Uint8Array(4 * n);
+  let a = 0, b = 0;
+  for (let i = 0; i < n; i++) {
+    if (passing && !passing[i]) continue;
+    if (offFlags[i]) { offIds[b] = i; offPos[2 * b] = x[i]!; offPos[2 * b + 1] = y[i]!; b++; continue; }
+    onIds[a] = i; onPos[2 * a] = x[i]!; onPos[2 * a + 1] = y[i]!;
+    const [r, g, bl] = BAND_COLORS[bandOf(price[i]!, edges)]!;
+    colors[4 * a] = r; colors[4 * a + 1] = g; colors[4 * a + 2] = bl; colors[4 * a + 3] = 235;
+    a++;
+  }
+  return {
+    on: { ids: onIds.slice(0, a), positions: onPos.slice(0, 2 * a), colors: colors.slice(0, 4 * a) },
+    off: { ids: offIds.slice(0, b), positions: offPos.slice(0, 2 * b) },
+    edges,
   };
-  const colors = new Uint8Array(onIds.length * 4);
-  onIds.forEach((i, k) => { const [r, g, b] = BAND_COLORS[bandOf(price[i]!, edges)]!; colors.set([r, g, b, 235], 4 * k); });
-  return { on: { ids: onIds, positions: pos(onIds), colors }, off: { ids: offIds, positions: pos(offIds) }, edges };
 }
 
 /** On-market markers inside the view rect, capped (pill layer budget). */
