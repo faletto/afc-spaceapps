@@ -5,8 +5,8 @@
   "global": "real",
   "polar": "real"
  },
- "pipeline_sha": "8070ebc",
- "generated_utc": "2026-11-15T01:04:49Z",
+ "pipeline_sha": "7097a1c",
+ "generated_utc": "2026-11-15T01:08:23Z",
  "analysis_year": 2028,
  "steps": 8784,
  "counts": {
@@ -14,6 +14,16 @@
   "polar": 78464
  },
  "config_sha256": "5a626af40ae3b570",
+ "sources": {
+  "ephemeris": "JPL Horizons (DE441), 2028 hourly",
+  "global_dem": "LRO LOLA 118 m (USGS)",
+  "landmarks": "IAU/USGS nomenclature",
+  "polar": {
+   "dem": "LDEM_80S_20MPP_ADJ.TIF",
+   "slope": "LDSM_80S_20MPP_ADJ.TIF (NASA PGDA)",
+   "res_m": 20.0
+  }
+ },
  "horizon": {
   "az_count": 180,
   "az_step_deg": 2,

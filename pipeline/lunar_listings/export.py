@@ -214,6 +214,7 @@ def write_manifest(out: Path, tiers: dict, cfg, counts: dict | None = None):
         "steps": contract.N_STEPS,
         "counts": counts,
         "config_sha256": hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16],
+        "sources": _sources(),
         "horizon": old.get("horizon", {}),
         "tiles_per_axis": contract.N_TILES_AXIS,
         "files": [
