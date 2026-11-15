@@ -19,10 +19,17 @@ test('zooming shows pills and clicking one selects a plot', async ({ page }) => 
   await page.mouse.move(384, 350);
   for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(400); }
   await page.waitForTimeout(2000);
-  await page.mouse.move(460, 320, { steps: 3 }); // hover first: clicks select the hovered plot
-  await page.mouse.move(465, 323, { steps: 3 });
-  await page.waitForTimeout(500);
-  await page.mouse.click(465, 323);
+  // Find a pill by hovering over a grid until the map shows the pointer cursor (deck.gl picked something); layout-independent.
+  let hit: [number, number] | null = null;
+  scan: for (let y = 250; y <= 450 && !hit; y += 18) {
+    for (let x = 300; x <= 560; x += 18) {
+      await page.mouse.move(x, y);
+      await page.waitForTimeout(120);
+      if (await page.evaluate(([px, py]) => getComputedStyle(document.elementFromPoint(px!, py!)!).cursor, [x, y]) === 'pointer') { hit = [x, y]; break scan; }
+    }
+  }
+  expect(hit, 'no pill found under the pointer').not.toBeNull();
+  await page.mouse.click(hit![0], hit![1]);
   await expect(page.getByTestId('selected')).toBeVisible();
 });
 
@@ -127,7 +134,7 @@ test('overlay: select shows legend with unit/range, opacity works, ice is polar-
 test('glossary tooltip opens on focus and closes on Escape without closing the listing', async ({ page }) => {
   await page.goto('/?view=fit');
   await page.getByTestId('card').first().click();
-  const term = page.locator('[data-term="sunlight"]');
+  const term = page.locator('[data-term="sunlight"]').first();
   await term.focus();
   // Text comes from data/glossary.json (pipeline), including its formula and source.
   await expect(page.getByRole('tooltip')).toContainText('visible fraction of the solar disk');

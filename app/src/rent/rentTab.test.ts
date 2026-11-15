@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Columns } from '../data/types';
 import { NO_FILTERS, useStore } from '../state/store';
 import { priceCol, queryResults } from '../results/query';
-import { MONTH_START_DAY, siteFromColumns } from './plotRent';
+import { siteFromColumns } from './plotRent';
 
 const tiny = (): Columns => ({
   rows: 3, buffer: new ArrayBuffer(0), scales: { ice_km10: 0.1 },
@@ -38,11 +38,5 @@ describe('Rent tab data', () => {
     expect(s).toMatchObject({ lat: -5.5, lon: 10.5, horizon_deg: null, ice_km: null, landing_safe: true });
     expect(s.hazard_score).toBeCloseTo(0.2, 9);
     expect(s.landmark_score).toBeCloseTo(0.5, 9);
-  });
-  it('month start days are real 2028 calendar days', () => {
-    MONTH_START_DAY.forEach((d, m) => {
-      const date = new Date(Date.UTC(2028, 0, 1 + d - 1));
-      expect([date.getUTCMonth(), date.getUTCDate()]).toEqual([m, 1]);
-    });
   });
 });

@@ -3,9 +3,9 @@ import type { Columns } from '../data/types';
 export const FLAG_OFF_MARKET = 0;
 export const isOffMarket = (c: Columns, i: number) => ((c.col.flags[i]! >> (c.meta.flags.off_market ?? FLAG_OFF_MARKET)) & 1) === 1;
 
-/** Sequential price-band ramp (cheap → pricey). Not color-only: off-market uses a different shape. */
+/** Sequential price-band ramp, navy → baby blue (136, 188, 249) → near-white (cheap → pricey). Not color-only: off-market uses a different shape. */
 export const BAND_COLORS: [number, number, number][] = [
-  [94, 196, 160], [140, 210, 110], [240, 210, 80], [244, 140, 60], [220, 70, 80],
+  [52, 86, 138], [76, 124, 194], [106, 160, 232], [136, 188, 249], [216, 235, 255],
 ];
 
 /** Dark or white text, whichever contrasts more with a band colour (WCAG relative luminance). */

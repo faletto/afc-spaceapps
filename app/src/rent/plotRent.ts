@@ -70,10 +70,3 @@ export function plotRent(site: RentSite, eph: Eph, cfg: AppConfig, cols: Columns
     stats: { longest_dark_h: st.stats.longest_dark_h, longest_blackout_h: st.stats.longest_blackout_h, earth_frac: st.stats.earth_frac },
   };
 }
-
-/** DET-7: rent for a 30-day stay starting on the 1st of each month. */
-export const MONTH_START_DAY = [1, 32, 61, 92, 122, 153, 183, 214, 245, 275, 306, 336]; // 2028 is a leap year
-export function rentHistory(site: RentSite, eph: Eph, cfg: AppConfig, cols: Columns, i: number): number[] {
-  const yr = yearRent(site, eph, cfg);
-  return MONTH_START_DAY.map((d) => plotRent(site, eph, cfg, cols, i, d, 30, yr).perMonth);
-}

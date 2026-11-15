@@ -46,9 +46,9 @@ function AboutDialog({ onClose }: { onClose: () => void }) {
   }, []);
   return createPortal(
     <div role="dialog" aria-modal="true" aria-label="About Lunar Listings" ref={ref} tabIndex={-1} data-testid="about"
-      style={{ position: 'fixed', inset: 0, zIndex: 20, background: '#000a', display: 'grid', placeItems: 'center' }}
+      style={{ position: 'fixed', inset: 0, zIndex: 20, background: 'rgba(2,4,8,0.72)', display: 'grid', placeItems: 'center' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div style={{ background: '#161a22', border: '1px solid #3a4560', borderRadius: 10, padding: 16, width: 'min(720px, 92vw)', maxHeight: '86vh', overflowY: 'auto', display: 'grid', gap: 10 }}>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border-strong)', borderRadius: 16, padding: 20, width: 'min(720px, 92vw)', boxShadow: '0 20px 60px rgba(0,0,0,0.6)', maxHeight: '86vh', overflowY: 'auto', display: 'grid', gap: 10 }}>
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <div role="tablist" style={{ display: 'flex', gap: 6 }}>
             {VIEWS.map(([k, l]) => <button key={k} type="button" role="tab" aria-selected={view === k} onClick={() => setView(k)} style={{ fontWeight: view === k ? 700 : 400 }}>{l}</button>)}
@@ -57,7 +57,7 @@ function AboutDialog({ onClose }: { onClose: () => void }) {
         </div>
         {view === 'about' && (
           <div style={{ display: 'grid', gap: 8, fontSize: 14 }}>
-            <p style={{ margin: 0 }}><strong>Lunar Listings</strong> is a Zillow-style listings site for the Moon: every plot has a Moonstimate (price), a Rent Moonstimate for a chosen stay, named scores and a 3D Tour. The premise is fictional; the numbers come from real NASA data.</p>
+            <p style={{ margin: 0 }}><strong style={{ color: 'var(--accent)' }}>Lunar Listings</strong> is a Zillow-style listings site for the Moon: every plot has a Moonstimate (price), a Rent Moonstimate for a chosen stay, named scores and a 3D Tour. The premise is fictional; the numbers come from real NASA data.</p>
             <p style={{ margin: 0, fontSize: 12, opacity: 0.8 }}>{DISCLAIMER}</p>
             <h3 style={{ margin: '4px 0 0', fontSize: 14 }}>NASA datasets and how they are used</h3>
             <ul style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 4 }}>

@@ -30,7 +30,6 @@ test('Rent tab: move-in changes the rent, never the Buy price; tour follows the 
   await slider.fill('0');
   await page.getByLabel('Stay length').selectOption({ label: '1 year' });
   await expect(page.getByTestId('rent-total')).toContainText('366-day');
-  await expect(page.getByTestId('rent-history')).toBeVisible();
 
   // 3D Tour follows the same slider (TIME-2).
   await page.getByRole('tab', { name: '3D Tour' }).click();

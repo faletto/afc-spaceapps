@@ -103,6 +103,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
       id: 'dots', visible: !pills,
       data: dotData,
       radiusUnits: 'pixels', getRadius: dotR, opacity: dotOpacity, pickable: true,
+      stroked: true, lineWidthUnits: 'pixels', getLineWidth: 0.7, getLineColor: [4, 6, 10, 230],
       onHover: (info) => { setHover(info.index >= 0 ? markers.on.ids[info.index]! : null); if (info.index >= 0) setOffTip(null); },
       onClick: (info) => info.index >= 0 && select(markers.on.ids[info.index]!),
     }),
@@ -121,13 +122,13 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     new PolygonLayer<{ i: number; poly: [number, number][] }>({
       id: 'outline', data: [...outline(hover), ...(selection !== hover ? outline(selection) : [])],
       getPolygon: (d) => d.poly, filled: false, stroked: true, lineWidthUnits: 'pixels',
-      getLineWidth: (d) => (d.i === selection ? 3 : 2), getLineColor: (d) => (d.i === selection ? [255, 255, 255, 255] : [120, 190, 255, 255]),
+      getLineWidth: (d) => (d.i === selection ? 3 : 2), getLineColor: (d) => (d.i === selection ? [255, 255, 255, 255] : [136, 188, 249, 255]),
     }),
   ];
 
   return (
     <div
-      ref={box} style={{ position: 'absolute', inset: 0, background: '#0b0d12' }}
+      ref={box} style={{ position: 'absolute', inset: 0, background: 'var(--bg)' }}
       onPointerDownCapture={(e) => { down.current = [e.clientX, e.clientY]; }}
       // deck.gl's own tap needs pointer-down→up within ~250 ms, which slow GPUs miss while picking 64.8k markers.
       // Hover picking is reliable, so a plain click (not a drag) selects the plot under the pointer.
@@ -143,12 +144,12 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         />
       )}
-      <div style={{ position: 'absolute', right: 12, bottom: 64, display: 'flex', gap: 6 }}>
+      <div className="panel" style={{ position: 'absolute', right: 12, bottom: 68, display: 'flex', gap: 6, padding: 5 }}>
         <button type="button" onClick={showWhole}>Whole map</button>
         <button type="button" onClick={() => showArea(randomPlotPosition(cols))}>Another area</button>
       </div>
       {offTip && (
-        <div role="tooltip" style={{ position: 'absolute', left: offTip.x + 12, top: offTip.y + 12, background: '#222a3a', border: '1px solid #3a4560', borderRadius: 6, padding: '4px 8px', fontSize: 12, pointerEvents: 'none', color: '#eee' }}>
+        <div role="tooltip" className="popover" style={{ position: 'absolute', left: offTip.x + 12, top: offTip.y + 12, padding: '5px 10px', fontSize: 12, pointerEvents: 'none', color: 'var(--text)' }}>
           Off market: not safe to land
         </div>
       )}

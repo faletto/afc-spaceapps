@@ -5,7 +5,7 @@ import { polarXYToLatLon } from '../geo/projections';
 import { plotName } from '../results/homeTypes';
 import { rentForStay } from '../science/rent';
 import { decodeHorizon } from '../science/visibility';
-import { MONTH_START_DAY, plotRent, rentHistory, siteFromColumns, yearRent } from './plotRent';
+import { plotRent, siteFromColumns, yearRent } from './plotRent';
 
 const root = new URL('../../public/data/', import.meta.url).pathname;
 const src: Source = {
@@ -47,10 +47,8 @@ describe('plot rent on real data (demo plot SP-0172-0148)', () => {
     expect(Math.abs(y.perMonth / y.avg - 1)).toBeLessThan(1e-9);
     expect(cols.col.price[i]).toBe(price);
   });
-  it('history has 12 monthly values and clipped late stays still work', async () => {
+  it('stays that run past 31 Dec are clipped', async () => {
     const { cols, cfg, i, eph, site } = await load();
-    expect(rentHistory(site, eph, cfg, cols, i)).toHaveLength(12);
-    expect(MONTH_START_DAY).toHaveLength(12);
     expect(plotRent(site, eph, cfg, cols, i, 360, 90).stayHours).toBe(8784 - 24 * 359);
   });
   it('scrub budget: a stay recompute fits a 15 fps frame (66 ms) with the year reference cached', async () => {

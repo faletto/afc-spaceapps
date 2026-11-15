@@ -33,17 +33,20 @@ export function App() {
   const basemaps = useBasemap(tier, base);
   const results = useStore((s) => s.results);
   return (
-    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: '#eee', background: '#0b0d12', font: '14px system-ui' }} data-mode={MODE.present ? 'present' : MODE.demo ? 'demo' : undefined}>
-      <div style={{ gridColumn: '1 / -1', zoom: MODE.present ? PRESENT_ZOOM : undefined }}><Filters cols={cols} /></div>
+    <div style={{ position: 'fixed', inset: 0, display: 'grid', gridTemplateColumns: '1fr minmax(380px, 36%)', gridTemplateRows: 'auto 1fr', color: 'var(--text)', background: 'var(--bg)' }} data-mode={MODE.present ? 'present' : MODE.demo ? 'demo' : undefined}>
+      <header className="topbar" style={{ gridColumn: '1 / -1', zoom: MODE.present ? PRESENT_ZOOM : undefined }}>
+        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Lunar Listings" data-testid="logo" />
+        <Filters cols={cols} />
+      </header>
       <div style={{ position: 'relative' }}>
         {/* Mount the map after the first results so the list paints before deck.gl's (slow on software GL) first render. */}
         {cols && results && <MapView key={tier} tier={tier} cols={cols} basemapUrl={basemaps.full ?? basemaps.small} />}
         {cols && <OverlayControl tier={tier} />}
         {cols && <TimeSlider />}
         {MODE.demo && <DemoPanel data={data} />}
-        <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div className="panel" style={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 8, alignItems: 'center', padding: 6 }}>
           {(['global', 'polar'] as const).map((t) => (
-            <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 12px', fontWeight: tier === t ? 700 : 400 }}>
+            <button key={t} onClick={() => setTier(t)} aria-pressed={tier === t} style={{ padding: '6px 14px' }}>
               {t === 'global' ? 'Moon-wide' : 'South Pole District'}
             </button>
           ))}
@@ -52,13 +55,13 @@ export function App() {
           {cols && selection != null && !MODE.present && <span data-testid="selected">Selected plot #{selection}</span>}
         </div>
       </div>
-      <aside style={{ borderLeft: '1px solid #262c38', minHeight: 0, display: 'flex', flexDirection: 'column', zoom: MODE.present ? PRESENT_ZOOM : undefined }}>
+      <aside style={{ borderLeft: '1px solid var(--border)', background: 'var(--surface)', minHeight: 0, display: 'flex', flexDirection: 'column', zoom: MODE.present ? PRESENT_ZOOM : undefined }}>
         <div style={{ flex: 1, minHeight: 0 }}>
         {cols && selection != null
           ? <Listing key={selection} cols={cols} tier={tier} i={selection} onBack={() => select(null)} />
           : cols && <ResultsList key={tier} cols={cols} tier={tier} basemapUrl={basemaps.small ?? basemaps.full} />}
         </div>
-        <footer style={{ padding: '8px 12px', borderTop: '1px solid #262c38' }}><FinePrint compact /></footer>
+        <footer style={{ padding: '8px 12px', borderTop: '1px solid var(--border)' }}><FinePrint compact /></footer>
       </aside>
       <Notice />
     </div>

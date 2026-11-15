@@ -16,7 +16,7 @@ export function DemoPanel({ data }: { data: Partial<Record<Tier, Columns>> }) {
     void sc.run(c);
   }, [pending, tier, data]);
   return (
-    <div role="group" aria-label="Demo scenarios" data-testid="demo-panel" style={{ position: 'absolute', top: 12, right: 12, zIndex: 6, display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: '55%' }}>
+    <div role="group" aria-label="Demo scenarios" data-testid="demo-panel" className="panel" style={{ padding: 6, position: 'absolute', top: 12, right: 12, zIndex: 6, display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: '55%' }}>
       {SCENARIOS.map((sc) => (
         <button key={sc.id} type="button" data-testid={`demo-${sc.id}`} onClick={() => { if (tier !== sc.tier) setTier(sc.tier); setPending(sc.id); }}>{sc.label}</button>
       ))}

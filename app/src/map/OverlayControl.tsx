@@ -33,7 +33,7 @@ function Legend({ tier }: { tier: Tier }) {
 export function OverlayControl({ tier }: { tier: Tier }) {
   const { overlay, setOverlay, overlayOpacity, setOverlayOpacity } = useStore();
   return (
-    <div style={{ position: 'absolute', left: 12, top: 56, background: 'rgba(11,13,18,0.85)', padding: 8, borderRadius: 8, fontSize: 13 }}>
+    <div className="panel" style={{ position: 'absolute', left: 12, top: 64, padding: 10, fontSize: 13, maxWidth: 260 }}>
       <label>
         Overlay:{' '}
         <select aria-label="Overlay" value={overlay ?? ''} onChange={(e) => setOverlay((e.target.value || null) as typeof overlay)}>

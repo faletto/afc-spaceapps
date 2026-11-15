@@ -27,29 +27,25 @@ export const ListingCard = memo(function ListingCard({ cols, tier, i, basemapUrl
   const px = (u * Z - 0.5) / (Z - 1) * 100, py = (v * imgH - r / 2) / (imgH - r) * 100;
   return (
     <button
-      type="button" data-testid="card" data-plot={i}
+      type="button" className="card" data-testid="card" data-plot={i} data-selected={selected} data-highlighted={highlighted}
       onMouseEnter={() => onHover(i)} onMouseLeave={() => onHover(null)} onFocus={() => onHover(i)} onBlur={() => onHover(null)}
       onClick={() => onOpen(i)}
-      style={{
-        display: 'block', width: '100%', textAlign: 'left', padding: 0, cursor: 'pointer', color: 'inherit', background: '#161a22',
-        border: `2px solid ${selected ? '#fff' : highlighted ? '#78beff' : '#262c38'}`, borderRadius: 8, overflow: 'hidden',
-      }}
-    >
+>
       <div
         aria-hidden
         style={{
-          aspectRatio: String(THUMB.aspect), backgroundImage: basemapUrl ? `url(${basemapUrl})` : undefined, backgroundColor: '#222a3a', backgroundRepeat: 'no-repeat',
+          aspectRatio: String(THUMB.aspect), backgroundImage: basemapUrl ? `url(${basemapUrl})` : undefined, backgroundColor: 'var(--surface-2)', backgroundRepeat: 'no-repeat',
           backgroundSize: `${Z * 100}% auto`, backgroundPosition: `${px}% ${py}%`,
         }}
       />
-      <div style={{ padding: '6px 8px' }}>
-        <div style={{ fontSize: 18, fontWeight: 700 }}>
+      <div style={{ padding: '8px 10px 10px', display: 'grid', gap: 2 }}>
+        <div style={{ fontSize: 19, fontWeight: 800, letterSpacing: '-0.02em' }}>
           {rent ? `${formatPrice(cols.col.rent_avg[i]!)}/mo` : formatPrice(cols.col.price[i]!)}
-          {rent && <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 400, opacity: 0.7 }}>avg</span>}
-          {match != null && <span data-testid="match" style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: '#8fd19e' }}>{Math.round(match)}% match</span>}
+          {rent && <span className="muted" style={{ marginLeft: 6, fontSize: 11, fontWeight: 400 }}>avg</span>}
+          {match != null && <span data-testid="match" className="chip" style={{ marginLeft: 8, fontSize: 11 }}>{Math.round(match)}% match</span>}
         </div>
-        <div style={{ fontSize: 12, opacity: 0.85 }}>{factsLine(cols, i)}</div>
-        <div style={{ fontSize: 11, opacity: 0.6 }}>
+        <div style={{ fontSize: 12, color: 'var(--text)', opacity: 0.88 }}>{factsLine(cols, i)}</div>
+        <div className="muted" style={{ fontSize: 11 }}>
           {plotName(tier, cols.col.x[i]!, cols.col.y[i]!)} · {tier === 'polar' ? 'South Pole District' : 'Moon-wide'}
         </div>
         <Badges cols={cols} i={i} max={2} />

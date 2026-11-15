@@ -24,12 +24,12 @@ export function PlotsForYou({ cols, tier, onOpen }: { cols: Columns; tier: Tier;
   if (!ids.length) return null;
   return (
     <section aria-label="Plots for you" style={{ padding: '0 12px 8px' }}>
-      <h3 style={{ margin: '0 0 4px', fontSize: 14 }}>Plots for you</h3>
+      <h3 className="section-title">Plots for you</h3>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         {ids.map((i) => (
-          <button key={i} type="button" data-testid="featured" onClick={() => onOpen(i)} style={{ textAlign: 'left', padding: '4px 8px', borderRadius: 6, cursor: 'pointer' }}>
+          <button key={i} type="button" data-testid="featured" onClick={() => onOpen(i)} style={{ textAlign: 'left', padding: '6px 12px', borderRadius: 12, background: 'var(--surface-2)' }}>
             <strong>{formatPrice(cols.col.price[i]!)}</strong> · {plotName(tier, cols.col.x[i]!, cols.col.y[i]!)}
-            <div style={{ fontSize: 11, opacity: 0.7 }}>{badgeLabels(cols, i, 2).join(' · ') || 'Featured'}</div>
+            <div className="muted" style={{ fontSize: 11 }}>{badgeLabels(cols, i, 2).join(' · ') || 'Featured'}</div>
           </button>
         ))}
       </div>

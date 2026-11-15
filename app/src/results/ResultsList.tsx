@@ -12,7 +12,7 @@ const SORTS: [SortKey, string][] = [
 ];
 const BEST_MATCH: [SortKey, string] = ['best_match', 'Best match'];
 const EMPTY: number[] = [];
-const COLS = 2, ROW_H = 200;
+const COLS = 2, ROW_H = 220;
 
 interface RowProps {
   ids: number[]; match: number[]; cols: Columns; tier: Tier; basemapUrl: string | null;
@@ -50,10 +50,10 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
 
   return (
     <section aria-label="Lunar real estate" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <header style={{ padding: '12px 12px 8px' }}>
-        <h2 style={{ margin: 0, fontSize: 18 }}>Lunar real estate</h2>
+      <header style={{ padding: '16px 12px 10px' }}>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>Lunar real estate</h2>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
-          <span data-testid="count">
+          <span data-testid="count" className="muted">
             {total.toLocaleString()} results{total > RESULT_CAP ? ` · Showing ${RESULT_CAP} of ${total.toLocaleString()}` : ''}
           </span>
           <label>
@@ -66,7 +66,7 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
       </header>
       {quiet && <PlotsForYou cols={cols} tier={tier} onOpen={select} />}
       {results && total === 0 && (
-        <p data-testid="empty" style={{ margin: 0, padding: '0 12px 8px', fontSize: 13, opacity: 0.8 }}>Nothing matches in this part of the map. Zoom out, press “Whole map”, or loosen the filters.</p>
+        <p data-testid="empty" className="muted" style={{ margin: 0, padding: '0 12px 8px', fontSize: 13 }}>Nothing matches in this part of the map. Zoom out, press “Whole map”, or loosen the filters.</p>
       )}
       <div ref={box} style={{ flex: 1, minHeight: 0 }}>
         <List

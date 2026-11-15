@@ -15,9 +15,9 @@ export function TourCanvas({ model, t }: { model: TourModel; t: number }) {
     const s = model.year, hz = model.horizon;
     g.clearRect(0, 0, W, H);
     const sky = g.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, '#05070d'); sky.addColorStop(1, '#1a2030');
+    sky.addColorStop(0, '#03050a'); sky.addColorStop(1, '#10203a');
     g.fillStyle = sky; g.fillRect(0, 0, W, H);
-    g.fillStyle = '#8b93a7'; g.font = '12px system-ui';
+    g.fillStyle = '#7f98bd'; g.font = '12px system-ui';
     for (const [az, l] of [[0, 'N'], [45, 'NE'], [90, 'E'], [135, 'SE'], [180, 'S'], [225, 'SW'], [270, 'W'], [315, 'NW']] as const) {
       g.fillText(l, xOf(az) - 6, 14); g.fillRect(xOf(az), 18, 1, 6);
     }
@@ -34,11 +34,11 @@ export function TourCanvas({ model, t }: { model: TourModel; t: number }) {
       g.globalAlpha = 1;
     };
     dots(s.sunEl, s.sunAz, s.sunlit, '#ffd166');
-    dots(s.earthEl, s.earthAz, s.earthOk, '#4cc9f0');
+    dots(s.earthEl, s.earthAz, s.earthOk, '#88bcf9');
     g.beginPath(); g.moveTo(0, H);
     for (let px = 0; px <= W; px += 2) g.lineTo(px, yOf(horizonAt(hz, (px / W) * 360 - 180)));
     g.lineTo(W, H); g.closePath();
-    g.fillStyle = '#2b2f3a'; g.fill(); g.strokeStyle = '#9aa3b8'; g.lineWidth = 1.5; g.stroke();
+    g.fillStyle = '#080b11'; g.fill(); g.strokeStyle = '#88bcf9'; g.lineWidth = 1.5; g.stroke();
     const k = t - s.t0;
     const mark = (el: number, az: number, col: string, label: string) => {
       const y = yOf(Math.min(EL_MAX, Math.max(EL_MIN, el)));
@@ -46,7 +46,7 @@ export function TourCanvas({ model, t }: { model: TourModel; t: number }) {
       g.fillStyle = '#fff'; g.font = 'bold 12px system-ui'; g.fillText(label, xOf(az) + 11, y + 4);
     };
     mark(s.sunEl[k]!, s.sunAz[k]!, '#ffd166', s.sunlit[k] ? 'Sun' : 'Sun (hidden)');
-    mark(s.earthEl[k]!, s.earthAz[k]!, '#4cc9f0', s.earthOk[k] ? 'Earth' : 'Earth (no signal)');
+    mark(s.earthEl[k]!, s.earthAz[k]!, '#88bcf9', s.earthOk[k] ? 'Earth' : 'Earth (no signal)');
   }, [model, t]);
   return (
     <div>

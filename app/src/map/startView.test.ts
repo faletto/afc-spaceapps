@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Columns } from '../data/types';
 import { parseMode } from '../modes/mode';
-import { clampTarget, randomPlotPosition, textColorFor } from './markers';
+import { BAND_COLORS, clampTarget, randomPlotPosition, textColorFor } from './markers';
 
 const cols = (flags: number[]): Columns => ({
   rows: flags.length, buffer: new ArrayBuffer(0), scales: {},
@@ -30,7 +30,7 @@ describe('start view', () => {
   });
   it('pill text colour has enough contrast on every price band', () => {
     const lum = ([r, g, b]: number[]) => { const f = (v: number) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(r!) + 0.7152 * f(g!) + 0.0722 * f(b!); };
-    for (const band of [[94, 196, 160], [140, 210, 110], [240, 210, 80], [244, 140, 60], [220, 70, 80]] as [number, number, number][]) {
+    for (const band of BAND_COLORS) {
       const t = textColorFor(band), a = lum(band), b = lum(t);
       expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThan(3.5);
     }

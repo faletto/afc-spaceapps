@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Columns } from '../data/types';
 import { AboutButton } from '../ui/About';
 import { HOME_TYPES, type HomeType } from '../results/homeTypes';
@@ -18,7 +18,7 @@ function PriceInput({ label, value, onCommit }: { label: string; value: number |
       <input
         aria-label={label} aria-invalid={bad} inputMode="decimal" placeholder="any" value={text} size={8}
         onChange={(e) => { setText(e.target.value); const v = parsePrice(e.target.value); setBad(v === undefined); if (v !== undefined) onCommit(v); }}
-        style={bad ? { outline: '2px solid #e55' } : undefined}
+        style={bad ? { borderColor: '#ff7a7a' } : undefined}
       />
     </label>
   );
@@ -32,13 +32,23 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
   const active = filters.priceMin != null || filters.priceMax != null || filters.landTypes.length > 0 || filters.hideOff
     || filters.homeType !== 'any' || filters.minSun > 0 || filters.minEarth > 0;
   const landTypes = cols?.meta.land_types ?? [];
+  // Popovers (Land type, More) close on an outside click or Escape so they never cover the listing below them.
+  const bar = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const closeAll = (except: EventTarget | null) => bar.current?.querySelectorAll('details[open]').forEach((d) => { if (!except || !d.contains(except as Node)) d.removeAttribute('open'); });
+    const down = (e: PointerEvent) => closeAll(e.target);
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') closeAll(null); };
+    document.addEventListener('pointerdown', down, true);
+    document.addEventListener('keydown', key);
+    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key); };
+  }, []);
   const toggleLand = (i: number) =>
     setFilters({ landTypes: filters.landTypes.includes(i) ? filters.landTypes.filter((x) => x !== i) : [...filters.landTypes, i].sort() });
   return (
-    <div role="search" aria-label="Filters" style={{ display: 'flex', gap: 16, alignItems: 'center', padding: '8px 12px', borderBottom: '1px solid #262c38', flexWrap: 'wrap', fontSize: 13 }}>
-      <span role="tablist" aria-label="Buy or Rent" style={{ display: 'flex', gap: 4 }}>
+    <div ref={bar} role="search" aria-label="Filters" style={{ display: 'flex', gap: 12, alignItems: 'center', flex: 1, flexWrap: 'wrap', fontSize: 13 }}>
+      <span role="tablist" aria-label="Buy or Rent">
         {(['buy', 'rent'] as const).map((k) => (
-          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)} style={{ fontWeight: tab === k ? 700 : 400 }}>{k === 'buy' ? 'Buy' : 'Rent'}</button>
+          <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{k === 'buy' ? 'Buy' : 'Rent'}</button>
         ))}
       </span>
       <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -54,7 +64,7 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
       {filters.homeType === 'ice_depot' && tier === 'global' && <span role="status" style={{ opacity: 0.75 }}>Ice depots exist only in the South Pole District.</span>}
       <details style={{ position: 'relative' }}>
         <summary>Land type{filters.landTypes.length ? ` (${filters.landTypes.length})` : ''}</summary>
-        <div style={{ position: 'absolute', zIndex: 10, background: '#1d2433', border: '1px solid #3a4560', borderRadius: 6, padding: 8, display: 'grid', gap: 4, minWidth: 160 }}>
+        <div className="popover" style={{ position: 'absolute', zIndex: 10, padding: 10, display: 'grid', gap: 6, minWidth: 170, marginTop: 6 }}>
           {landTypes.map((t, i) => (
             <label key={t}><input type="checkbox" checked={filters.landTypes.includes(i)} onChange={() => toggleLand(i)} /> {titleCase(t)}</label>
           ))}
@@ -62,7 +72,7 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
       </details>
       <details style={{ position: 'relative' }}>
         <summary>More{filters.minSun > 0 || filters.minEarth > 0 ? ' (on)' : ''}</summary>
-        <div style={{ position: 'absolute', zIndex: 10, background: '#1d2433', border: '1px solid #3a4560', borderRadius: 6, padding: 8, display: 'grid', gap: 8, minWidth: 220 }}>
+        <div className="popover" style={{ position: 'absolute', zIndex: 10, padding: 12, display: 'grid', gap: 10, minWidth: 230, marginTop: 6 }}>
           <label>Min sunlight: {filters.minSun}%<br /><input type="range" aria-label="Minimum sunlight" min={0} max={100} step={5} value={filters.minSun} onChange={(e) => setFilters({ minSun: Number(e.target.value) })} /></label>
           <label>Min Earth contact: {filters.minEarth}%<br /><input type="range" aria-label="Minimum Earth contact" min={0} max={100} step={5} value={filters.minEarth} onChange={(e) => setFilters({ minEarth: Number(e.target.value) })} /></label>
         </div>
@@ -70,7 +80,7 @@ export function Filters({ cols }: { cols: Columns | undefined }) {
       <label><input type="checkbox" checked={filters.hideOff} onChange={(e) => setFilters({ hideOff: e.target.checked })} /> Hide off-market plots</label>
       {active && <button type="button" onClick={() => { resetFilters(); }}>Clear filters</button>}
       <AboutButton />
-      {results && <span data-testid="match-count" aria-live="polite" style={{ marginLeft: 'auto', opacity: 0.75 }}>{countPassing(results.passing).toLocaleString()} plots match</span>}
+      {results && <span data-testid="match-count" aria-live="polite" style={{ marginLeft: 'auto', color: 'var(--muted)' }}>{countPassing(results.passing).toLocaleString()} plots match</span>}
     </div>
   );
 }

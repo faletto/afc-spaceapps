@@ -8,8 +8,8 @@ export const STAYS: [number, string][] = [[14, '2 weeks'], [30, '1 month'], [90,
 export function TimeSlider() {
   const { t, setT, tab, stayDays, setStay } = useStore();
   return (
-    <div role="group" aria-label="Time" style={{ position: 'absolute', left: 12, right: 12, bottom: 12, display: 'flex', gap: 12, alignItems: 'center', background: '#161a22e6', border: '1px solid #262c38', borderRadius: 8, padding: '6px 10px', fontSize: 13 }}>
-      <span data-testid="time-label" style={{ minWidth: 190 }}>{tab === 'rent' ? 'Move-in' : 'Time'}: {dateLabel(t)}{tab === 'rent' ? '' : ` ${String(t % 24).padStart(2, '0')}:00 UTC`}</span>
+    <div role="group" aria-label="Time" className="panel" style={{ position: 'absolute', left: 12, right: 12, bottom: 12, display: 'flex', gap: 14, alignItems: 'center', padding: '8px 14px', fontSize: 13 }}>
+      <span data-testid="time-label" style={{ minWidth: 190, fontWeight: 600 }}>{tab === 'rent' ? 'Move-in' : 'Time'}: {dateLabel(t)}{tab === 'rent' ? '' : ` ${String(t % 24).padStart(2, '0')}:00 UTC`}</span>
       <input type="range" aria-label="Time" min={0} max={HOURS_2028 - 1} step={1} value={t} onChange={(e) => setT(Number(e.target.value))} style={{ flex: 1 }} />
       {tab === 'rent' && (
         <label>
@@ -19,7 +19,7 @@ export function TimeSlider() {
           </select>
         </label>
       )}
-      <span style={{ opacity: 0.6 }}>day {moveInDay(t)}</span>
+      <span className="muted">day {moveInDay(t)}</span>
     </div>
   );
 }

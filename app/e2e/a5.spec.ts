@@ -42,3 +42,19 @@ test('Home type on Moon-wide: ice depot explains itself; More panel filters by s
   await page.getByLabel('Minimum sunlight').fill('50');
   await expect.poll(total).toBeLessThan(before);
 });
+
+test('plot overview says what the numbers mean; no rent history', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.getByTestId('card').first().waitFor();
+  await expect(page.getByTestId('card').first()).toContainText(/Sunlit \d+% of the year · Earth in view \d+% of the year/);
+  await page.getByTestId('card').first().click();
+  const facts = page.getByTestId('facts');
+  await expect(facts).toContainText('of the year in sunlight');
+  await expect(facts).toContainText('of the year Earth is in view');
+  await expect(facts).toContainText('average ground slope');
+  await expect(facts).toContainText('plot area');
+  await page.getByRole('tab', { name: 'Rent' }).click();
+  await expect(page.getByTestId('rent-block')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Rent history' })).toHaveCount(0);
+});

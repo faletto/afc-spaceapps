@@ -14,5 +14,5 @@ export function Badges({ cols, i, max }: { cols: Columns; i: number; max?: numbe
   const on = badgeLabels(cols, i, max);
   if (!on.length) return null;
   return <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{on.map((l) => (
-    <span key={l} style={{ background: '#2b3a55', borderRadius: 4, padding: '2px 8px', fontSize: 12, fontWeight: 600 }}>{l}</span>))}</div>;
+    <span key={l} className="chip">{l}</span>))}</div>;
 }

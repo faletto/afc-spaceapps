@@ -9,9 +9,9 @@ export function Notice() {
   if (!open) return null;
   const close = () => { try { localStorage.setItem(KEY, '1'); } catch { /* ignore */ } setOpen(false); };
   return (
-    <div role="note" data-testid="notice" style={{ position: 'absolute', left: 12, bottom: 12, right: 12, maxWidth: 520, background: '#1d2433', border: '1px solid #3a4560', borderRadius: 8, padding: 12, fontSize: 12, zIndex: 5, display: 'flex', gap: 12 }}>
-      <span><strong>Fictional premise, real data.</strong> {DISCLAIMER}</span>
-      <button type="button" onClick={close} style={{ alignSelf: 'start' }}>Got it</button>
+    <div role="note" data-testid="notice" className="panel" style={{ position: 'absolute', left: 16, bottom: 16, right: 16, maxWidth: 540, padding: 14, fontSize: 12, zIndex: 5, display: 'flex', gap: 14, alignItems: 'center', borderColor: 'var(--accent-line)' }}>
+      <span><strong style={{ color: 'var(--accent)' }}>Fictional premise, real data.</strong> {DISCLAIMER}</span>
+      <button type="button" onClick={close} aria-pressed="true" style={{ alignSelf: 'center', whiteSpace: 'nowrap' }}>Got it</button>
     </div>
   );
 }

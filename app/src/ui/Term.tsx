@@ -19,7 +19,7 @@ export function Term({ id, children, extra }: { id: string; children: ReactNode;
       {open && (
         <span role="tooltip" id={tipId} style={{
           position: 'absolute', left: 0, top: '100%', zIndex: 20, width: 240, marginTop: 4, padding: 8, borderRadius: 6,
-          background: '#222a3a', border: '1px solid #3a4560', fontSize: 12, lineHeight: 1.4, fontWeight: 400, color: '#eee',
+          background: 'var(--surface-2)', border: '1px solid var(--border-strong)', fontSize: 12, lineHeight: 1.4, fontWeight: 400, color: 'var(--text)',
         }}>
           {g.text}{extra ? ` ${extra}` : ''}
           {g.formula && <><br /><code>{g.formula}</code></>}
