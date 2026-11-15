@@ -36,7 +36,9 @@ def main(argv=None) -> int:
         pt = dict(np.load(work / "polar_plots.npz", allow_pickle=False))  # run polar_build first (make polar)
         allv = np.concatenate([g["viability"], pt["viability"]])
         cutoff = pricing.scarcity_cutoff(allv, cfg)
-        hot_pct = cfg["badges"]["hot_property_pct"]  # Hot property is relative to each tier (scarcity cutoff stays shared)
+        hot_pct = cfg["badges"][
+            "hot_property_pct"
+        ]  # Hot property is relative to each tier (scarcity cutoff stays shared)
         hot_g, hot_p = (float(np.percentile(t["viability"], hot_pct)) for t in (g, pt))
         for t in (g, pt):  # shared scarcity cutoff across tiers
             prem = pricing.landmark_premium(t["apollo_km"], t["land_type"] == land.LT["peak_of_light"], cfg)
