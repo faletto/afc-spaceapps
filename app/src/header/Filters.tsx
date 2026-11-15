@@ -1,3 +1,4 @@
+/** Filter bar: price range, land types, home type, sunlight/Earth minimums, hide off-market. Writes to the store; the worker applies them. */
 import { useEffect, useRef, useState } from 'react';
 import type { Columns } from '../data/types';
 import { AboutButton } from '../ui/About';

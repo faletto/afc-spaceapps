@@ -1,3 +1,4 @@
+/** Headline fact tiles (sunlight, Earth view, slope, area), each with what it measures. */
 import type { Columns } from '../data/types';
 import { factsParts } from '../results/format';
 import { Term } from '../ui/Term';

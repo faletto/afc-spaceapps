@@ -1,3 +1,4 @@
+/** Overlay picker, opacity slider and colour-ramp legend (legend JSON comes from the pipeline). */
 import { MODE } from '../modes/mode';
 import { useEffect, useState } from 'react';
 import { loadLegend, OVERLAY_NAMES } from '../data/loader';

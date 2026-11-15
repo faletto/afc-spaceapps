@@ -1,3 +1,4 @@
+/** Overlay menu labels and one-line explanations; units and ranges come from each overlay's legend JSON. */
 import type { OverlayName } from '../data/loader';
 
 /** Menu labels + one-line explanations (requirements §5.5). Legend JSON from the pipeline supplies unit/range/ramp. */

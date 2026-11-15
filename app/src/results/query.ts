@@ -1,3 +1,4 @@
+/** Filter, sort and rank logic over the columns. Runs inside the compute worker; kept pure so it is unit-testable. */
 import type { Columns, Tier } from '../data/types';
 import type { Filters, Rect, SortKey } from '../state/store';
 import { NO_FILTERS } from '../state/store';

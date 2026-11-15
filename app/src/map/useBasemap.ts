@@ -1,3 +1,4 @@
+/** Loads the small basemap first and the full one in the background, as object URLs. */
 import { useEffect, useState } from 'react';
 import type { Tier } from '../data/types';
 

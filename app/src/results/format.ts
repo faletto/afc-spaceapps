@@ -1,3 +1,4 @@
+/** Formatting of a plot's headline facts for cards and tiles. */
 import type { Columns } from '../data/types';
 
 /** The four headline facts, with units and what each one measures (DET-10), for tiles and the compact card line. */

@@ -1,3 +1,4 @@
+/** Home types (Lander pad, Habitat, Solar farm, Ice depot): gates and weighted match % from config.json. */
 import type { Columns, Tier } from '../data/types';
 import { ICE_NA } from '../data/types';
 

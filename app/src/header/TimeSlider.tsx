@@ -1,3 +1,4 @@
+/** Time slider over the 2028 analysis year (hourly). Drives the 3D Tour; never changes Buy prices (D-6). */
 import { HOURS_2028 } from '../science/visibility';
 import { useShallow } from 'zustand/react/shallow';
 import { moveInDay, useStore } from '../state/store';

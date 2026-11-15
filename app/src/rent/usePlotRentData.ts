@@ -1,3 +1,4 @@
+/** Loads what the client needs to price a stay for a plot (config, ephemeris, best cell, horizon). Used only while Rent is enabled. */
 import { useEffect, useState } from 'react';
 import { loadConfig, loadEphemeris, loadHorizonTile, type AppConfig, type DetailRecord } from '../data/loader';
 import { dataSource } from '../data/source';

@@ -1,3 +1,4 @@
+/** Badge labels for a plot (Hot property, Earth view, Peak of light, Off market) in display priority. */
 import type { Columns } from '../data/types';
 
 /** DET-11 in display priority. `price_cut` is Rent-tab only (A6); `featured` is not a badge. */
