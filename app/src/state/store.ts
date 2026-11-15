@@ -27,9 +27,6 @@ interface State {
   /** Visible map rect in tier coordinates (null = whole tier). */
   viewRect: Rect | null;
   /** Time slider: hour index into the analysis year (TIME-1). On Rent it is the move-in date (RENT-1). */
-  /** Listing gallery tab; demo scenarios open the 3D Tour directly. */
-  galleryTab: 'photos' | 'tour';
-  setGalleryTab: (g: 'photos' | 'tour') => void;
   t: number;
   stayDays: number;
   setT: (t: number) => void;
@@ -50,8 +47,7 @@ interface State {
 }
 export const useStore = create<State>((set) => ({
   tab: 'buy', tier: 'global', selection: null, hover: null, sort: 'price_desc', filters: NO_FILTERS, results: null, overlay: null, overlayOpacity: 0.7, viewRect: null,
-  t: 24 * 273, stayDays: 14, galleryTab: 'photos',
-  setGalleryTab: (galleryTab) => set({ galleryTab }),
+  t: 24 * 273, stayDays: 14,
   setT: (t) => set({ t }),
   setStay: (stayDays) => set({ stayDays }),
   // Buy bounds are dollars, Rent bounds are $/month: carrying one over would silently empty the list.
