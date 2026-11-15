@@ -8,6 +8,13 @@ export const BAND_COLORS: [number, number, number][] = [
   [94, 196, 160], [140, 210, 110], [240, 210, 80], [244, 140, 60], [220, 70, 80],
 ];
 
+/** Dark or white text, whichever contrasts more with a band colour (WCAG relative luminance). */
+export function textColorFor([r, g, b]: [number, number, number]): [number, number, number, number] {
+  const lin = (v: number) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return (L + 0.05) / 0.05 > 1.05 / (L + 0.05) ? [18, 20, 28, 255] : [255, 255, 255, 255];
+}
+
 /** Price band edges = quantiles of on-market prices (data-independent of absolute scale). */
 export function priceBandEdges(prices: ArrayLike<number>, onMarket: Uint32Array, bands = BAND_COLORS.length): number[] {
   const v = Float32Array.from(onMarket, (i) => prices[i]!).sort();
@@ -71,4 +78,20 @@ export function visibleIds(set: MarkerSet, rect: [number, number, number, number
     if (x >= x0 && x <= x1 && y >= y0 && y <= y1) out.push(set.ids[k]!);
   }
   return out;
+}
+
+/** A random on-market plot's position (the centre of the default view), or null if there are none. */
+export function randomPlotPosition(c: Columns, rnd: () => number = Math.random): [number, number] | null {
+  const ids: number[] = [];
+  for (let i = 0; i < c.rows; i++) if (!isOffMarket(c, i)) ids.push(i);
+  if (!ids.length) return null;
+  const i = ids[Math.floor(rnd() * ids.length)]!;
+  return [c.col.x[i]!, c.col.y[i]!];
+}
+
+/** View centre for a zoom level, kept inside the tier bounds (so a random pick near an edge doesn't show empty space). */
+export function clampTarget(target: [number, number], bounds: [number, number, number, number], zoom: number, w: number, h: number): [number, number] {
+  const hw = w / 2 / 2 ** zoom, hh = h / 2 / 2 ** zoom;
+  const cl = (v: number, lo: number, hi: number) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));
+  return [cl(target[0], bounds[0] + hw, bounds[2] - hw), cl(target[1], bounds[1] + hh, bounds[3] - hh)];
 }

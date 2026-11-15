@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('map loads both tiers', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await expect(page.locator('canvas').first()).toBeVisible();
   await page.getByRole('button', { name: 'South Pole District' }).click();
   await expect(page.locator('canvas').first()).toBeVisible();
@@ -13,7 +13,7 @@ test('map loads both tiers', async ({ page }) => {
 
 test('zooming shows pills and clicking one selects a plot', async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 700 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.getByTestId('card').first().waitFor();
   await page.waitForTimeout(4000); // software GL needs time after heavier tests have run before it
   await page.mouse.move(384, 350);
@@ -28,7 +28,7 @@ test('zooming shows pills and clicking one selects a plot', async ({ page }) => 
 
 test('results list is capped, hover highlights, click selects', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   const count = page.getByTestId('count');
   await expect(count).toContainText('results');
   await expect(count).toContainText('Showing 200 of');
@@ -43,7 +43,7 @@ test('results list is capped, hover highlights, click selects', async ({ page })
 
 test('list follows the map view and sort', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.waitForTimeout(1500);
   const text = async () => (await page.getByTestId('count').textContent())!;
   const before = await text();
@@ -58,7 +58,7 @@ test('list follows the map view and sort', async ({ page }) => {
 
 test('card opens listing, back returns to results (state kept)', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await expect(page.getByTestId('count')).toContainText('results');
   // Sorting runs in the worker, so wait for the list to actually re-sort before reading a card.
   const firstPrice = page.getByTestId('card').first().locator('div >> text=/^\\$/').first();
@@ -87,7 +87,7 @@ test('card opens listing, back returns to results (state kept)', async ({ page }
 });
 
 test('Escape closes the listing; notice is dismissible', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await expect(page.getByTestId('notice')).toBeVisible();
   await page.getByRole('button', { name: 'Got it' }).click();
   await expect(page.getByTestId('notice')).toHaveCount(0);
@@ -104,7 +104,7 @@ test('overlay: select shows legend with unit/range, opacity works, ice is polar-
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text())); // deck.gl logs layer errors here
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   const sel = page.getByRole('combobox', { name: 'Overlay' });
   await expect(page.getByTestId('legend')).toHaveCount(0);
   await expect(sel.locator('option[value="ice"]')).toHaveCount(0);
@@ -125,7 +125,7 @@ test('overlay: select shows legend with unit/range, opacity works, ice is polar-
 });
 
 test('glossary tooltip opens on focus and closes on Escape without closing the listing', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.getByTestId('card').first().click();
   const term = page.locator('[data-term="sunlight"]');
   await term.focus();
@@ -141,7 +141,7 @@ test('filters: price range narrows list + map count, land type, hide off-market,
   const errors: string[] = [];
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   const count = page.getByTestId('count');
   const match = page.getByTestId('match-count');
   await expect(count).toContainText('Showing 200 of');
@@ -176,7 +176,7 @@ test('filters: price range narrows list + map count, land type, hide off-market,
 
 test('D-6: Buy price never changes with filters, sort, overlay, tier, selection', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   const cardFor = (id: string) => page.locator(`[data-testid="card"][data-plot="${id}"]`);
   const priceIn = async (id: string) => (await cardFor(id).locator('div >> text=/^\\$/').first().textContent())!;
 
@@ -232,7 +232,7 @@ test('D-6: Buy price never changes with filters, sort, overlay, tier, selection'
 
 test('clicking a dot at the default Moon-wide zoom selects its plot and opens the listing', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.getByTestId('card').first().waitFor();
   await page.locator('canvas').first().waitFor();
   await page.waitForTimeout(1500);
@@ -250,7 +250,7 @@ test('clicking a dot at the default Moon-wide zoom selects its plot and opens th
 
 test('panning the map does not select a plot', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.locator('canvas').first().waitFor();
   await page.waitForTimeout(1500);
   const box = (await page.locator('canvas').first().boundingBox())!;
@@ -265,7 +265,7 @@ test('each basemap file downloads once; listing shows why, blurb and nearest fea
   const seen: Record<string, number> = {};
   page.on('request', (r) => { const m = /basemap(_small)?\.jpg$/.exec(r.url()); if (m) seen[m[0]] = (seen[m[0]] ?? 0) + 1; });
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.getByTestId('card').first().click();
   await expect(page.getByTestId('why')).toContainText('Priced');
   await expect(page.getByTestId('blurb')).not.toBeEmpty();

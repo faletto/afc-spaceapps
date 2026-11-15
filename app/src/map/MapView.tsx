@@ -6,8 +6,8 @@ import { BitmapLayer, PolygonLayer, ScatterplotLayer, TextLayer } from '@deck.gl
 import type { Columns, Tier } from '../data/types';
 import { dataBase } from '../data/source';
 import { useStore } from '../state/store';
-import { BAND_COLORS, bandOf, buildMarkers, formatPrice, visibleIds } from './markers';
-import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, tierBounds } from './tiers';
+import { BAND_COLORS, bandOf, buildMarkers, clampTarget, formatPrice, randomPlotPosition, textColorFor, visibleIds } from './markers';
+import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, START_ZOOM_ABOVE_FIT, tierBounds } from './tiers';
 
 /** Dots are < 2 px at the Moon-wide zoom; pick the nearest marker within this many pixels so they stay clickable. */
 const PICK_RADIUS_PX = 5;
@@ -46,10 +46,20 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     length: markers.off.ids.length, attributes: { getPosition: { value: markers.off.positions, size: 2 } },
   }), [markers]);
 
-  // Re-fit when the tier or container size changes.
+  // First view of a tier: a random area, zoomed in (the whole map is overwhelming); ?view=fit keeps the whole map.
+  const centre: [number, number] = [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2];
+  const showWhole = () => setVs({ target: [...centre, 0], zoom: fit });
+  const showArea = (pick: [number, number] | null) => {
+    if (!pick || !size.w) return showWhole();
+    const z = fit + START_ZOOM_ABOVE_FIT, [x, y] = clampTarget(pick, bounds, z, size.w, size.h);
+    setVs({ target: [x, y, 0], zoom: z });
+  };
+  const ready = size.w > 0;
   useEffect(() => {
-    if (size.w) setVs({ target: [(bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2, 0], zoom: fit });
-  }, [tier, cols, size.w, size.h]);
+    if (!ready) return;
+    if (MODE.fit) showWhole(); else showArea(randomPlotPosition(cols)); // only on tier/data change, never on resize
+  }, [tier, cols, ready]);
+  useEffect(() => { if (MODE.fit && ready) showWhole(); }, [size.w, size.h]);
 
   // Publish the visible rect for the results list (debounced, RES-3).
   useEffect(() => {
@@ -99,10 +109,12 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
     new TextLayer<number>({
       id: 'pills', visible: pills, data: shown, pickable: true,
       getPosition: (i) => [cols.col.x[i]!, cols.col.y[i]!], getText: (i) => (rentTab ? `${formatPrice(cols.col.rent_avg[i]!)}/mo` : formatPrice(cols.col.price[i]!)),
-      getSize: MODE.present ? Math.round(12 * PRESENT_ZOOM) : 12, sizeUnits: 'pixels', getColor: [20, 20, 25, 255], fontWeight: 700,
-      background: true, getBackgroundColor: (i) => [...BAND_COLORS[bandOf(cols.col.price[i]!, markers.edges)]!, 240] as [number, number, number, number],
+      getSize: MODE.present ? Math.round(12 * PRESENT_ZOOM) : 12, sizeUnits: 'pixels', fontFamily: 'system-ui, -apple-system, Segoe UI, sans-serif', fontWeight: 700,
+      getColor: (i) => textColorFor(BAND_COLORS[bandOf(cols.col.price[i]!, markers.edges)]!),
+      background: true, getBackgroundColor: (i) => [...BAND_COLORS[bandOf(cols.col.price[i]!, markers.edges)]!, 245] as [number, number, number, number],
+      backgroundBorderRadius: 7,
       updateTriggers: { getText: rentTab },
-      backgroundPadding: [5, 2], getBorderColor: [20, 20, 25, 255], getBorderWidth: 1,
+      backgroundPadding: [8, 4], getBorderColor: [255, 255, 255, 200], getBorderWidth: 1,
       onHover: (info) => setHover(info.object ?? null),
       onClick: (info) => info.object != null && select(info.object),
     }),
@@ -131,6 +143,10 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
           getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
         />
       )}
+      <div style={{ position: 'absolute', right: 12, bottom: 64, display: 'flex', gap: 6 }}>
+        <button type="button" onClick={showWhole}>Whole map</button>
+        <button type="button" onClick={() => showArea(randomPlotPosition(cols))}>Another area</button>
+      </div>
       {offTip && (
         <div role="tooltip" style={{ position: 'absolute', left: offTip.x + 12, top: offTip.y + 12, background: '#222a3a', border: '1px solid #3a4560', borderRadius: 6, padding: '4px 8px', fontSize: 12, pointerEvents: 'none', color: '#eee' }}>
           Off market: not safe to land

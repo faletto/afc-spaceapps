@@ -5,6 +5,8 @@ export const PLOT_HALF: Record<Tier, number> = { global: 0.5, polar: 480 };
 /** Zoom levels above "fit" at which dots become price pills (MAP-2). */
 export const PILL_ZOOM_ABOVE_FIT = 3;
 export const PILL_CAP = 1500;
+/** First view: zoom this many levels in from "fit" (about 40 plots across on Moon-wide) so the map isn't a wall of markers. */
+export const START_ZOOM_ABOVE_FIT = 5;
 
 export const tierBounds = (c: Columns): [number, number, number, number] => c.meta.bounds;
 export const fitZoom = (b: [number, number, number, number], w: number, h: number) =>

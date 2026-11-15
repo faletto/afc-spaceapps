@@ -13,7 +13,7 @@ test('Plots for you, real plot ids and badges on cards', async ({ page }) => {
 
 test('Home type: each type returns results with match %, Best match sort, prices unchanged', async ({ page }) => {
   await page.setViewportSize({ width: 1400, height: 800 });
-  await page.goto('/');
+  await page.goto('/?view=fit');
   await page.getByRole('button', { name: 'South Pole District' }).click();
   await page.getByTestId('card').first().waitFor();
   const priceOf = async () => (await page.getByTestId('card').first().textContent())!.match(/\$[\d.,]+[KMB]?/)![0];

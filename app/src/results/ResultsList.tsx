@@ -65,6 +65,9 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
         </div>
       </header>
       {quiet && <PlotsForYou cols={cols} tier={tier} onOpen={select} />}
+      {results && total === 0 && (
+        <p data-testid="empty" style={{ margin: 0, padding: '0 12px 8px', fontSize: 13, opacity: 0.8 }}>Nothing matches in this part of the map. Zoom out, press “Whole map”, or loosen the filters.</p>
+      )}
       <div ref={box} style={{ flex: 1, minHeight: 0 }}>
         <List
           style={{ height: h }} rowComponent={Row} rowCount={rows} rowHeight={ROW_H} overscanCount={2}

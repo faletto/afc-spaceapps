@@ -12,6 +12,7 @@
 - FLAKES: e2e on software GL is timing-sensitive after heavy specs (pill-click test, demo-scenarios test): each failed once in some full runs and passed alone/on rerun. Playwright `retries` = 1 on CI only (not local), trace on first retry. Pill test waits lengthened.
 - Merged so far on main: through A6 (d0b39ac). A6/A7 deferred items: OV-7 comm-window overlay, Price cut badge on cards, RENT-4 per-window pins, SCN-2 relay, TIME-3 play, OV-11 (R-A8), South Pole tier polish, FIL-6 URL state, Q-A3 (home weights full vs delta).
 - Next: human OK to merge A7 → main (M7; triggers first Pages deploy, base path /<repo>/); then deferred items by priority, or freeze (M8).
+- POST-A7 polish (branch `app`, not merged): prettier map price pills (rounded, light border, per-band text colour); default view = random zoomed-in area (fit+5, ~40 plots, `?view=fit` for the whole map; 'Whole map' / 'Another area' buttons; empty-list hint). smoke + a5 e2e use `?view=fit`. vitest 59.
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 
