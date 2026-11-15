@@ -21,3 +21,15 @@ test('?view=fit starts on the whole map', async ({ page }) => {
   await page.goto('/?view=fit');
   await expect(page.getByTestId('count')).toContainText(/\d{2},\d{3} results/);
 });
+
+test('prices are hidden at the start view and appear when zoomed in', async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  await page.getByTestId('card').first().waitFor();
+  const hint = page.getByText('Zoom in for prices');
+  await expect(hint).toBeVisible(); // start view: dots only
+  await page.waitForTimeout(3000);
+  await page.mouse.move(460, 420);
+  for (let i = 0; i < 4; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(300); }
+  await expect(hint).toBeHidden(); // zoomed in: pills drawn
+});

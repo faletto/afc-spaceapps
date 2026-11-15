@@ -21,7 +21,7 @@ test('Rent tab: move-in changes the rent, never the Buy price; tour follows the 
   for (const day of [10, 100, 200, 288, 340]) {
     await slider.fill(String(24 * (day - 1)));
     await expect(page.getByTestId('time-label')).toContainText(/\d{4}/);
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(1200); // rent is a deferred value; give it time under software GL
     rents.add(money(await page.getByTestId('listing-rent').textContent()));
     expect(money(await page.getByTestId('listing-price').textContent())).toBe(buy); // D-6
   }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Columns } from '../data/types';
 import { parseMode } from '../modes/mode';
+import { PILL_CAP, pillsVisible } from './tiers';
 import { BAND_COLORS, clampTarget, randomPlotPosition, textColorFor } from './markers';
 
 const cols = (flags: number[]): Columns => ({
@@ -34,5 +35,12 @@ describe('start view', () => {
       const t = textColorFor(band), a = lum(band), b = lum(t);
       expect((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toBeGreaterThan(3.5);
     }
+  });
+  it('price pills only appear when plots are big on screen; overlays need much more zoom', () => {
+    expect(pillsVisible(80, false)).toBe(false);   // the default start view (~82 px plots): dots, no prices
+    expect(pillsVisible(110, false)).toBe(true);
+    expect(pillsVisible(150, true)).toBe(false);   // overlay on: keep the colours visible
+    expect(pillsVisible(220, true)).toBe(true);
+    expect(PILL_CAP).toBeLessThanOrEqual(300);
   });
 });

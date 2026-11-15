@@ -17,19 +17,20 @@ test('zooming shows pills and clicking one selects a plot', async ({ page }) => 
   await page.getByTestId('card').first().waitFor();
   await page.waitForTimeout(4000); // software GL needs time after heavier tests have run before it
   await page.mouse.move(384, 350);
-  for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(400); }
+  for (let i = 0; i < 7; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(300); } // ~0.9 zoom per step: plots end up ≈ 200 px, pills on
   await page.waitForTimeout(2000);
-  // Find a pill by hovering over a grid until the map shows the pointer cursor (deck.gl picked something); layout-independent.
-  let hit: [number, number] | null = null;
-  scan: for (let y = 250; y <= 450 && !hit; y += 18) {
-    for (let x = 300; x <= 560; x += 18) {
-      await page.mouse.move(x, y);
-      await page.waitForTimeout(120);
-      if (await page.evaluate(([px, py]) => getComputedStyle(document.elementFromPoint(px!, py!)!).cursor, [x, y]) === 'pointer') { hit = [x, y]; break scan; }
-    }
+  // Layout-independent: zoom is anchored at the pointer, so a pill/dot is within ~100 px of it. Try points outward from there;
+  // a click selects the hovered plot and does nothing on empty map, so click until something is selected.
+  const pts: [number, number][] = [];
+  for (let dy = -112; dy <= 112; dy += 16) for (let dx = -112; dx <= 112; dx += 16) pts.push([384 + dx, 350 + dy]);
+  pts.sort((p, q) => Math.hypot(p[0] - 384, p[1] - 350) - Math.hypot(q[0] - 384, q[1] - 350));
+  for (const [x, y] of pts) {
+    await page.mouse.move(x, y);
+    await page.waitForTimeout(90);
+    await page.mouse.click(x, y);
+    await page.waitForTimeout(90);
+    if (await page.getByTestId('selected').count()) break;
   }
-  expect(hit, 'no pill found under the pointer').not.toBeNull();
-  await page.mouse.click(hit![0], hit![1]);
   await expect(page.getByTestId('selected')).toBeVisible();
 });
 

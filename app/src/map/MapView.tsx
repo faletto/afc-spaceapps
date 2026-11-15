@@ -7,7 +7,7 @@ import type { Columns, Tier } from '../data/types';
 import { dataBase } from '../data/source';
 import { useStore } from '../state/store';
 import { BAND_COLORS, bandOf, buildMarkers, clampTarget, formatPrice, randomPlotPosition, textColorFor, visibleIds } from './markers';
-import { fitZoom, PILL_CAP, PLOT_HALF, PILL_ZOOM_ABOVE_FIT, plotSquare, START_ZOOM_ABOVE_FIT, tierBounds } from './tiers';
+import { fitZoom, PILL_CAP, PLOT_HALF, pillsVisible, plotSquare, START_ZOOM_ABOVE_FIT, tierBounds } from './tiers';
 
 /** Dots are < 2 px at the Moon-wide zoom; pick the nearest marker within this many pixels so they stay clickable. */
 const PICK_RADIUS_PX = 5;
@@ -73,10 +73,10 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
 
   // Dot radius follows plot size on screen so dots don't wall off the basemap/overlay; fade them under an overlay.
   const plotPx = 2 ** vs.zoom * 2 * PLOT_HALF[tier];
-  const dotR = Math.min(4, Math.max(0.8, plotPx * 0.3)) * (MODE.present ? PRESENT_ZOOM : 1);
+  const dotR = Math.min(5, Math.max(0.8, plotPx * 0.3)) * (MODE.present ? PRESENT_ZOOM : 1);
   const dotOpacity = overlay ? 0.35 : 1;
 
-  const pills = vs.zoom - fit >= PILL_ZOOM_ABOVE_FIT;
+  const pills = pillsVisible(plotPx, overlay != null);
   const shown = useMemo(() => {
     if (!pills || !size.w) return [];
     const s = 2 ** vs.zoom, hw = size.w / 2 / s, hh = size.h / 2 / s;
@@ -145,6 +145,7 @@ export function MapView({ tier, cols, basemapUrl }: { tier: Tier; cols: Columns;
         />
       )}
       <div className="panel" style={{ position: 'absolute', right: 12, bottom: 68, display: 'flex', gap: 6, padding: 5 }}>
+        {!pills && <span className="muted" style={{ fontSize: 12, alignSelf: 'center', padding: '0 8px' }}>Zoom in for prices</span>}
         <button type="button" onClick={showWhole}>Whole map</button>
         <button type="button" onClick={() => showArea(randomPlotPosition(cols))}>Another area</button>
       </div>
