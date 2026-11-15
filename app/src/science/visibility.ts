@@ -11,7 +11,7 @@ const D2R = Math.PI / 180;
 export interface SciConfig {
   power: { panel: string; sunlit_threshold: number };
   comms: { mode: string; margin_deg: number; cutoff_deg: number };
-  thermal: { albedo: number; emissivity: number; floor_k: number; psr_floor_k: number };
+  thermal: { albedo: number; emissivity: number; floor_k: number; psr_floor_k: number; /** Night floor for sunlit polar sites (Q-P8, 50 K); Moon-wide keeps floor_k. */ polar_floor_k?: number };
 }
 export interface Eph { sun: ArrayLike<number>; earth: ArrayLike<number>; earthDistM: ArrayLike<number>; tsi: ArrayLike<number> }
 
@@ -90,8 +90,8 @@ export interface SiteStats {
   monthly_sunlit: number[]; monthly_earth: number[];
 }
 
-/** Window statistics over a series (§3.6–3.7). */
-export function siteStats(s: Series, eph: Eph, cfg: SciConfig, year = 2028): SiteStats {
+/** Window statistics over a series (§3.6–3.7). `floorK` overrides the sunlit night floor (polar tier: cfg.thermal.polar_floor_k). */
+export function siteStats(s: Series, eph: Eph, cfg: SciConfig, year = 2028, floorK?: number): SiteStats {
   const { n } = s, vertical = cfg.power.panel === 'vertical_tracking', th = cfg.thermal;
   let nSun = 0, nE = 0, energy = 0, eeSum = 0, tSum95 = 0, tSum40 = 0, tMin95 = 1e9, tMin40 = 1e9, tMax95 = 0, tMax40 = 0;
   const ms = new Array<number>(12).fill(0), me = new Array<number>(12).fill(0), cnt = new Array<number>(12).fill(0);
@@ -101,7 +101,7 @@ export function siteStats(s: Series, eph: Eph, cfg: SciConfig, year = 2028): Sit
     energy += tsi * fs * (vertical ? Math.cos(es * D2R) : Math.max(0, Math.sin(es * D2R)));
     const fh = tsi * fs * Math.max(0, Math.sin(es * D2R));
     const teq = Math.max(0, ((1 - th.albedo) * fh) / (th.emissivity * SIGMA)) ** 0.25;
-    const t95 = Math.max(teq, th.floor_k), t40 = Math.max(teq, th.psr_floor_k);
+    const t95 = Math.max(teq, floorK ?? th.floor_k), t40 = Math.max(teq, th.psr_floor_k);
     tSum95 += t95; tSum40 += t40;
     tMin95 = Math.min(tMin95, t95); tMax95 = Math.max(tMax95, t95); tMin40 = Math.min(tMin40, t40); tMax40 = Math.max(tMax40, t40);
     const m = monthOfHour(year, s.t0 + k);

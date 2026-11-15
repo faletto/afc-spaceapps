@@ -17,8 +17,9 @@ export function stayWindow(moveInDay: number, stayDays: number, nHours: number):
 
 export function rentForStay(site: RentSite, eph: Eph, cfg: SciConfig & ScoreConfig, cutoff: number, moveInDay: number, stayDays: number): RentResult {
   const [a, b] = stayWindow(moveInDay, stayDays, eph.tsi.length);
-  const stats = siteStats(siteSeries(site.lat, site.lon, site.horizon_deg, eph, cfg, a, b), eph, cfg);
   const polar = site.ice_km != null;
+  // Q-P8: polar sites (those with an ice distance) use the polar night floor; Moon-wide keeps floor_k.
+  const stats = siteStats(siteSeries(site.lat, site.lon, site.horizon_deg, eph, cfg, a, b), eph, cfg, 2028, polar ? cfg.thermal.polar_floor_k : undefined);
   const sub = subscores({ ...stats, hazard_score: site.hazard_score, landmark_score: site.landmark_score, ice_km: site.ice_km, energy_wh_m2_day: stats.energy_wh_m2_day, earth_frac: stats.earth_frac }, cfg, polar);
   const v = viability(sub, site.landing_safe, cfg);
   const price = priceUsd(v, cfg, site.premium, cutoff);
