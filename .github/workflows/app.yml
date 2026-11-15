@@ -43,6 +43,9 @@ jobs:
   # repo Settings → Pages → Source: "GitHub Actions". Data (app/public/data, ~137 MB) ships inside the artifact.
   deploy:
     needs: app
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15

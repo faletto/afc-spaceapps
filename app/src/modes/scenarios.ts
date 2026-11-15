@@ -32,6 +32,7 @@ export async function shackletonRim(c: Columns): Promise<number | null> {
     const rec = (await loadDetailTile(dataSource, 'polar', c.col.tile[i]!, c.meta.tiles_per_axis))[c.col.row_in_tile[i]!];
     if (rec?.nearest_feature?.startsWith('Shackleton')) return i;
   }
+  console.warn('demo: no featured plot next to Shackleton found; using the best featured plot');
   return feat[0] ?? null;
 }
 
@@ -65,5 +66,5 @@ export const SCENARIOS: Scenario[] = [
   } },
 ];
 
-/** The rent-shift step: two weeks later (Price cut appears for the demo plot). */
+/** The rent-shift step: two weeks later (rent changes; the Buy price does not). */
 export const shiftMoveIn = () => s().setT(Math.min(8783, s().t + 14 * DAY));

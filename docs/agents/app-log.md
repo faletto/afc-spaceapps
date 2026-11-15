@@ -8,10 +8,10 @@
 - A5 (in progress, on `app-a4`/`app`, NOT merged to main): Home type filter (gates via bw_lander_h/bw_habitat_h/sunlit/ice; polar-only ice depot hint), match % on cards, Best match sort (default when a type is chosen), More panel (min sunlight/Earth), real plot ids on cards (G-lat-lon / SP-row-col derived from x,y), badges (max 2 on cards: Hot property, Earth view, Peak of light, Off market), "Plots for you" strip (featured flag: best, cheapest, next best). vitest 38, e2e 17 (3 new in a5.spec.ts).
 - ASSUMED: solar-farm gate = sunlit ≥ 60% only (safe_area_frac isn't a column, R-A8); match % uses only the weights listed per type in config (Σw·s/Σw); `Any` match = viability.
 - Left for A5/A6: OV-11 Solar power overlay (needs R-A8 overlay PNG), Price cut badge (Rent tab, A6), named-score tooltips already done, FIL-6 URL state (P2), Tour↔global slider (TIME-2, A6), South Pole tier polish, tour memoisation.
-- A6 (done on branch `app`, NOT yet merged to main; reviewer pass done, no blocking): `science/scoring.ts` + `science/rent.ts` with exact golden parity (224 rent cases + scoring/pricing); Buy/Rent tabs; hourly time slider (= move-in on Rent) + stay select; Rent block (per month, stay total, change vs yearly average with reason, Price cut); rent history (12 months); Tour follows the slider (TIME-2); Rent tab cards/pins show yearly average rent, price filter/sort use rent_avg (bounds reset on tab switch). vitest 55, e2e 18. Rent recompute < 2 ms (≥ 15 fps).
-- DESIGN: rent = exported rent_avg × exp(k·(v_stay − v_year)/100) × scarcity ratio (premium isn't exported; quantised s_safety/s_landmark cancel). A 1-year stay == rent_avg (RENT-5, tested to 1e-9). ASSUMED: yearly scarcity state read from rounded exported viability (wrong only within ±0.5 of the cutoff).
-- Deferred: OV-7 comm-window overlay (needs per-plot Earth visibility at time t for 78k plots; request/plan with Pipeline: a per-hour Earth mask or do it in the worker with horizons), Price cut badge on cards, RENT-4 per-window pins, SCN-2 relay toggle, TIME-3 play/pause, OV-11 (R-A8), South Pole tier polish, series memoisation for tour.
-- Next: A7 (demo polish: ?demo=1 scenarios, ?present=1, README/offline check) — read PLAN.md A7; merge A6 to main on human OK.
+- A7 (done on `app`, reviewer pass done, no blocking; NOT merged to main yet): `?demo=1` panel (far-side bargain, Earth overlay, pole sunlight, Shackleton + 3D Tour, rent shift on SP-0172-0148 + "+2 weeks"), `?present=1` (side panel/filters zoom ×1.35, bigger markers, opacity slider + debug tag hidden), About dialog (About / Formulas from glossary / Validation with the weak Diviner and Earth-fraction results stated; portal, focus trap, focus return), offline e2e (all requests same-origin), Pages `deploy` job in app.yml (push to main only; human enabled Pages: Actions). vitest 55, e2e 23.
+- FLAKES: e2e on software GL is timing-sensitive after heavy specs (pill-click test, demo-scenarios test): each failed once in some full runs and passed alone/on rerun. Playwright `retries` = 1 on CI only (not local), trace on first retry. Pill test waits lengthened.
+- Merged so far on main: through A6 (d0b39ac). A6/A7 deferred items: OV-7 comm-window overlay, Price cut badge on cards, RENT-4 per-window pins, SCN-2 relay, TIME-3 play, OV-11 (R-A8), South Pole tier polish, FIL-6 URL state, Q-A3 (home weights full vs delta).
+- Next: human OK to merge A7 → main (M7; triggers first Pages deploy, base path /<repo>/); then deferred items by priority, or freeze (M8).
 - Commands: `cd app && npm ci`, `npm test`, `npm run lint`, `npx tsc -b`, `npx playwright test`, `npm run build`
 - Earlier notes (A3) still apply: ASSUMED plot half-size, price bands, e2e geometry; known gaps OV-7, OV-3, Home type/More filters (A5), Rent (A6).
 
@@ -25,7 +25,7 @@
 | A4 | 🟡 parity ✅, tour ✅ (real ephemeris), reviewed ✅; polar polish pending | see git log | no | M4 (94204b7) |
 | A5 | ✅ (OV-11 pending R-A8; Price cut badge in A6) | see git log | M5 | reviewer pass done |
 | A6 | ✅ (OV-7, Price cut on cards, RENT-4 deferred) | see git log | pending OK | reviewer pass done |
-| A7 | ⬜ | | | |
+| A7 | ✅ | see git log | pending OK | reviewer pass done |
 
 ## Contract status
 <!-- contract version I'm built against; mismatches seen; adaptations made -->
@@ -55,6 +55,7 @@ R-A1 (RESOLVED: names are s_safety,s_power,s_comms,s_thermal,s_landmark,s_ice; c
 <!-- reply to R-P#: … -->
 
 ## Done log
+- 14 Nov · A7 · demo/present modes, About dialog, Pages deploy job, offline e2e; reviewer fixes · vitest 55, e2e 23
 - 14 Nov · A6 · scoring/rent TS + parity (224 cases), Buy/Rent tabs, time slider, Rent block + history + Price cut, tour on shared slider; reviewer fixes · vitest 55, e2e 18
 - 14 Nov · A5 (part) · home type + match %, Best match sort, More filters, plot ids, badges, Plots for you · vitest 38, e2e 17
 - 14 Nov · A4 · science mirror + golden parity (exact), 3D Tour (canvas, paths, countdown, tab), loadConfig · vitest 30, e2e tour 1

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { DISCLAIMER } from '../listing/FinePrint';
 import { useGlossary } from './glossary';
 
@@ -20,13 +21,30 @@ function AboutDialog({ onClose }: { onClose: () => void }) {
   const [view, setView] = useState<View>('about');
   const entries = useGlossary((s) => s.entries);
   const ref = useRef<HTMLDivElement>(null);
+  const close = useRef(onClose);
+  close.current = onClose;
+  // Mount only: move focus into the dialog, give it back to the opener on close.
   useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
     ref.current?.focus();
-    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); onClose(); } };
+    return () => opener?.focus();
+  }, []);
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.stopPropagation(); close.current(); return; }
+      if (e.key !== 'Tab' || !ref.current) return;
+      // Focus trap: wrap Tab / Shift+Tab inside the dialog.
+      const f = Array.from(ref.current.querySelectorAll<HTMLElement>('button, [href], input, select, [tabindex]:not([tabindex="-1"])'));
+      if (!f.length) return;
+      const first = f[0]!, last = f[f.length - 1]!, a = document.activeElement;
+      if (e.shiftKey && (a === first || a === ref.current)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
+      else if (!ref.current.contains(a)) { e.preventDefault(); first.focus(); }
+    };
     window.addEventListener('keydown', k, true);
     return () => window.removeEventListener('keydown', k, true);
-  }, [onClose]);
-  return (
+  }, []);
+  return createPortal(
     <div role="dialog" aria-modal="true" aria-label="About Lunar Listings" ref={ref} tabIndex={-1} data-testid="about"
       style={{ position: 'fixed', inset: 0, zIndex: 20, background: '#000a', display: 'grid', placeItems: 'center' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
@@ -67,12 +85,14 @@ function AboutDialog({ onClose }: { onClose: () => void }) {
         {view === 'validation' && (
           <div style={{ display: 'grid', gap: 8, fontSize: 14 }}>
             <p style={{ margin: 0 }}><strong>Ephemeris vs JPL Horizons (EPH-3): pass.</strong> Our Sun and Earth elevations were compared with direct Horizons topocentric queries at 7 sites × 4 dates × 48 h, from the near side to the South Pole. The largest elevation error was about 0.006°, against a limit of 0.1° at the pole.</p>
-            <p style={{ margin: 0 }}><strong>South Pole lighting vs LOLA maps.</strong> Sunlight and Earth-contact fractions at every plot's best cell were cross-checked against LOLA-derived illumination averaged over each 240 m cell.</p>
+            <p style={{ margin: 0 }}><strong>South Pole lighting vs LOLA maps: good.</strong> Across 78,464 plots, sunlit fraction agrees with LOLA-derived illumination at r = 0.987 (99% within ±0.10). Earth contact agrees less well: r = 0.957, our values lower by 0.066 on average and only 75% within ±0.10, partly because we require Earth 1° above the horizon and cover only 2028.</p>
+            <p style={{ margin: 0 }}><strong>Temperature vs LRO Diviner: partial.</strong> Permanently shadowed plots agree (our 40 K floor vs Diviner about 43 K). For sunlit plots our modelled annual maximum is far higher than Diviner's local-time averages (bias +122 K, r = 0.11), and our 95 K night floor is above Diviner's median of about 65 K. Treat sunlit-site temperatures as a simple equilibrium model, not a measurement.</p>
             <p style={{ margin: 0 }}><strong>In this app.</strong> The browser recomputes Sun, Earth, statistics, scores and rent with the same formulas as the pipeline, and is tested against the pipeline's reference values (exact to rounding on geometry, statistics, run lengths, scoring, price and 224 rent cases).</p>
             <p style={{ margin: 0, fontSize: 12, opacity: 0.7 }}>Full report: docs/validation.md in the project repository.</p>
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -14,10 +14,14 @@ test('map loads both tiers', async ({ page }) => {
 test('zooming shows pills and clicking one selects a plot', async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 700 });
   await page.goto('/');
-  await page.waitForTimeout(2500);
+  await page.getByTestId('card').first().waitFor();
+  await page.waitForTimeout(4000); // software GL needs time after heavier tests have run before it
   await page.mouse.move(384, 350);
-  for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(200); }
-  await page.waitForTimeout(1000);
+  for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, -300); await page.waitForTimeout(400); }
+  await page.waitForTimeout(2000);
+  await page.mouse.move(460, 320, { steps: 3 }); // hover first: clicks select the hovered plot
+  await page.mouse.move(465, 323, { steps: 3 });
+  await page.waitForTimeout(500);
   await page.mouse.click(465, 323);
   await expect(page.getByTestId('selected')).toBeVisible();
 });
