@@ -287,3 +287,13 @@ def test_manifest_records_data_provenance():
     assert (
         src["polar"]["dem"] == "LDEM_80S_20MPP_ADJ.TIF" and "LDSM_80S_20MPP_ADJ" in src["polar"]["slope"]
     )  # NASA slope product in use
+
+
+def test_hot_property_is_relative_to_each_tier():
+    """Hot property = top 5% within the tier (not across Moon-wide + polar), so both tiers always have hot plots."""
+    for t in ("global", "polar"):
+        _, g = cols(t)
+        hot = ((g["flags"] >> contract.FLAGS["hot_property"]) & 1).astype(bool)
+        assert 0.03 < hot.mean() < 0.08, t
+        # integer-rounded viability: the weakest hot plot is at least the tier's own P90
+        assert g["viability"][hot].min() >= np.percentile(g["viability"], 90), t
