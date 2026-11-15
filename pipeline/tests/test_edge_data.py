@@ -279,3 +279,11 @@ def test_dem_sources_are_all_pinned():
         and ("nasa.gov" in f["url"] or "usgs.gov" in f["url"] or "wustl.edu" in f["url"])
         for f in spec["files"]
     )
+
+
+def test_manifest_records_data_provenance():
+    src = M["sources"]
+    assert "Horizons" in src["ephemeris"] and src["polar"]["res_m"] == 20.0
+    assert (
+        src["polar"]["dem"] == "LDEM_80S_20MPP_ADJ.TIF" and "LDSM_80S_20MPP_ADJ" in src["polar"]["slope"]
+    )  # NASA slope product in use
