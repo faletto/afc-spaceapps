@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { loadLegend, OVERLAY_NAMES } from '../data/loader';
 import { dataSource } from '../data/source';
 import type { OverlayLegend, Tier } from '../data/types';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../state/store';
 import { OVERLAY_INFO } from './overlayMeta';
 
@@ -31,7 +32,7 @@ function Legend({ tier }: { tier: Tier }) {
 }
 
 export function OverlayControl({ tier }: { tier: Tier }) {
-  const { overlay, setOverlay, overlayOpacity, setOverlayOpacity } = useStore();
+  const { overlay, setOverlay, overlayOpacity, setOverlayOpacity } = useStore(useShallow((s) => ({ overlay: s.overlay, setOverlay: s.setOverlay, overlayOpacity: s.overlayOpacity, setOverlayOpacity: s.setOverlayOpacity })));
   return (
     <div className="panel" style={{ position: 'absolute', left: 12, top: 64, padding: 10, fontSize: 13, maxWidth: 260 }}>
       <label>

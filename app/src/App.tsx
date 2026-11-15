@@ -13,12 +13,13 @@ import { useBasemap } from './map/useBasemap';
 import { MapView } from './map/MapView';
 import { useResultsQuery } from './results/useResults';
 import { ResultsList } from './results/ResultsList';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from './state/store';
 import { DemoPanel } from './modes/DemoPanel';
 import { MODE, PRESENT_ZOOM } from './modes/mode';
 
 export function App() {
-  const { tier, setTier, selection, select } = useStore();
+  const { tier, setTier, selection, select } = useStore(useShallow((s) => ({ tier: s.tier, setTier: s.setTier, selection: s.selection, select: s.select })));
   const [data, setData] = useState<Partial<Record<Tier, Columns>>>({});
   const [error, setError] = useState<string | null>(null);
 

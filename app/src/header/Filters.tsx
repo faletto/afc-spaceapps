@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Columns } from '../data/types';
 import { AboutButton } from '../ui/About';
 import { HOME_TYPES, type HomeType } from '../results/homeTypes';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore } from '../state/store';
 import { parsePrice } from './parsePrice';
 
@@ -26,7 +27,7 @@ function PriceInput({ label, value, onCommit }: { label: string; value: number |
 
 /** Filter bar (FIL-1 price, FIL-2 land type, FIL-3 hide off-market). Home type / More come in A5. */
 export function Filters({ cols }: { cols: Columns | undefined }) {
-  const { filters, setFilters, setHomeType, resetFilters, tab, setTab } = useStore();
+  const { filters, setFilters, setHomeType, resetFilters, tab, setTab } = useStore(useShallow((s) => ({ filters: s.filters, setFilters: s.setFilters, setHomeType: s.setHomeType, resetFilters: s.resetFilters, tab: s.tab, setTab: s.setTab })));
   const tier = useStore((s) => s.tier);
   const results = useStore((s) => s.results);
   const active = filters.priceMin != null || filters.priceMax != null || filters.landTypes.length > 0 || filters.hideOff
