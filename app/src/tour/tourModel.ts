@@ -1,3 +1,4 @@
+/** Builds the full-year Sun/Earth series over a polar plot's best-cell horizon for the 3D Tour. */
 import { decodeHorizon, hoursToChange, siteSeries, type Eph, type SciConfig, type Series } from '../science/visibility';
 
 export interface TourModel { lat: number; lon: number; horizon: Float64Array; year: Series }

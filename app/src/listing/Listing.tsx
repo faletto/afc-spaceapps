@@ -1,3 +1,4 @@
+/** Plot detail panel: price, scores, facts, blurb, price rationale and the 3D Tour. Loads the plot's detail tile lazily. */
 import { useEffect, useState } from 'react';
 import { loadDetailTile, type DetailRecord } from '../data/loader';
 import { dataSource } from '../data/source';

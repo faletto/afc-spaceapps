@@ -1,3 +1,4 @@
+/** deck.gl map for one tier: basemap, optional overlay, dots (wide zoom) or price pills (zoomed in), off-market rings and the hover/selection outline. Publishes the visible rect to the store for the results list. */
 import { MODE, PRESENT_ZOOM } from '../modes/mode';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import DeckGL from '@deck.gl/react';

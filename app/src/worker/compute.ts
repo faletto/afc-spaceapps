@@ -1,3 +1,4 @@
+/** Worker message protocol and the pure handler that holds decoded columns per tier and answers queries. */
 import { decodeColumns } from '../data/loader';
 import type { Columns, ColsJson, Tier } from '../data/types';
 import { queryResults, type Results } from '../results/query';

@@ -1,3 +1,4 @@
+/** Per-tier map geometry: plot half-width, bounds, fit zoom, and when dots become price pills. */
 import type { Columns, Tier } from '../data/types';
 
 /** Half-width of a plot in map units. ASSUMED: global 1° cells; polar 960 m plots (spec D-5). */

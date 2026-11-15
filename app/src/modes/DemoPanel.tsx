@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Columns, Tier } from '../data/types';
 import { useStore } from '../state/store';
+import { RENT_ENABLED } from '../features';
 import { SCENARIOS, shiftMoveIn } from './scenarios';
 
 /** ?demo=1: one-click buttons for the live-demo script. Switches tier first, then runs once that tier's data is loaded. */
@@ -20,7 +21,7 @@ export function DemoPanel({ data }: { data: Partial<Record<Tier, Columns>> }) {
       {SCENARIOS.map((sc) => (
         <button key={sc.id} type="button" data-testid={`demo-${sc.id}`} onClick={() => { if (tier !== sc.tier) setTier(sc.tier); setPending(sc.id); }}>{sc.label}</button>
       ))}
-      <button type="button" data-testid="demo-shift" disabled={tab !== 'rent'} onClick={shiftMoveIn}>Shift move-in +2 weeks</button>
+      {RENT_ENABLED && <button type="button" data-testid="demo-shift" disabled={tab !== 'rent'} onClick={shiftMoveIn}>Shift move-in +2 weeks</button>}
     </div>
   );
 }

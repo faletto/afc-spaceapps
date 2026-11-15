@@ -8,7 +8,10 @@ import pytest
 from lunar_listings import config, ephemeris, plots
 
 WORK = Path(__file__).resolve().parents[2] / "data" / "work"
-pytestmark = pytest.mark.skipif(not (WORK / "terrain_global.npz").exists(), reason="real terrain not built")
+pytestmark = [
+    pytest.mark.slow,
+    pytest.mark.skipif(not (WORK / "terrain_global.npz").exists(), reason="real terrain not built"),
+]
 
 
 @pytest.fixture(scope="module")

@@ -18,7 +18,8 @@ make setup          # uv venv (py3.11) + pip install -e pipeline[dev]
 | `make data` | Moon-wide tier + scoring, pricing, blurbs, overlays, basemaps, tiles, manifest → `app/public/data/` | ~30 s |
 | `make all-data` | `fetch terrain polar data` | – |
 | `make validate` | EPH-3: our Sun/Earth elevations vs direct Horizons queries → `docs/validation.md`, `docs/img/validation.png` | ~1 min (cached) |
-| `make test` | pytest (≈ 70 tests: unit, golden vectors, real-output sanity) | ~25 s |
+| `make test` | pytest (≈ 180 tests: unit, edge cases, golden vectors, integrity of the committed export) plus the app's unit tests. Tests marked `slow` are skipped | ~6 s |
+| `make test-all` | Also runs the `slow` tests: they rebuild the whole Moon-wide tier from intermediates to check the science (needs `data/work/`; skipped if absent) | ~30 s |
 | `make stub` | Fake data in the real formats (for the app before real data). **Refuses to overwrite real data** without `--force` | seconds |
 
 ## Data flow
@@ -63,6 +64,7 @@ golden.write(); golden.write_rent()"` and update `cutoff` in `golden.build_rent`
 - **Night/blackout penalty (Signal score):** `penalty.blackout.{h50,k}`; **Earth contact:** `comms.margin_deg` / `mode`.
 - **Temperatures:** `thermal.floor_k` (Moon-wide night floor), `thermal.polar_floor_k` (polar tier),  `thermal.psr_floor_k`, `albedo`, `emissivity`; comfort ranges `thermal.cold_range_k`, `swing_range_k`.
 - **Prices:** `price.base_usd`, `k`, `scarcity_*`, `range.*`, `rent_ratio`; **Home-type gates:** `home_types.*.gates`.
+Rent is hidden in the app (`RENT_ENABLED`), but the pipeline still computes the rent columns and golden vectors.
 The app mirror (`science/*.ts`, `rent.ts`) must read these from `config.json`, never hard-code them.
 
 ## Troubleshooting

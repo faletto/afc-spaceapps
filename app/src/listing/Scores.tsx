@@ -1,3 +1,4 @@
+/** The named scores of a plot (Landing, Sun, Signal, Comfort, Views, Ice) with glossary tooltips. */
 import { Term } from '../ui/Term';
 import type { Columns, Tier } from '../data/types';
 

@@ -1,3 +1,4 @@
+/** Canvas panorama: terrain skyline, Sun and Earth tracks and the current time marker. */
 import { useEffect, useRef } from 'react';
 import { horizonAt } from '../science/visibility';
 import type { TourModel } from './tourModel';

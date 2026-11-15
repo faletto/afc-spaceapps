@@ -1,6 +1,8 @@
+/** Virtualized, two-column results list with the sort control; hover and selection state live in each card, not here. */
 import { useEffect, useRef, useState } from 'react';
 import { List, type RowComponentProps } from 'react-window';
 import type { Columns, Tier } from '../data/types';
+import { useShallow } from 'zustand/react/shallow';
 import { useStore, type SortKey } from '../state/store';
 import { ListingCard } from './ListingCard';
 import { PlotsForYou } from './PlotsForYou';
@@ -16,17 +18,16 @@ const COLS = 2, ROW_H = 220;
 
 interface RowProps {
   ids: number[]; match: number[]; cols: Columns; tier: Tier; basemapUrl: string | null;
-  hover: number | null; selection: number | null;
   setHover: (i: number | null) => void; select: (i: number | null) => void;
 }
 
-function Row({ index, style, ids, match, cols, tier, basemapUrl, hover, selection, setHover, select }: RowComponentProps<RowProps>) {
+function Row({ index, style, ids, match, cols, tier, basemapUrl, setHover, select }: RowComponentProps<RowProps>) {
   return (
     <div style={{ ...style, display: 'grid', gridTemplateColumns: `repeat(${COLS}, 1fr)`, gap: 10, padding: '0 12px', boxSizing: 'border-box' }}>
       {ids.slice(index * COLS, index * COLS + COLS).map((i, k) => (
         <ListingCard
           key={i} cols={cols} tier={tier} i={i} basemapUrl={basemapUrl}
-          highlighted={hover === i} selected={selection === i} onHover={setHover} onOpen={select} match={match[index * COLS + k]}
+          onHover={setHover} onOpen={select} match={match[index * COLS + k]}
         />
       ))}
     </div>
@@ -34,7 +35,7 @@ function Row({ index, style, ids, match, cols, tier, basemapUrl, hover, selectio
 }
 
 export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: Tier; basemapUrl: string | null }) {
-  const { sort, setSort, hover, selection, setHover, select } = useStore();
+  const { sort, setSort, setHover, select } = useStore(useShallow((s) => ({ sort: s.sort, setSort: s.setSort, setHover: s.setHover, select: s.select })));
   const results = useStore((s) => s.results);
   const homeType = useStore((s) => s.filters.homeType);
   const quiet = useStore((s) => { const f = s.filters; return f.priceMin == null && f.priceMax == null && !f.landTypes.length && !f.hideOff && f.homeType === 'any' && !f.minSun && !f.minEarth; });
@@ -71,7 +72,7 @@ export function ResultsList({ cols, tier, basemapUrl }: { cols: Columns; tier: T
       <div ref={box} style={{ flex: 1, minHeight: 0 }}>
         <List
           style={{ height: h }} rowComponent={Row} rowCount={rows} rowHeight={ROW_H} overscanCount={2}
-          rowProps={{ ids, match, cols, tier, basemapUrl, hover, selection, setHover, select }}
+          rowProps={{ ids, match, cols, tier, basemapUrl, setHover, select }}
         />
       </div>
     </section>

@@ -1,3 +1,4 @@
+/** Promise wrapper over the compute worker (filtering, sorting, ranking off the main thread). Each tier's columns are copied in once. */
 import type { Columns, Tier } from '../data/types';
 import type { Filters, Rect, SortKey } from '../state/store';
 import type { Req, Res } from './compute';

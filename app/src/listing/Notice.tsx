@@ -1,3 +1,4 @@
+/** One-time dismissible notice that the premise is fictional. */
 import { useState } from 'react';
 import { DISCLAIMER } from './FinePrint';
 

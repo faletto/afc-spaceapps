@@ -16,6 +16,8 @@ include = ["lunar_listings*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["slow: rebuilds real data from intermediates (~20 s); run with `make test-all`"]
+addopts = "-m 'not slow'"
 
 [tool.ruff]
 line-length = 110

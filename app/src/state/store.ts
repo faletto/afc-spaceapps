@@ -1,3 +1,4 @@
+/** Global UI state (zustand): tab, tier, selection, hover, filters, sort, time, overlay and the latest worker results. Subscribe to single fields, never the whole store. */
 import { create } from 'zustand';
 import type { OverlayName } from '../data/loader';
 import type { Tier } from '../data/types';

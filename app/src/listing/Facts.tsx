@@ -1,3 +1,4 @@
+/** Facts and features list for a listing, in everyday units. Column rows are instant; detail-tile rows fill in on load. */
 import type { DetailRecord } from '../data/loader';
 import { value } from '../data/loader';
 import type { Columns } from '../data/types';

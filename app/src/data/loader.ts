@@ -1,3 +1,4 @@
+/** Loads the static data contract from public/data: manifest, cols.bin decoded into typed-array columns, ephemeris, config, and lazy detail, horizon and overlay tiles. All loads are memoized. */
 import type { OverlayLegend, ColArray, ColsJson, Columns, ColumnName, Manifest, Tier } from './types';
 import { COLUMN_DTYPES } from './types';
 import type { ScoreConfig } from '../science/scoring';

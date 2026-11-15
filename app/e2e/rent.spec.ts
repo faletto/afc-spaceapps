@@ -1,4 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
+import { RENT_ENABLED } from '../src/features';
+
+const test = RENT_ENABLED ? base : base.skip;
 
 const money = (s: string | null) => s!.replace(/[^0-9.KMB]/g, '');
 

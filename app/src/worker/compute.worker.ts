@@ -1,3 +1,4 @@
+/** Web Worker entry: forwards messages to the pure handler in compute.ts. */
 import { makeHandler, type Req } from './compute';
 
 const handle = makeHandler();

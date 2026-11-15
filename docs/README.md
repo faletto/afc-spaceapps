@@ -4,6 +4,8 @@ NASA Space Apps Challenge 2026 · Lunar Landing Site Navigator · Team afc-space
 
 **Fictional premise, real science:** the UN is selling the Moon, and Lunar Listings is the Zillow-style listings site. Every plot's price (the Moonstimate) is computed from NASA data.
 
+Start with the repo-root [`README.md`](../README.md) (overview, commands), then [`app/README.md`](../app/README.md) and [`pipeline/README.md`](../pipeline/README.md).
+
 ## Canonical documents (v2.2, final)
 
 | Document | What it is |
