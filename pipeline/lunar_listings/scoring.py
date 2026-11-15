@@ -1,4 +1,5 @@
 """Sub-scores and viability (spec §3.9). All inputs are numpy arrays (or scalars); outputs are 0..1 floats."""
+
 import numpy as np
 
 from .terrain import norm
@@ -64,6 +65,12 @@ def viability(s: dict, landing_safe, cfg: dict, cap: float = 10.0, weights: dict
 
 
 def named_scores(s: dict) -> dict:
-    names = {"safety": "Landing", "power": "Sun", "comms": "Signal", "thermal": "Comfort",
-             "landmark": "Views", "ice": "Ice"}
+    names = {
+        "safety": "Landing",
+        "power": "Sun",
+        "comms": "Signal",
+        "thermal": "Comfort",
+        "landmark": "Views",
+        "ice": "Ice",
+    }
     return {names[k]: np.rint(100 * np.asarray(v)).astype(np.uint8) for k, v in s.items()}

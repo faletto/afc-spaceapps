@@ -4,6 +4,7 @@ Two-resolution DEM: `near` (20 m, cropped around the core) within `near_dem_radi
 beyond. Rasters are centred on the pole: pixel (r, c) centre at x = -half + (c+0.5)*res, y = +half - (r+0.5)*res.
 Azimuth k is bearing k * 360/naz from local north (see polar.py): the ray runs along map angle lon + bearing.
 """
+
 from dataclasses import dataclass
 
 import numpy as np
@@ -34,12 +35,15 @@ def _sample(dem, half, res, x, y):
         return np.nan
     c0, r0 = int(fc), int(fr)
     tc, tr = fc - c0, fr - r0
-    return ((dem[r0, c0] * (1 - tc) + dem[r0, c0 + 1] * tc) * (1 - tr)
-            + (dem[r0 + 1, c0] * (1 - tc) + dem[r0 + 1, c0 + 1] * tc) * tr)
+    return (dem[r0, c0] * (1 - tc) + dem[r0, c0 + 1] * tc) * (1 - tr) + (
+        dem[r0 + 1, c0] * (1 - tc) + dem[r0 + 1, c0 + 1] * tc
+    ) * tr
 
 
 @njit(cache=True, parallel=True)
-def _kernel(xs, ys, lons, near, nhalf, nres, far, fhalf, fres, naz, d_min, d_max, growth, mast, near_r, R, out):
+def _kernel(
+    xs, ys, lons, near, nhalf, nres, far, fhalf, fres, naz, d_min, d_max, growth, mast, near_r, R, out
+):
     n = xs.shape[0]
     step = 360.0 / naz
     for i in prange(n):
@@ -77,10 +81,25 @@ def compute(xs, ys, lons, dems: Dems, cfg: dict, R=R_M) -> np.ndarray:
     hz = cfg["horizon"]
     naz = round(360 / hz["az_step_deg"])
     out = np.empty((len(xs), naz), np.float32)
-    _kernel(np.ascontiguousarray(xs, float), np.ascontiguousarray(ys, float), np.ascontiguousarray(lons, float),
-            dems.near, dems.near_half_m, dems.near_res_m, dems.far, dems.far_half_m, dems.far_res_m, naz,
-            cfg["grid"]["polar"]["cell_m"] / 2.0, hz["d_max_m"], hz["step_growth"], hz["mast_m"],
-            hz["near_dem_radius_m"], R, out)
+    _kernel(
+        np.ascontiguousarray(xs, float),
+        np.ascontiguousarray(ys, float),
+        np.ascontiguousarray(lons, float),
+        dems.near,
+        dems.near_half_m,
+        dems.near_res_m,
+        dems.far,
+        dems.far_half_m,
+        dems.far_res_m,
+        naz,
+        cfg["grid"]["polar"]["cell_m"] / 2.0,
+        hz["d_max_m"],
+        hz["step_growth"],
+        hz["mast_m"],
+        hz["near_dem_radius_m"],
+        R,
+        out,
+    )
     return out
 
 
@@ -99,14 +118,20 @@ def compute_ref(x, y, lon, dems: Dems, cfg: dict, R=R_M, ray_step_m=None) -> np.
         return np.where(ok, v, np.nan)
 
     def height(xx, yy, d):
-        h = np.where(d <= hz["near_dem_radius_m"], samp(dems.near, dems.near_half_m, dems.near_res_m, xx, yy), np.nan)
+        h = np.where(
+            d <= hz["near_dem_radius_m"], samp(dems.near, dems.near_half_m, dems.near_res_m, xx, yy), np.nan
+        )
         return np.where(np.isnan(h), samp(dems.far, dems.far_half_m, dems.far_res_m, xx, yy), h)
 
     h0 = float(height(np.array([x]), np.array([y]), np.array([0.0]))[0]) + hz["mast_m"]
     if ray_step_m:
         d = np.arange(ray_step_m, hz["d_max_m"] + 1e-9, ray_step_m)
     else:
-        n = int(np.floor(np.log(hz["d_max_m"] / (cfg["grid"]["polar"]["cell_m"] / 2)) / np.log(1 + hz["step_growth"])))
+        n = int(
+            np.floor(
+                np.log(hz["d_max_m"] / (cfg["grid"]["polar"]["cell_m"] / 2)) / np.log(1 + hz["step_growth"])
+            )
+        )
         d = cfg["grid"]["polar"]["cell_m"] / 2 * (1 + hz["step_growth"]) ** np.arange(n + 1)
     out = np.empty(naz)
     for k in range(naz):

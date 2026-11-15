@@ -12,7 +12,10 @@ def _dems(fn, near_half=20_000.0, near_res=20.0, far_half=160_000.0, far_res=80.
         c = (np.arange(n) + 0.5) * res - half
         X, Y = np.meshgrid(c, -c)
         return fn(X, Y).astype(np.float32)
-    return horizons.Dems(grid(near_half, near_res), near_half, near_res, grid(far_half, far_res), far_half, far_res)
+
+    return horizons.Dems(
+        grid(near_half, near_res), near_half, near_res, grid(far_half, far_res), far_half, far_res
+    )
 
 
 def test_flat_plane_horizon_is_curvature_only():
@@ -28,7 +31,7 @@ def test_wall_in_known_direction():
     x0, y0 = 0.0, 5000.0
     lon = np.degrees(np.arctan2(x0, y0))
     hz = horizons.compute(np.array([x0]), np.array([y0]), np.array([lon]), d, CFG)[0]
-    east_k = int(round(((np.degrees(np.arctan2(1, 0)) - lon) % 360) / 2))  # map +x direction as a bearing
+    east_k = round(((np.degrees(np.arctan2(1, 0)) - lon) % 360) / 2)  # map +x direction as a bearing
     want = np.degrees(np.arctan2(500 - 2, 3000))
     assert hz[east_k] == pytest.approx(want, abs=0.1)
     west_k = (east_k + 90) % 180
@@ -57,7 +60,9 @@ def test_numba_matches_reference_on_rough_terrain():
     from scipy.ndimage import gaussian_filter, zoom
 
     f = lambda X, Y: zoom(gaussian_filter(base, 3) * 300, 1, order=1)[
-        np.clip(((Y + 160000) / 5000).astype(int) % 64, 0, 63), np.clip(((X + 160000) / 5000).astype(int) % 64, 0, 63)]
+        np.clip(((Y + 160000) / 5000).astype(int) % 64, 0, 63),
+        np.clip(((X + 160000) / 5000).astype(int) % 64, 0, 63),
+    ]
     d = _dems(f)
     xs, ys = np.array([1000.0, -7000.0]), np.array([2000.0, 4000.0])
     lons = np.degrees(np.arctan2(xs, ys))
@@ -72,8 +77,12 @@ def test_ridge_to_the_east_bearing_orientation():
     lat, lon = -87.0, 40.0
     x0, y0 = polar.lonlat_to_xy(lat, lon)
     ex, ey = polar.ray_direction(lon, 90)  # unit vector of "east" in the map
-    d = _dems(lambda X, Y: np.where(((X - x0) * ex + (Y - y0) * ey > 4000) & (np.hypot(X - x0, Y - y0) < 9000), 400.0, 0.0),
-              near_half=30_000.0)
+    d = _dems(
+        lambda X, Y: np.where(
+            ((X - x0) * ex + (Y - y0) * ey > 4000) & (np.hypot(X - x0, Y - y0) < 9000), 400.0, 0.0
+        ),
+        near_half=30_000.0,
+    )
     hz = horizons.compute(np.array([x0]), np.array([y0]), np.array([lon]), d, CFG)[0]
     k = int(np.argmax(hz))
     assert abs(k * 2 - 90) <= 30 and hz.max() > 5

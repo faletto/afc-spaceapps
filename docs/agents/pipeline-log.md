@@ -34,6 +34,7 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Q-P4 follow-up (14 Nov): human asked to get the slope product → LDSM_80S_20MPP_ADJ downloaded (3.78 GB, sha256 pinned) and now used for polar slopes/safe fractions; own-slope vs LDSM agree (plot mean slope r = 1.000, RMSE 0.05°, safe-fraction RMSE 0.006); data, goldens and validation report regenerated. Manifest `sources.polar` records DEM and slope product.
 - Q-P8: polar T1 maxima/night floor vs Diviner · answer: human said "do that" → option 1: leave the model, label temperatures as modelled (glossary text updated; app should keep the 'modelled' wording) · 14 Nov.
 - Q-P6: Sun/power score → net estimated energy production over the mission duration (full year Buy, stay window Rent); net = harvest − continuous load, with battery-mass factor for the longest night · answer: chosen in chat (human) 14 Nov. Constants load 500 W, ref 3000 W, 150 Wh/kg, 2000 kg are ASSUMED.
 - Q-P7: data folder 72 MB > 50 MB budget — commit anyway or Release asset? · answer: commit anyway (chat, 14 Nov); commit real data only at handoffs (H3, H4, H6).
@@ -52,6 +53,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · NASA LDSM slope product adopted (replaces own slope), ruff check + format clean across pipeline/, stage-2 now re-reads terrain stats (no stale cache) · contract unchanged
 - 14 Nov · Full audit (human request): found/fixed real ephemeris.bin (was still the v1 stub, R-A6), quantisation default/golden mismatch (R-A7), stale cached landmark scores in polar cells, Artemis III landmark positions now IAU feature centres (Faustini, Haworth, Nobile, de Gerlache, Shackleton, Mons Malapert, Mons Mouton, Cabeus) instead of approximate ones, best_window with stay > window, landmark_score_and_nearby with < max_nearby landmarks, quantize NaN, silent integer wrap-around in column casts (now saturating), shared contract.py (export no longer imports stub). +104 edge-case/integrity tests (179 total). Auditor follow-ups: horizon quantisation constants live once in contract.py; polar disc latitude from config; golden rent cutoff read from the exported config.json (and tested); golden generation fails loudly without polar data; no silent 'stub' tier fallback (now 'missing'); viability raises on zero weights; dead config key removed.
 - 14 Nov · Q-P6 · net-energy power score (scoring.power_score), config power.*, goldens regenerated, data regenerated (cutoff 62.3), new demo number
 - 14 Nov · P6 · NASA cross-checks: LOLA illumination (HOR-2) + Diviner (TEMP-4) in docs/validation.md; sources.yaml extended

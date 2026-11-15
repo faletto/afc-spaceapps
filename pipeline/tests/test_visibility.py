@@ -13,8 +13,18 @@ def eph():
 
 def _ref(lat, lon, hz, eph):
     month = visibility.month_of_hour(2028, len(eph["tsi"]))
-    return visibility.site_stats_ref(lat, lon, hz, eph["sun_xyz"], eph["earth_xyz"], eph["earth_dist_m"],
-                                     eph["tsi"], eph["r_sun_km"], CFG, month)
+    return visibility.site_stats_ref(
+        lat,
+        lon,
+        hz,
+        eph["sun_xyz"],
+        eph["earth_xyz"],
+        eph["earth_dist_m"],
+        eph["tsi"],
+        eph["r_sun_km"],
+        CFG,
+        month,
+    )
 
 
 def test_kernel_matches_reference(eph):
@@ -57,8 +67,18 @@ def test_partial_year_window_parity(eph):
     w = {k: v[sl] for k, v in eph.items()}
     month = visibility.month_of_hour(2028, len(w["tsi"]))
     k = visibility.site_stats(np.array([10.0]), np.array([20.0]), np.zeros((1, 180)), w, CFG)
-    r = visibility.site_stats_ref(10.0, 20.0, np.zeros(180), w["sun_xyz"], w["earth_xyz"], w["earth_dist_m"],
-                                  w["tsi"], w["r_sun_km"], CFG, month)
+    r = visibility.site_stats_ref(
+        10.0,
+        20.0,
+        np.zeros(180),
+        w["sun_xyz"],
+        w["earth_xyz"],
+        w["earth_dist_m"],
+        w["tsi"],
+        w["r_sun_km"],
+        CFG,
+        month,
+    )
     assert np.allclose(k["monthly_sunlit"][0], r["monthly_sunlit"], equal_nan=True)
     assert np.isnan(k["monthly_sunlit"][0, 5]) and k["sunlit_frac"][0] == pytest.approx(r["sunlit_frac"])
 

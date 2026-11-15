@@ -1,4 +1,5 @@
 """Edge cases: ephemeris parsing, geometry, projection, config validation, contract helpers."""
+
 import copy
 
 import numpy as np
@@ -18,7 +19,9 @@ ROW = " 2028-Jan-01 {h:02d}:00, , , {a}, {b}, {c}, {d}, 1.47E+08, 0.5, 4.0E+05, 
 
 
 def _txt(n=3, **kw):
-    r = "\n".join(ROW.format(h=i, a=kw.get("a", 10.0), b=-2.0, c=kw.get("c", 100.0), d=-0.5) for i in range(n))
+    r = "\n".join(
+        ROW.format(h=i, a=kw.get("a", 10.0), b=-2.0, c=kw.get("c", 100.0), d=-0.5) for i in range(n)
+    )
     return HEAD.replace("{rows}", r)
 
 
@@ -30,10 +33,14 @@ def test_parse_rows_and_n_steps_slice():
         ephemeris.parse_horizons(_txt(2), n_steps=3)
 
 
-@pytest.mark.parametrize("mutate", [
-    lambda t: t.replace("$$SOE", ""), lambda t: t.replace("$$EOE", ""),
-    lambda t: t.replace("{East-longitude positive}", ""),
-])
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda t: t.replace("$$SOE", ""),
+        lambda t: t.replace("$$EOE", ""),
+        lambda t: t.replace("{East-longitude positive}", ""),
+    ],
+)
 def test_parse_fails_loudly_on_malformed(mutate):
     with pytest.raises(ValueError):
         ephemeris.parse_horizons(mutate(_txt()))
@@ -50,7 +57,12 @@ def test_west_positive_and_wraparound():
 def test_lonlat_to_unit_poles_and_batch():
     u = ephemeris.lonlat_to_unit(np.array([0.0, 123.0, 0.0]), np.array([90.0, -90.0, 0.0]))
     assert np.allclose(u, [[0, 0, 1], [0, 0, -1], [1, 0, 0]], atol=1e-12)
-    assert np.allclose(np.linalg.norm(ephemeris.lonlat_to_unit(np.random.rand(50) * 360, np.random.rand(50) * 180 - 90), axis=1), 1)
+    assert np.allclose(
+        np.linalg.norm(
+            ephemeris.lonlat_to_unit(np.random.rand(50) * 360, np.random.rand(50) * 180 - 90), axis=1
+        ),
+        1,
+    )
 
 
 def test_csv_roundtrip(tmp_path):
@@ -61,7 +73,9 @@ def test_csv_roundtrip(tmp_path):
 
 
 # ------------------------------------------------------------------ geometry
-@pytest.mark.parametrize("lat,lon", [(0, 0), (90, 0), (-90, 0), (-90, 137), (45, -179.9), (89.999, 10), (-33.3, 270)])
+@pytest.mark.parametrize(
+    "lat,lon", [(0, 0), (90, 0), (-90, 0), (-90, 137), (45, -179.9), (89.999, 10), (-33.3, 270)]
+)
 def test_enu_frame_orthonormal_right_handed(lat, lon):
     u, e, n = geometry.enu_frame(lat, lon)
     M = np.array([e, n, u])
@@ -72,7 +86,7 @@ def test_enu_frame_orthonormal_right_handed(lat, lon):
 def test_azimuth_cardinals_and_wrap():
     u, e, n = geometry.enu_frame(10, 20)
     for vec, az in ((n, 0), (e, 90), (-n, 180), (-e, 270)):
-        el, a = geometry.az_el(vec + 0.001 * u, u, e, n)
+        _el, a = geometry.az_el(vec + 0.001 * u, u, e, n)
         assert a == pytest.approx(az, abs=0.1) and 0 <= a < 360
     assert geometry.az_el(-u, u, e, n)[0] == pytest.approx(-90)
     # a vector marginally past unit length (float error) must not NaN
@@ -119,15 +133,26 @@ def _cfg():
     return copy.deepcopy(config.load())
 
 
-@pytest.mark.parametrize("mut", [
-    lambda c: c.pop("power"), lambda c: c["power"].update(load_w=0), lambda c: c["power"].update(efficiency=-0.1),
-    lambda c: c["grid"]["polar"].update(plot_m=1000), lambda c: c["grid"]["polar"].update(lat_min=-95.0),
-    lambda c: c["price"]["range"].update(polar=0.4), lambda c: c["price"].update(rent_ratio=0),
-    lambda c: c["stays"].append(0), lambda c: c["safety"].update(min_safe_frac=0),
-    lambda c: c["weights"].update(safety=-1), lambda c: c["weights"].update({k: 0 for k in c["weights"]}),
-    lambda c: c["moon"].update(radius_m=100), lambda c: c["analysis"].update(step_hours=0),
-    lambda c: c["thermal"].update(swing_range_k=[300, 100]), lambda c: c["home_types"]["lander_pad"]["weights"].update(bogus=1),
-])
+@pytest.mark.parametrize(
+    "mut",
+    [
+        lambda c: c.pop("power"),
+        lambda c: c["power"].update(load_w=0),
+        lambda c: c["power"].update(efficiency=-0.1),
+        lambda c: c["grid"]["polar"].update(plot_m=1000),
+        lambda c: c["grid"]["polar"].update(lat_min=-95.0),
+        lambda c: c["price"]["range"].update(polar=0.4),
+        lambda c: c["price"].update(rent_ratio=0),
+        lambda c: c["stays"].append(0),
+        lambda c: c["safety"].update(min_safe_frac=0),
+        lambda c: c["weights"].update(safety=-1),
+        lambda c: c["weights"].update({k: 0 for k in c["weights"]}),
+        lambda c: c["moon"].update(radius_m=100),
+        lambda c: c["analysis"].update(step_hours=0),
+        lambda c: c["thermal"].update(swing_range_k=[300, 100]),
+        lambda c: c["home_types"]["lander_pad"]["weights"].update(bogus=1),
+    ],
+)
 def test_config_rejects_bad_values(mut):
     c = _cfg()
     mut(c)
@@ -149,7 +174,9 @@ def test_config_custom_path_and_export(tmp_path):
 # ------------------------------------------------------------------ contract helpers
 def test_tile_index_boundaries_and_clipping():
     lo, hi = np.array([[0.0], [0.0]]), np.array([[16.0], [16.0]])
-    t = contract.tile_index(np.array([0.0, 15.999, 16.0, 99.0, -5.0]), np.array([0.0, 0.0, 0.0, 0.0, 0.0]), lo, hi)
+    t = contract.tile_index(
+        np.array([0.0, 15.999, 16.0, 99.0, -5.0]), np.array([0.0, 0.0, 0.0, 0.0, 0.0]), lo, hi
+    )
     assert list(t) == [0, 15, 15, 15, 0]
     t2 = contract.tile_index(np.array([0.0]), np.array([16.0]), lo, hi)
     assert t2[0] == 15 * 16  # y = hi clips to the last row
@@ -158,7 +185,9 @@ def test_tile_index_boundaries_and_clipping():
 def test_write_cols_alignment_and_dtypes(tmp_path):
     n = 7
     cols = {name: np.arange(n).astype(dt) for name, dt, _ in contract.COLUMNS}
-    contract.write_cols(tmp_path, cols, "global", ["a"], {"bounds": [0, 0, 1, 1], "projection": {"type": "lonlat"}})
+    contract.write_cols(
+        tmp_path, cols, "global", ["a"], {"bounds": [0, 0, 1, 1], "projection": {"type": "lonlat"}}
+    )
     import json
 
     meta = json.loads((tmp_path / "cols.json").read_text())
@@ -167,3 +196,14 @@ def test_write_cols_alignment_and_dtypes(tmp_path):
     c0 = meta["columns"][5]
     back = np.frombuffer(buf, np.dtype(c0["dtype"]).newbyteorder("<"), n, c0["offset"])
     assert np.array_equal(back, np.arange(n).astype(c0["dtype"]))
+
+
+def test_polar_slope_falls_back_to_own_calc_when_ldsm_incomplete(tmp_path):
+    from lunar_listings import terrain
+
+    (tmp_path / terrain.LDSM_NAME).write_bytes(b"partial download")  # wrong size: must not be used
+    dem = np.add.outer(np.arange(40) * 20 * np.tan(np.radians(4)), np.zeros(40)).astype(np.float32)
+    s, src = terrain.polar_slope(tmp_path, dem, 20.0)
+    assert "own" in src and s.shape == dem.shape and np.allclose(s[5:-5], 4.0, atol=0.05)
+    s2, src2 = terrain.polar_slope(tmp_path, dem, 80.0)  # non-20 m grids never use the 20 m LDSM
+    assert "own" in src2 and s2.shape == dem.shape

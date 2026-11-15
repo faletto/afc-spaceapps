@@ -1,4 +1,5 @@
 """Deterministic listing blurbs and 'why' lines (spec §3.10, DET-6/DET-2). Templates: config/blurbs.yaml."""
+
 import hashlib
 import operator
 from pathlib import Path
@@ -6,7 +7,14 @@ from pathlib import Path
 import yaml
 
 PATH = Path(__file__).resolve().parents[2] / "config" / "blurbs.yaml"
-_OPS = {">=": operator.ge, "<=": operator.le, ">": operator.gt, "<": operator.lt, "==": operator.eq, "!=": operator.ne}
+_OPS = {
+    ">=": operator.ge,
+    "<=": operator.le,
+    ">": operator.gt,
+    "<": operator.lt,
+    "==": operator.eq,
+    "!=": operator.ne,
+}
 _T = None
 
 
@@ -20,7 +28,11 @@ def templates():
 def _cond(c: str, facts: dict) -> bool:
     name, op, val = c.split(" ", 2)
     f = facts[name]
-    return _OPS[op](f, float(val)) if isinstance(f, (int, float)) and val.strip() != "" else _OPS[op](str(f), val.strip())
+    return (
+        _OPS[op](f, float(val))
+        if isinstance(f, (int, float)) and val.strip() != ""
+        else _OPS[op](str(f), val.strip())
+    )
 
 
 def _matches(t, facts):
@@ -32,9 +44,15 @@ def pick(plot_id: str, n: int, salt: str = "") -> int:
 
 
 def _fmt(text, facts):
-    ex = {"sun_pct": round(100 * facts["sunlit"]), "earth_pct": round(100 * facts["earth"]),
-          "tmax_k": round(facts["tmax_k"]), "ice_km_round": round(facts["ice_km"], 1),
-          "psr_temp_c": round(40 - 273.15), "dark_days": round(facts["dark_h"] / 24), "nearby": facts["nearby"]}
+    ex = {
+        "sun_pct": round(100 * facts["sunlit"]),
+        "earth_pct": round(100 * facts["earth"]),
+        "tmax_k": round(facts["tmax_k"]),
+        "ice_km_round": round(facts["ice_km"], 1),
+        "psr_temp_c": round(40 - 273.15),
+        "dark_days": round(facts["dark_h"] / 24),
+        "nearby": facts["nearby"],
+    }
     return text.format(**{**facts, **ex})
 
 

@@ -1,4 +1,5 @@
 """Science sanity checks (req §9) on real outputs. Skipped when data/work has not been built."""
+
 from pathlib import Path
 
 import numpy as np

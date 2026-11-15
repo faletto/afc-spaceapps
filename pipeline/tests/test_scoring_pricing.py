@@ -13,8 +13,16 @@ def test_penalty_shape():
 
 
 def _table(**kw):
-    t = dict(hazard_score=0.0, energy_wh_m2_day=30000, longest_dark_h=0, earth_frac=1.0,
-             longest_blackout_h=0, temp_min_k=120, temp_max_k=220, landmark_score=1.0)
+    t = {
+        "hazard_score": 0.0,
+        "energy_wh_m2_day": 30000,
+        "longest_dark_h": 0,
+        "earth_frac": 1.0,
+        "longest_blackout_h": 0,
+        "temp_min_k": 120,
+        "temp_max_k": 220,
+        "landmark_score": 1.0,
+    }
     t.update(kw)
     return {k: np.array([v], float) for k, v in t.items()}
 
@@ -38,8 +46,16 @@ def test_range_rent_format_badges():
     lo, hi = pricing.price_range(1000.0, CFG, polar=True)
     assert (lo, hi) == (900.0, 1100.0)
     assert pricing.rent_per_month(100_000.0, CFG) == 600.0
-    assert pricing.format_usd(4_200_000) == "$4.2M" and pricing.format_usd(340_000) == "$340K" and pricing.format_usd(5000) == "$5K" and pricing.format_usd(1_234_000) == "$1.23M"
-    assert pricing.badges({"price_cut": 1, "hot_property": 1, "earth_view": 1}) == ["hot_property", "earth_view"]
+    assert (
+        pricing.format_usd(4_200_000) == "$4.2M"
+        and pricing.format_usd(340_000) == "$340K"
+        and pricing.format_usd(5000) == "$5K"
+        and pricing.format_usd(1_234_000) == "$1.23M"
+    )
+    assert pricing.badges({"price_cut": 1, "hot_property": 1, "earth_view": 1}) == [
+        "hot_property",
+        "earth_view",
+    ]
 
 
 def test_scarcity_cutoff_quantile():
@@ -49,6 +65,7 @@ def test_scarcity_cutoff_quantile():
 
 def test_landmark_premium():
     import numpy as np
+
     prem = pricing.landmark_premium(np.array([10.0, 60.0, 10.0]), np.array([False, False, True]), CFG)
     assert list(prem) == [0.25, 0.0, 0.25 + 0.5]
 
@@ -65,6 +82,7 @@ def test_power_score_net_energy():
 
 def test_power_model_follows_config():
     import copy
+
     heavy = copy.deepcopy(CFG)
     heavy["power"]["load_w"] = 1000
     assert scoring.power_score(20000.0, 100.0, heavy) < scoring.power_score(20000.0, 100.0, CFG)

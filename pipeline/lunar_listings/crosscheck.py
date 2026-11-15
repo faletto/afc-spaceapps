@@ -6,6 +6,7 @@
   average bolometric brightness temperature by local time): compared with our T1 temperatures.
 Same projection and axes as ours (verified: Diviner x,y normalised by R reproduce clon/clat via polar.xy_to_lonlat).
 """
+
 from pathlib import Path
 
 import numpy as np
@@ -40,12 +41,18 @@ def sample_diviner(fname, x, y):
     """Diviner Tbol (K) of the nearest 240 m bin, NaN if none within 0.6 bin."""
     import pandas as pd
 
-    d = pd.read_csv(RAW / "diviner" / fname, sep=",", skiprows=1, header=None, names=["x", "y", "clon", "clat", "tbol"],
-                    skipinitialspace=True)
+    d = pd.read_csv(
+        RAW / "diviner" / fname,
+        sep=",",
+        skiprows=1,
+        header=None,
+        names=["x", "y", "clon", "clat", "tbol"],
+        skipinitialspace=True,
+    )
     xm, ym = d.x.to_numpy() * R, d.y.to_numpy() * R
     step = float(np.median(np.diff(np.sort(np.unique(xm)))))
     x0, y0 = xm.min(), ym.min()
-    nx, ny = int(round((xm.max() - x0) / step)) + 1, int(round((ym.max() - y0) / step)) + 1
+    nx, ny = round((xm.max() - x0) / step) + 1, round((ym.max() - y0) / step) + 1
     grid = np.full((ny, nx), np.nan, np.float32)
     grid[np.round((ym - y0) / step).astype(int), np.round((xm - x0) / step).astype(int)] = d.tbol.to_numpy()
     ix, iy = np.round((x - x0) / step).astype(int), np.round((y - y0) / step).astype(int)
@@ -58,8 +65,13 @@ def sample_diviner(fname, x, y):
 def stats(a, b):
     m = np.isfinite(a) & np.isfinite(b)
     a, b = a[m], b[m]
-    return {"n": int(m.sum()), "r": float(np.corrcoef(a, b)[0, 1]), "bias": float(np.mean(a - b)),
-            "rmse": float(np.sqrt(np.mean((a - b) ** 2))), "within": float(np.mean(np.abs(a - b) <= 0.1))}
+    return {
+        "n": int(m.sum()),
+        "r": float(np.corrcoef(a, b)[0, 1]),
+        "bias": float(np.mean(a - b)),
+        "rmse": float(np.sqrt(np.mean((a - b) ** 2))),
+        "within": float(np.mean(np.abs(a - b) <= 0.1)),
+    }
 
 
 def run(plots_npz) -> dict:
@@ -73,20 +85,41 @@ def run(plots_npz) -> dict:
     psr_lola = sun < 0.01
     psr_ours = o["sunlit_frac"] < 0.01
     ok = np.isfinite(sun)
-    res["psr"] = {"ours_pct": float(100 * psr_ours[ok].mean()), "lola_pct": float(100 * psr_lola[ok].mean()),
-                  "agree_pct": float(100 * (psr_ours == psr_lola)[ok].mean())}
-    res["_arrays"] = {"sun_ours": o["sunlit_frac"], "sun_lola": sun, "earth_ours": o["earth_frac"], "earth_lola": earth}
+    res["psr"] = {
+        "ours_pct": float(100 * psr_ours[ok].mean()),
+        "lola_pct": float(100 * psr_lola[ok].mean()),
+        "agree_pct": float(100 * (psr_ours == psr_lola)[ok].mean()),
+    }
+    res["_arrays"] = {
+        "sun_ours": o["sunlit_frac"],
+        "sun_lola": sun,
+        "earth_ours": o["earth_frac"],
+        "earth_lola": earth,
+    }
     d = "pcp_avg_tbol_pols_{}_240.tab"
     tmax = np.fmax(sample_diviner(d.format("sum_ltim12"), x, y), sample_diviner(d.format("win_ltim12"), x, y))
-    tnight = np.fmin(sample_diviner(d.format("sum_ltim03"), x, y), sample_diviner(d.format("win_ltim03"), x, y))
-    res["tmax"] = {**stats(o["temp_max_k"], tmax), "bias_k": float(np.nanmean(o["temp_max_k"] - tmax)),
-                   "rmse_k": float(np.sqrt(np.nanmean((o["temp_max_k"] - tmax) ** 2)))}
+    tnight = np.fmin(
+        sample_diviner(d.format("sum_ltim03"), x, y), sample_diviner(d.format("win_ltim03"), x, y)
+    )
+    res["tmax"] = {
+        **stats(o["temp_max_k"], tmax),
+        "bias_k": float(np.nanmean(o["temp_max_k"] - tmax)),
+        "rmse_k": float(np.sqrt(np.nanmean((o["temp_max_k"] - tmax) ** 2))),
+    }
     lit = o["sunlit_frac"] > 0.3
-    res["tnight"] = {"n": int((lit & np.isfinite(tnight)).sum()), "ours_floor_k": float(np.median(o["temp_min_k"][lit])),
-                     "diviner_median_k": float(np.nanmedian(tnight[lit])), "diviner_p10_k": float(np.nanpercentile(tnight[lit], 10))}
+    res["tnight"] = {
+        "n": int((lit & np.isfinite(tnight)).sum()),
+        "ours_floor_k": float(np.median(o["temp_min_k"][lit])),
+        "diviner_median_k": float(np.nanmedian(tnight[lit])),
+        "diviner_p10_k": float(np.nanpercentile(tnight[lit], 10)),
+    }
     psr_m = psr_ours & np.isfinite(tmax)
-    res["psr_t"] = {"n": int(psr_m.sum()), "ours_k": float(np.median(o["temp_max_k"][psr_m])), "diviner_median_k": float(np.nanmedian(tmax[psr_m])),
-                    "diviner_p90_k": float(np.nanpercentile(tmax[psr_m], 90))}
+    res["psr_t"] = {
+        "n": int(psr_m.sum()),
+        "ours_k": float(np.median(o["temp_max_k"][psr_m])),
+        "diviner_median_k": float(np.nanmedian(tmax[psr_m])),
+        "diviner_p90_k": float(np.nanpercentile(tmax[psr_m], 90)),
+    }
     res["_arrays"].update(tmax_ours=o["temp_max_k"], tmax_div=tmax)
     return res
 
@@ -94,28 +127,89 @@ def run(plots_npz) -> dict:
 def markdown(res) -> list[str]:
     s, e, p, t, n, pt = res["sun"], res["earth"], res["psr"], res["tmax"], res["tnight"], res["psr_t"]
     return [
-        "", "## Independent cross-checks of the South Pole tier (NASA data)", "",
+        "",
+        "## Independent cross-checks of the South Pole tier (NASA data)",
+        "",
         "### Lighting vs LOLA-derived average visibility (PGDA, Mazarico et al.; HOR-2 cross-check)",
-        f"Our `sunlit_frac`/`earth_frac` at each plot's best cell vs the LOLA 60 m maps averaged over our 240 m cell "
-        f"({s['n']:,} plots).", "",
-        "| Quantity | Pearson r | bias (ours − LOLA) | RMSE | within ±0.10 |", "|---|---|---|---|---|",
+        (
+            f"Our `sunlit_frac`/`earth_frac` at each plot's best cell vs the LOLA 60 m maps averaged over our 240 m cell "
+            f"({s['n']:,} plots)."
+        ),
+        "",
+        "| Quantity | Pearson r | bias (ours − LOLA) | RMSE | within ±0.10 |",
+        "|---|---|---|---|---|",
         f"| Sun visible fraction | {s['r']:.3f} | {s['bias']:+.3f} | {s['rmse']:.3f} | {100 * s['within']:.0f}% |",
-        f"| Earth visible fraction | {e['r']:.3f} | {e['bias']:+.3f} | {e['rmse']:.3f} | {100 * e['within']:.0f}% |", "",
+        f"| Earth visible fraction | {e['r']:.3f} | {e['bias']:+.3f} | {e['rmse']:.3f} | {100 * e['within']:.0f}% |",
+        "",
         f"PSR (< 1% sunlit): ours {p['ours_pct']:.1f}% of plots, LOLA {p['lola_pct']:.1f}%, classification agrees on {p['agree_pct']:.1f}%.",
-        "Expected differences: our `sunlit` counts the Sun only when more than half of its disk is above the terrain "
-        "(LOLA counts any illumination, so it reads higher); our Earth contact needs 1° above the horizon and covers only 2028 "
-        "(LOLA integrates 2016-2020 libration); LOLA's grid is 60 m vs our 240 m cell mean.", "",
+        (
+            "Expected differences: our `sunlit` counts the Sun only when more than half of its disk is above the terrain "
+            "(LOLA counts any illumination, so it reads higher); our Earth contact needs 1° above the horizon and covers only 2028 "
+            "(LOLA integrates 2016-2020 libration); LOLA's grid is 60 m vs our 240 m cell mean."
+        ),
+        "",
         "### Temperature vs LRO Diviner polar maps (TEMP-4)",
-        "Diviner average bolometric brightness temperature in 240 m bins by local time (PDS `lro_diviner_derived1`, "
-        "summer and winter seasons). Our T1 is an equilibrium model with floors (95 K sunlit, 40 K PSR).", "",
-        "| Comparison | n | Result |", "|---|---|---|",
+        (
+            "Diviner average bolometric brightness temperature in 240 m bins by local time (PDS `lro_diviner_derived1`, "
+            "summer and winter seasons). Our T1 is an equilibrium model with floors (95 K sunlit, 40 K PSR)."
+        ),
+        "",
+        "| Comparison | n | Result |",
+        "|---|---|---|",
         f"| Max temperature (ours annual max vs Diviner max of local-noon bins) | {t['n']:,} | r = {t['r']:.2f}, bias {t['bias_k']:+.0f} K, RMSE {t['rmse_k']:.0f} K |",
         f"| Night floor at lit sites (>30% sunlit) | {n['n']:,} | ours {n['ours_floor_k']:.0f} K vs Diviner median {n['diviner_median_k']:.0f} K (10th pct {n['diviner_p10_k']:.0f} K) |",
-        f"| PSR plots, max temperature | {pt['n']:,} | ours {pt['ours_k']:.0f} K vs Diviner median {pt['diviner_median_k']:.0f} K (90th pct {pt['diviner_p90_k']:.0f} K) |", "",
-        "**Reading:** permanently shadowed plots agree (40 K floor vs Diviner ≈ 43 K). For sunlit sites our modelled annual "
-        f"maximum (flat surface at peak Sun elevation) is far above Diviner's local-time-binned averages (bias {t['bias_k']:+.0f} K, r = {t['r']:.2f}), because "
-        "the binned maps average over season, sun angle and sub-bin shadowing and so do not capture annual extremes, while T1 ignores "
-        "terrain-scattered light and subsurface conduction. TEMP-4 is therefore a coarse check: shadowed terrain validates, lit-site "
-        "maxima and the 95 K night floor (Diviner nights ≈ 65 K) are conservative/modelled values and the app labels temperatures as "
-        "modelled. The thermal sub-score uses the swing (max − min), so it likely overstates polar swings (Q-P8).", "",
+        f"| PSR plots, max temperature | {pt['n']:,} | ours {pt['ours_k']:.0f} K vs Diviner median {pt['diviner_median_k']:.0f} K (90th pct {pt['diviner_p90_k']:.0f} K) |",
+        "",
+        (
+            "**Reading:** permanently shadowed plots agree (40 K floor vs Diviner ≈ 43 K). For sunlit sites our modelled annual "
+            f"maximum (flat surface at peak Sun elevation) is far above Diviner's local-time-binned averages (bias {t['bias_k']:+.0f} K, r = {t['r']:.2f}), because "
+            "the binned maps average over season, sun angle and sub-bin shadowing and so do not capture annual extremes, while T1 ignores "
+            "terrain-scattered light and subsurface conduction. TEMP-4 is therefore a coarse check: shadowed terrain validates, lit-site "
+            "maxima and the 95 K night floor (Diviner nights ≈ 65 K) are conservative/modelled values and the app labels temperatures as "
+            "modelled. The thermal sub-score uses the swing (max − min), so it likely overstates polar swings (Q-P8)."
+        ),
+        "",
+    ]
+
+
+def slope_vs_ldsm(max_slope_deg: float = 8.0, raw=RAW) -> dict | None:
+    """Own central-difference slope vs NASA's LDSM product on the 960 m plot grid (None if LDSM not downloaded)."""
+    from . import terrain
+
+    f = Path(raw) / terrain.LDSM_NAME
+    if not (f.exists() and f.stat().st_size == terrain.LDSM_BYTES):
+        return None
+    dem, res = terrain.read_polar_core(Path(raw) / "LDEM_80S_20MPP_ADJ.TIF")
+    ldsm, _ = terrain.read_polar_core(f)
+    own = terrain.slope_deg_planar(dem, res)
+    a = terrain.polar_block_stats(dem, own, res, 960.0, max_slope_deg)
+    b = terrain.polar_block_stats(dem, ldsm, res, 960.0, max_slope_deg)
+    return {
+        "mean": stats(a["slope_mean_deg"].ravel(), b["slope_mean_deg"].ravel()),
+        "safe": stats(a["safe_area_frac"].ravel(), b["safe_area_frac"].ravel()),
+        "pixel_bias_deg": float(np.nanmean(own - ldsm)),
+        "pixel_rmse_deg": float(np.sqrt(np.nanmean((own - ldsm) ** 2))),
+    }
+
+
+def slope_markdown(r: dict) -> list[str]:
+    m, sf = r["mean"], r["safe"]
+    return [
+        "### Slope: our central differences vs NASA's LDSM 20 m slope product",
+        (
+            "The pipeline uses the LDSM product for slopes and safe-area fractions (spec §3.4). For reference, a plain central-difference "
+            "slope on the same 20 m DEM agrees with it on the 960 m plot grid as follows "
+            f"({m['n']:,} plots):"
+        ),
+        "",
+        "| Quantity | Pearson r | bias (own − LDSM) | RMSE |",
+        "|---|---|---|---|",
+        f"| Plot mean slope (deg) | {m['r']:.3f} | {m['bias']:+.2f} | {m['rmse']:.2f} |",
+        f"| Share of area under 8° | {sf['r']:.3f} | {sf['bias']:+.3f} | {sf['rmse']:.3f} |",
+        "",
+        (
+            f"Per-pixel difference: bias {r['pixel_bias_deg']:+.2f}°, RMSE {r['pixel_rmse_deg']:.2f}°. The two agree closely, so the earlier "
+            "own-slope approximation (Q-P4) was sound; the exported data now uses the NASA product."
+        ),
+        "",
     ]

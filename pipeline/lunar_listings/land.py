@@ -1,4 +1,5 @@
 """Land type, landmarks (spec §3.8). Ice distance for the polar tier is added in P4."""
+
 import csv
 from pathlib import Path
 
@@ -16,9 +17,13 @@ LANDMARKS_CSV = Path(__file__).resolve().parents[1] / "data" / "landmarks.csv"
 def load_landmarks(path: Path = LANDMARKS_CSV) -> dict:
     with open(path) as f:
         rows = list(csv.DictReader(f))
-    return {"name": np.array([r["name"] for r in rows]), "type": np.array([r["type"] for r in rows]),
-            "lat": np.array([float(r["lat"]) for r in rows]), "lon": np.array([float(r["lon"]) for r in rows]),
-            "fame_class": np.array([r["fame_class"] for r in rows])}
+    return {
+        "name": np.array([r["name"] for r in rows]),
+        "type": np.array([r["type"] for r in rows]),
+        "lat": np.array([float(r["lat"]) for r in rows]),
+        "lon": np.array([float(r["lon"]) for r in rows]),
+        "fame_class": np.array([r["fame_class"] for r in rows]),
+    }
 
 
 def great_circle_km(lat1, lon1, lat2, lon2):
@@ -37,11 +42,15 @@ def landmark_score_and_nearby(lat, lon, lm: dict, cfg: dict, chunk: int = 2000):
     score = np.zeros(n)
     near = np.full((n, k), -1, np.int32)
     for i in range(0, n, chunk):
-        d = great_circle_km(lat[i : i + chunk, None], lon[i : i + chunk, None], lm["lat"][None], lm["lon"][None])
+        d = great_circle_km(
+            lat[i : i + chunk, None], lon[i : i + chunk, None], lm["lat"][None], lm["lon"][None]
+        )
         score[i : i + chunk] = (fw[None] * np.exp(-d / c["d0_km"])).max(1)
         order = np.argsort(d, axis=1)[:, :k]
         dsel = np.take_along_axis(d, order, 1)
-        near[i : i + chunk, : order.shape[1]] = np.where(dsel <= c["radius_km"], order, -1)  # fewer landmarks than slots -> -1
+        near[i : i + chunk, : order.shape[1]] = np.where(
+            dsel <= c["radius_km"], order, -1
+        )  # fewer landmarks than slots -> -1
     return score, near
 
 
@@ -57,7 +66,9 @@ def plot_tpi_extremes(dem: np.ndarray, radius_km: float):
     return np.percentile(b, 90, axis=-1), np.percentile(b, 10, axis=-1)
 
 
-def land_type(sunlit_frac, lat, lon, elev_mean_m, tpi_hi, tpi_lo, cfg, polar: bool, median_ref=None) -> np.ndarray:
+def land_type(
+    sunlit_frac, lat, lon, elev_mean_m, tpi_hi, tpi_lo, cfg, polar: bool, median_ref=None
+) -> np.ndarray:
     """Rules in priority order (LAND-1). `elev_mean_m` also sets the global-median mare/highland split."""
     ld = cfg["land"]
     sunlit_frac, lon = np.asarray(sunlit_frac), np.asarray(lon)
@@ -80,8 +91,12 @@ def apollo_distance_km(lat, lon, lm: dict, chunk: int = 4000) -> np.ndarray:
     m = lm["fame_class"] == "apollo_artemis"
     out = np.empty(len(lat))
     for i in range(0, len(lat), chunk):
-        d = great_circle_km(np.asarray(lat)[i : i + chunk, None], np.asarray(lon)[i : i + chunk, None],
-                            lm["lat"][m][None], lm["lon"][m][None])
+        d = great_circle_km(
+            np.asarray(lat)[i : i + chunk, None],
+            np.asarray(lon)[i : i + chunk, None],
+            lm["lat"][m][None],
+            lm["lon"][m][None],
+        )
         out[i : i + chunk] = d.min(1)
     return out
 
@@ -91,6 +106,11 @@ def nearest_landmark(lat, lon, lm: dict, chunk: int = 4000):
     n = len(lat)
     idx, km = np.empty(n, np.int32), np.empty(n)
     for i in range(0, n, chunk):
-        d = great_circle_km(np.asarray(lat)[i : i + chunk, None], np.asarray(lon)[i : i + chunk, None], lm["lat"][None], lm["lon"][None])
+        d = great_circle_km(
+            np.asarray(lat)[i : i + chunk, None],
+            np.asarray(lon)[i : i + chunk, None],
+            lm["lat"][None],
+            lm["lon"][None],
+        )
         idx[i : i + chunk], km[i : i + chunk] = d.argmin(1), d.min(1)
     return idx, km

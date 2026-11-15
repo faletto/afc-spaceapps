@@ -1,4 +1,5 @@
 """Real polar export + science sanity (skipped while the tier is stub)."""
+
 import json
 from pathlib import Path
 
@@ -16,7 +17,10 @@ pytestmark = pytest.mark.skipif(m.get("tiers", {}).get("polar") != "real", reaso
 def pol():
     meta = json.loads((D / "polar" / "cols.json").read_text())
     buf = (D / "polar" / "cols.bin").read_bytes()
-    g = {c["name"]: np.frombuffer(buf, np.dtype(c["dtype"]).newbyteorder("<"), meta["rows"], c["offset"]) for c in meta["columns"]}
+    g = {
+        c["name"]: np.frombuffer(buf, np.dtype(c["dtype"]).newbyteorder("<"), meta["rows"], c["offset"])
+        for c in meta["columns"]
+    }
     return meta, g
 
 
@@ -29,7 +33,7 @@ def test_structure_and_files(pol):
         tx, ty = int(t) % 16, int(t) // 16
         assert (D / "polar" / "horizon" / f"{tx}_{ty}.bin").stat().st_size == rows * 180
         assert len(json.loads((D / "polar" / "detail" / f"{tx}_{ty}.json").read_text())) == rows
-    lat, lon = polar.xy_to_lonlat(g["x"].astype(float), g["y"].astype(float))
+    lat, _lon = polar.xy_to_lonlat(g["x"].astype(float), g["y"].astype(float))
     assert np.allclose(lat, g["lat"], atol=1e-3) and g["lat"].max() <= -84.9
     assert m["horizon"]["offset_deg"] == -6.0 and m["horizon"]["unit_deg"] == 0.16
 
@@ -42,7 +46,9 @@ def _near(g, lat, lon, r=3000):
 def test_shackleton_floor_dark_and_ridge_top_tier(pol):
     _, g = pol
     floor = _near(g, -89.9, 129.8, 1500)
-    assert np.median(g["sunlit_pct"][floor]) < 1 and np.median(g["temp_max_k"][floor]) < 60  # rim plots at the edge may be lit
+    assert (
+        np.median(g["sunlit_pct"][floor]) < 1 and np.median(g["temp_max_k"][floor]) < 60
+    )  # rim plots at the edge may be lit
     ridge = _near(g, -89.45, -129.0)
     assert g["viability"][ridge].max() >= np.percentile(g["viability"], 99)
     assert g["sunlit_pct"].max() >= 70  # some plot is mostly sunlit
@@ -81,6 +87,8 @@ def test_independent_lola_crosscheck():
     from lunar_listings import crosscheck
 
     o = np.load(work)
-    sun = crosscheck.sample_illum("AVGVISIB_85S_060M_201608", o["best_x"].astype(float), o["best_y"].astype(float))
+    sun = crosscheck.sample_illum(
+        "AVGVISIB_85S_060M_201608", o["best_x"].astype(float), o["best_y"].astype(float)
+    )
     s = crosscheck.stats(o["sunlit_frac"], sun)
     assert s["r"] > 0.95 and s["rmse"] < 0.06

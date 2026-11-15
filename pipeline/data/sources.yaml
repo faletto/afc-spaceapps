@@ -44,3 +44,7 @@ files:
   url: https://pds-geosciences.wustl.edu/lro/urn-nasa-pds-lro_diviner_derived1/data_derived_pcp/diurnal/ltim/pols/pcp_avg_tbol_pols_win_ltim03_240.tab
   bytes: 178193452
   sha256: 8a9800c7797d4f0f3573e6ee9d844a64ac9c134e6b3671328b87154c7eedf547
+- name: LDSM_80S_20MPP_ADJ.TIF
+  url: https://pgda.gsfc.nasa.gov/data/LOLA_20mpp/LDSM_80S_20MPP_ADJ.TIF
+  bytes: 3778056355
+  sha256: 6f2ea5fa94b4d6587899cf9e6d6329a609e9eaee7eaf54a41c3f0e289f42a789

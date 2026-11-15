@@ -5,6 +5,7 @@ Verified against the real DEMs (Mons Malapert high at -86/0.1E; Cabeus deep at 3
 Azimuth: bearing alpha (0 = local north, 90 = east) maps to map angle lon + alpha measured from +y toward +x,
 i.e. ray direction (sin(lon+alpha), cos(lon+alpha)). Conformal, so angles are preserved.
 """
+
 import numpy as np
 
 R_M = 1_737_400.0

@@ -1,4 +1,5 @@
 """JPL Horizons client (spec §3.1). Caches every response; sequential requests only; retries with backoff."""
+
 import hashlib
 import time
 from pathlib import Path
@@ -11,10 +12,19 @@ CACHE = Path(__file__).resolve().parents[3] / "data" / "cache" / "horizons"
 
 def ephemeris_params(year: int) -> dict:
     return {
-        "format": "text", "COMMAND": "'301'", "OBJ_DATA": "'NO'", "MAKE_EPHEM": "'YES'",
-        "EPHEM_TYPE": "'OBSERVER'", "CENTER": "'500@399'",
-        "START_TIME": f"'{year}-01-01'", "STOP_TIME": f"'{year + 1}-01-01'", "STEP_SIZE": "'1h'",
-        "QUANTITIES": "'14,15,19,20'", "ANG_FORMAT": "'DEG'", "CSV_FORMAT": "'YES'", "RANGE_UNITS": "'KM'",
+        "format": "text",
+        "COMMAND": "'301'",
+        "OBJ_DATA": "'NO'",
+        "MAKE_EPHEM": "'YES'",
+        "EPHEM_TYPE": "'OBSERVER'",
+        "CENTER": "'500@399'",
+        "START_TIME": f"'{year}-01-01'",
+        "STOP_TIME": f"'{year + 1}-01-01'",
+        "STEP_SIZE": "'1h'",
+        "QUANTITIES": "'14,15,19,20'",
+        "ANG_FORMAT": "'DEG'",
+        "CSV_FORMAT": "'YES'",
+        "RANGE_UNITS": "'KM'",
     }
 
 
