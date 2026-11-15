@@ -5,8 +5,8 @@
   "global": "real",
   "polar": "real"
  },
- "pipeline_sha": "3b0ab6d",
- "generated_utc": "2026-11-15T01:24:25Z",
+ "pipeline_sha": "273c86f",
+ "generated_utc": "2026-11-15T01:30:51Z",
  "analysis_year": 2028,
  "steps": 8784,
  "counts": {
@@ -56,7 +56,7 @@
   {
    "path": "global/cols.bin",
    "bytes": 4147200,
-   "sha256": "13094de11846e2842290eccb7f1463f01270e1d1cd0f6d20a053ca8788853a4f"
+   "sha256": "a2ce0495e2ae9d18716a766f3da64acde9738d80c860cfd053671c1dfb2f9a8a"
   },
   {
    "path": "global/cols.json",
@@ -1426,7 +1426,7 @@
   {
    "path": "polar/cols.bin",
    "bytes": 5021696,
-   "sha256": "4ea8b53bbd69a9650e437d54d2d2a39fb733148b295dd1ad2537ddf8b25fe4a0"
+   "sha256": "551c25bd4acd7f1c56a5f1a03b0984f663cf4d7316726bd3b56b848cda1284f0"
   },
   {
    "path": "polar/cols.json",

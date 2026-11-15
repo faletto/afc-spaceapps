@@ -34,6 +34,7 @@
 <!-- Q-P#: date · question · context · my default (ASSUMED if proceeding) -->
 
 ## Answered
+- Hot property question (14 Nov): human chose option 1 → Hot property is computed per tier (P95 within Moon-wide and within polar); scarcity cutoff stays shared. Config comment + CONTRACT note; data regenerated; test added (185).
 - Q-P8 (reopened with evidence, human said 'yes' 14 Nov): Diviner polar average max 202 K / min 50 K (Williams 2017) → our lit-site max (207 K) is right, our 95 K night floor is too warm for the poles → `thermal.polar_floor_k: 50` applied to the polar tier and polar rent; Moon-wide stays 95 K. Q-P6 constants cross-checked against NASA numbers (153–160 Wh/kg Li-ion; NIAC AeSI 15-day night ≈ 490 W, 1.8 t battery) and kept.
 - Q-P4 follow-up (14 Nov): human asked to get the slope product → LDSM_80S_20MPP_ADJ downloaded (3.78 GB, sha256 pinned) and now used for polar slopes/safe fractions; own-slope vs LDSM agree (plot mean slope r = 1.000, RMSE 0.05°, safe-fraction RMSE 0.006); data, goldens and validation report regenerated. Manifest `sources.polar` records DEM and slope product.
 - Q-P8: polar T1 maxima/night floor vs Diviner · answer: human said "do that" → option 1: leave the model, label temperatures as modelled (glossary text updated; app should keep the 'modelled' wording) · 14 Nov.
@@ -54,6 +55,7 @@
 <!-- reply to R-A#: … -->
 
 ## Done log
+- 14 Nov · Hot property per tier (cli data stage, test_edge_data), data regenerated
 - 14 Nov · Q-P8 applied: polar night floor 50 K (config, kernel `floor_k`, polar_build, rent), polar cells rebuilt, data/goldens/validation regenerated, +3 tests (184); new demo number SP-0032-0154 $15,084 → $6,890 (−54%)
 - 14 Nov · NASA LDSM slope product adopted (replaces own slope), ruff check + format clean across pipeline/, stage-2 now re-reads terrain stats (no stale cache) · contract unchanged
 - 14 Nov · Full audit (human request): found/fixed real ephemeris.bin (was still the v1 stub, R-A6), quantisation default/golden mismatch (R-A7), stale cached landmark scores in polar cells, Artemis III landmark positions now IAU feature centres (Faustini, Haworth, Nobile, de Gerlache, Shackleton, Mons Malapert, Mons Mouton, Cabeus) instead of approximate ones, best_window with stay > window, landmark_score_and_nearby with < max_nearby landmarks, quantize NaN, silent integer wrap-around in column casts (now saturating), shared contract.py (export no longer imports stub). +104 edge-case/integrity tests (179 total). Auditor follow-ups: horizon quantisation constants live once in contract.py; polar disc latitude from config; golden rent cutoff read from the exported config.json (and tested); golden generation fails loudly without polar data; no silent 'stub' tier fallback (now 'missing'); viability raises on zero weights; dead config key removed.

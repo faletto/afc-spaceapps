@@ -36,13 +36,14 @@ def main(argv=None) -> int:
         pt = dict(np.load(work / "polar_plots.npz", allow_pickle=False))  # run polar_build first (make polar)
         allv = np.concatenate([g["viability"], pt["viability"]])
         cutoff = pricing.scarcity_cutoff(allv, cfg)
-        hot = float(np.percentile(allv, cfg["badges"]["hot_property_pct"]))
+        hot_pct = cfg["badges"]["hot_property_pct"]  # Hot property is relative to each tier (scarcity cutoff stays shared)
+        hot_g, hot_p = (float(np.percentile(t["viability"], hot_pct)) for t in (g, pt))
         for t in (g, pt):  # shared scarcity cutoff across tiers
             prem = pricing.landmark_premium(t["apollo_km"], t["land_type"] == land.LT["peak_of_light"], cfg)
             t["price"] = pricing.price_usd(t["viability"], cfg, prem, cutoff)
             t["rent_avg"] = pricing.rent_per_month(t["price"], cfg)
-        m = export.export_global(g, cfg, a.out, work / "dem_global_32.npy", hot_cut=hot, cutoff=cutoff)
-        m = export.export_polar(pt, cfg, a.out, raw, hot_cut=hot, cutoff=cutoff)
+        m = export.export_global(g, cfg, a.out, work / "dem_global_32.npy", hot_cut=hot_g, cutoff=cutoff)
+        m = export.export_polar(pt, cfg, a.out, raw, hot_cut=hot_p, cutoff=cutoff)
         print("exported:", m["counts"], m["tiers"], "files:", len(m["files"]), "cutoff", round(cutoff, 1))
     elif a.stage == "terrain":
         from . import config, terrain
